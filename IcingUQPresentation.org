@@ -14,6 +14,7 @@
 #+latex_header: \usepackage{tikz}
 #+latex_header: \usepackage{subfigure,subfigmat}
 #+latex_header: \usepackage{threeparttable}
+#+latex_header: \usetikzlibrary{shapes,arrows,shadows}
 
 #+begin_latex
 % Define my settings
@@ -106,28 +107,34 @@
 
 #+begin_latex
 \begin{columns}[c]
-  \column{0.3\textwidth}
+  \column{0.33\textwidth}
+    \centering
     \includegraphics[width=0.95\textwidth]{RidgeRVariation} \\
-    \includegraphics[width=0.95\textwidth]{RidgeSVariation}
-  \column{0.3\textwidth}
+    \includegraphics[width=0.95\textwidth]{RidgeSVariation} \\
+    {\bf Ridge}
+  \column{0.33\textwidth}
+    \centering
     \includegraphics[width=0.95\textwidth]{HornHVariation} \\
-    \includegraphics[width=0.95\textwidth]{HornSVariation}
-  \column{0.3\textwidth}    
-    \includegraphics[width=0.95\textwidth]{MC_surrogate_LargeUnc_CL} \\
-    \includegraphics[width=0.95\textwidth]{MCgpcPDFLargeUnc_CL}
+    \includegraphics[width=0.95\textwidth]{HornSVariation} \\
+    {\bf Horn}
+  \column{0.33\textwidth}
+    \centering    
+    \includegraphics[width=0.9\textwidth]{MC_surrogate_LargeUnc_CL} \\
+    \includegraphics[width=0.9\textwidth]{MCgpcPDFLargeUnc_CL} \\
+    {\bf Statistics}
 \end{columns}
 #+end_latex
 
 - PCE results required 25 samples; Monte Carlo required 500
 - Nonlinear basis allows for wide variations in parameter space
 - PCE surrogate is a smooth function
-  - Can be evaluated cheaply
+  - Monte Carlo sampling of the surrogate is cheap
   - Sensitivities are easily calculated
 
 
 
 
-* High-Dimensional Parameter Space UQ
+* Data-Based UQ
 
 ** Extracting Ice Shape Parameters from Data
 \begin{figure}
@@ -215,7 +222,6 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
   - Width, height, position parameters (/scaling/)
 
 
-
 ** 5-Dimensional UQ Study Statistics
 
 #+begin_latex
@@ -240,14 +246,93 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 \end{figure}
 #+end_latex
 - Sobol index $T_i = \frac{\mathbb{E}\left[ Var\left(
-  Y|Z_i\right)\right]}{Var\left( Y\right)}$ is a measure of how much
+  Y|Z_{-i}\right)\right]}{Var\left( Y\right)}$ is a measure of how much
   $Z_i$ contributes to the total variance of $Y(\bv{Z})$
 - Convergence based on $L_2$ norm of the surrogate covariance matrix
 - TOL = $\left( 1, 0.5, 0.25 \right)$ required $\left( 71, 319, 543
   \right)$ samples
 - Full $4^{th}$ order tensor grids would require $5^5 = 3,125$ samples  
 
+
 * Computational-Based UQ
 
-** Stuff on Icing Modeling
+** Motivation
+- *Investigate uncertainty in the physical process of icing*
+  - Airfoils are exposed to supercooled droplets in icing conditions
+  - The state of these droplets follows some distribution
+  - Unclear how droplet distributions affect ice shape statistics
+  - Experimental ice shapes can exhibit wide variation, even if
+    exposed to similar icing conditions
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FAADropletDist1}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FAADropletDist2}
+\end{columns}
+#+end_latex
+
+- *Contribute to fast Lagrangian methods for droplet modeling*
+  - Standard particle methods for icing are computationally intensive
+    - ``Typical" conditions: $LWC=0.25 g/m^3$, $U = 100 m/s$, $MVD = 50 \mu m$
+    - This gives free-stream droplet flux of 50 million droplets$/(m^2 s)$
+  - Utilize techniques from spray modeling to reduce computational burden
+
+
+** Airfoil Icing Code Flowchart 
+
+#+begin_latex
+
+% Define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% Define block styles used later
+
+\tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, 
+    text centered, minimum height=2.5em,drop shadow]
+\tikzstyle{ann} = [above, text width=5em, text centered]
+\tikzstyle{wa} = [sensor, text width=7.5em, fill=blue!20, 
+    minimum height=3em, rounded corners, drop shadow]
+
+% Define distances for bordering
+\def\blockdist{2.3}
+\def\edgedist{2.5}
+
+\begin{tikzpicture}
+    \node (CleanAirfoil) [wa]  {Clean Airfoil Geometry};
+    \path (CleanAirfoil)+(4,2) node (FlowSolver) [wa] {Mesh/Flow Solver};
+    \path (FlowSolver)+(0,-1.5) node (SLDModule) [wa] {Droplet\\Advection Module};
+    \path (SLDModule)+(0,-1.5) node (ThermoModule) [wa] {Thermodynamic Module};
+    \path (ThermoModule)+(0,-1.5) node (IcedAirfoil) [wa] {Iced Airfoil Geometry};
+    \path (CleanAirfoil)+(8,0) node (FinalAirfoil) [wa] {Final Iced Airfoil Geometry};
+
+    \path [draw, ->] (CleanAirfoil.north) |- node [above] {} (FlowSolver.west);
+    \path [draw, ->] (FlowSolver.south) -- node [below] {} (SLDModule.north);
+    \path [draw, ->] (SLDModule.south) -- node [below] {} (ThermoModule.north);
+    \path [draw, ->] (ThermoModule.south) -- node [below] {} (IcedAirfoil.north);
+    \path [draw, ->] (IcedAirfoil.east) -| node [above] {} (FinalAirfoil.south);
+    \path [draw, ->] (IcedAirfoil.east) -- ++(0.75,0cm) |- node [above]
+                      {} (FlowSolver.east);
+
+    \begin{pgfonlayer}{background}
+        \path (FlowSolver.west)+(-1,1) node (a) {};
+        \path (IcedAirfoil.east)+(1,-1) node (b) {};
+        \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
+            
+    \end{pgfonlayer}
+    \begin{pgfonlayer}{background}
+        \path (SLDModule.west)+(-0.5,0.75) node (a) {};
+        \path (ThermoModule.east)+(0.5,-0.75) node (b) {};
+        \path[fill=orange!40,rounded corners, draw=black!50, dashed] (a) rectangle (b);
+            
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+
+#+end_latex
 

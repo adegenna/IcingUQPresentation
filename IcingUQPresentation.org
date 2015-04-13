@@ -51,6 +51,22 @@
 
 * Motivation/Background
 
+** Introduction
+*Motivation*
+- Wing icing is a serious issue for pilots
+  - Can cause flow separation, unpredictable stall
+  - Linked to 388 accidents between 1990-2000 (/AOPA database/)
+- Wing ice shapes exhibit wide variation, sensitivity to physical
+  parameters
+  - Complex physics (coupled airflow-thermodynamics)
+  - Uncertainty in physical parameters
+*Research Goals*
+- How does uncertainty in the ice shape create uncertainty in
+  aerodynamic performance?
+  - Heuristic parameterization and UQ
+  - Data-based parameterization and UQ
+  - Stochastic physics modeling and UQ
+
 ** Experimental/Computational Variation in Ice Shape
 
 \begin{figure}
@@ -96,11 +112,22 @@
   - Let $y(\bv{Z})$ denote the mapping from $\bv{Z}$ to an aerodynamic
     performance metric
 - *Probabilistic Collocation Method:*
-  - /Representation:/ $y(\bv{Z}) \approx \sum_{|i|=0}^N y_i \Phi_i(\bv{Z})$
-  - /Orthonormality:/ $\ip{f}{g} = \int_{\Gamma} f(\bv{z})g(\bv{z})
-    d\bv{z}$ where $\ip{\Phi_i}{\Phi_j} = \delta_{ij}$
-  - /Quadrature:/ $y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
-    y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k$
+  - /Representation/ 
+    \begin{equation*}
+      y(\bv{Z}) \approx \sum_{|i|=0}^N y_i \Phi_i(\bv{Z})
+    \end{equation*}
+  - /Orthonormality/ 
+    \begin{equation*}
+    \begin{aligned}
+      \ip{f}{g} &= \int_{\Gamma} f(\bv{z})g(\bv{z}) d\bv{z} \\
+      \ip{\Phi_i}{\Phi_j} &= \delta_{ij}
+    \end{aligned}
+    \end{equation*}
+  - /Quadrature/ 
+    \begin{equation*}
+      y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
+    y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k
+    \end{equation*}
 
 ** Uncertainty Quantification Studies
 
@@ -247,7 +274,7 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
   Y|Z_{-i}\right)\right]}{Var\left( Y\right)}$ is a measure of how much
   $Z_i$ contributes to the total variance of $Y(\bv{Z})$
 - Convergence based on $L_2$ norm of the surrogate covariance matrix
-- TOL = $\left( 1, 0.5, 0.25 \right)$ required $\left( 71, 319, 543
+- TOL = $\left( 1, 0.5, 0.25 \right)$ required $\left( 135, 231, 431
   \right)$ samples
 - Full $4^{th}$ order tensor grids would require $5^5 = 3,125$ samples  
 
@@ -438,3 +465,22 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 - Results with/without splashing module are shown
 - Agreement is marginal; may require additional work/analysis of the
   splashing module
+
+** Conclusions/Future Work
+
+*Conclusions*
+- Airfoil icing is a process subject to much uncertainty
+  - Wide variation in ice shapes
+  - Sensitivity to perturbations in physical conditions
+- We have briefly demonstrated three approaches to quantifying
+  uncertainty in this problem
+  - Heuristic parameterization
+  - Data-based parameterization
+  - Stochastic processes and in computational models 
+*Future Work*
+- Parameterized UQ
+  - Investigate effect of more shape parameters
+  - Extend efforts to 3D wing icing
+- Computational modeling
+  - Continue development and testing of icing code
+  - Use icing code to investigate statistical variation of ice shapes

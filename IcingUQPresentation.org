@@ -224,28 +224,22 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 
 #+begin_latex
 \begin{columns}[c]
-  \column{0.25\textwidth}
+  \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{DifferentShapesPODModes} \\
-    \bf{POD Modes}
-  \column{0.25\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{DifferentShapesHeight} \\
-    {\bf Height}
-  \column{0.25\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{DifferentShapesWidth} \\
+    \includegraphics[width=.75\textwidth]{DifferentShapesPODModes} \\
+    \bf{POD Modes} \\
+    \includegraphics[width=.75\textwidth]{DifferentShapesWidth} \\
     \bf{Width}
-  \column{0.25\textwidth}
+  \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{DifferentShapesPosition} \\
-    {\bf Position}
+    \includegraphics[width=.75\textwidth]{DifferentShapesHeight} \\
+    {\bf Height} \\
+    \includegraphics[width=.75\textwidth]{DifferentShapesPosition} \\
+    {\bf Position}    
 \end{columns}
 #+end_latex
 
-- 5 dimensional parameter space
-  - 2 POD coefficients (/shape/)
-  - Width, height, position parameters (/scaling/)
+- 2 POD coefficients (/shape/) + width, height, position parameters (/scaling/)
 
 ** 5-Dimensional UQ Study Statistics
 
@@ -369,11 +363,11 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
   \mapsto \mathcal{R}$ over the state space
 - *Local droplet number*
   \begin{equation*}
-    N(\mathbf{X},t_0) \approx f(\mathbf{X},t) \Delta f
+    N(\mathbf{X},t_0) \approx f(\mathbf{X},t_0) \left| \Delta \mathbf{X} \right|\Delta t
   \end{equation*}
 - *Conservation of mass*
   \begin{equation*}
-    \sum_{i}^{M} N_i m_i = \int_V m(R) ~f ~df
+    \sum_{i}^{M} N_i m_i = \int_V m(R) ~f(\mathbf{X}) ~d\mathbf{X}dt
   \end{equation*}
 - Think of this as replacing particles with /clumps/ of particles
   - Each clump contains $N$ identical particles

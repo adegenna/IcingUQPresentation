@@ -1,0 +1,480 @@
+#+STARTUP: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [9pt]
+
+#+latex_header: \mode<beamer>{\usetheme{Warsaw}}
+#+latex_header: \mode<beamer>{\setbeamertemplate{blocks}[rounded][shadow=false]}
+#+latex_header: \mode<beamer>{\addtobeamertemplate{block begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}}
+#+latex_header: \mode<beamer>{\setbeamercolor{structure}{fg=orange}}
+#+latex_header: \mode<beamer>{\setbeamercovered{transparent}}
+#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+
+#+latex_header: \usepackage{subcaption}
+#+latex_header: \usepackage{multimedia}
+#+latex_header: \usepackage{tikz}
+#+latex_header: \usepackage{subfigure,subfigmat}
+#+latex_header: \usepackage{threeparttable}
+#+latex_header: \usetikzlibrary{shapes,arrows,shadows}
+#+latex_header: \usepackage{bm, amssymb, amsmath, array, pdfpages}
+
+#+begin_latex
+% Define my settings
+
+\graphicspath{{Figures/}}
+% Add Princeton shield logo
+\addtobeamertemplate{frametitle}{}{%
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,yshift=2pt] at (current page.north east) {\includegraphics[height=0.7cm]{Shield}};
+\end{tikzpicture}}
+%
+#+end_latex
+
+#+latex_header: \newcommand{\bv}[1]{\mathbf{#1}}
+#+latex_header: \newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
+#+latex_header: \newcommand{\beq}[0]{\begin{equation}}
+#+latex_header: \newcommand{\eeq}[0]{\end{equation}}
+#+latex_header: \newcommand{\beqa}[0]{\begin{eqnarray}}
+#+latex_header: \newcommand{\eeqa}[0]{\end{eqnarray}}
+#+latex_header: \newcommand{\beqq}[0]{\begin{equation*}}
+#+latex_header: \newcommand{\eeqq}[0]{\end{equation*}}
+#+latex_header: \newcommand{\bs}[1]{\boldsymbol{#1}}
+#+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
+#+BEAMER_FRAME_LEVEL: 2
+
+
+
+#+DATE: FAA JUP Meeting \\ Princeton, NJ \\ 13-14 April 2015
+#+TITLE: Uncertainty Quantification for Airfoil Icing
+#+AUTHOR: Anthony DeGennaro \newline Princeton University
+\institute{Princeton University}
+
+
+* Motivation/Background
+
+** Introduction
+*Motivation*
+- Wing icing is a serious issue for pilots
+  - Can cause flow separation, unpredictable stall
+  - Linked to 388 accidents between 1990-2000 (/AOPA database/)
+- Wing ice shapes exhibit wide variation, sensitivity to physical
+  parameters
+  - Complex physics (coupled airflow-thermodynamics)
+  - Uncertainty in physical parameters
+*Research Goals*
+- How does uncertainty in the ice shape create uncertainty in
+  aerodynamic performance?
+  - Heuristic parameterization and UQ
+  - Data-based parameterization and UQ
+  - Stochastic physics modeling and UQ
+
+** Experimental/Computational Variation in Ice Shape
+
+\begin{figure}
+  \begin{subfigmatrix}{2}
+      \subfigure[Habashi, 2006]{\includegraphics[width=0.45\textwidth]{Habashi2006ShapeVariation}}
+      \subfigure[Wright, 2004]{\includegraphics[width=0.45\textwidth]{Wright2004ShapeVariation}}
+  \end{subfigmatrix}
+\end{figure}
+
+- Variation in experimental/computational ice shapes
+- Suggestive of random processes not fully modelled
+- /UQ approach:/ parameterize the shape variation and study its
+  effects on aerodynamics
+
+
+* Low-Dimensional Parameter Space UQ
+
+** Canonical Airfoil Ice Shapes
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \includegraphics[width=0.95\textwidth]{RidgeParameters}
+  \column{0.5\textwidth}
+    \includegraphics[width=0.95\textwidth]{NominalHorn}
+\end{columns}
+#+end_latex
+
+- *Ridge Ice:*
+  - Forms by refreezing of runback water
+  - Generally aft of deicing equipment
+- *Horn Ice:*
+  - Leading edge protruberance
+  - Can form quickly and be difficult to break up
+
+** Polynomial Chaos Expansions (PCE)
+
+- *Polynomial Chaos Framework*
+  - Let $\bv{Z} = (Z_1, Z_2)$ be random variables with PDF
+    $\rho(\bv{Z})$ that parameterize ice
+  - Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
+    which are orthogonal w.r.t. $\rho(\bv{Z})$
+  - Let $y(\bv{Z})$ denote the mapping from $\bv{Z}$ to an aerodynamic
+    performance metric
+- *Probabilistic Collocation Method:*
+  - /Representation/ 
+    \begin{equation*}
+      y(\bv{Z}) \approx \sum_{|i|=0}^N y_i \Phi_i(\bv{Z})
+    \end{equation*}
+  - /Orthonormality/ 
+    \begin{equation*}
+    \begin{aligned}
+      \ip{f}{g} &= \int_{\Gamma} f(\bv{z})g(\bv{z}) d\bv{z} \\
+      \ip{\Phi_i}{\Phi_j} &= \delta_{ij}
+    \end{aligned}
+    \end{equation*}
+  - /Quadrature/ 
+    \begin{equation*}
+      y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
+    y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k
+    \end{equation*}
+
+** Uncertainty Quantification Studies
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{RidgeRVariation} \\
+    \includegraphics[width=0.95\textwidth]{RidgeSVariation} \\
+    {\bf Ridge}
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{HornHVariation} \\
+    \includegraphics[width=0.95\textwidth]{HornSVariation} \\
+    {\bf Horn}
+  \column{0.33\textwidth}
+    \centering    
+    \includegraphics[width=0.9\textwidth]{MC_surrogate_LargeUnc_CL} \\
+    \includegraphics[width=0.9\textwidth]{MCgpcPDFLargeUnc_CL} \\
+    {\bf Statistics}
+\end{columns}
+#+end_latex
+
+- PCE results required 25 samples; Monte Carlo required 500
+- Nonlinear basis allows for wide variations in parameter space
+- PCE surrogate is a smooth function
+  - Monte Carlo sampling of the surrogate is cheap
+  - Sensitivities are easily calculated
+
+
+
+
+* Data-Based UQ
+
+** Extracting Ice Shape Parameters from Data
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{CRMHorn}
+\end{figure}
+
+- Previous approach was heuristic
+- Would like a way of identifying shape parameters from data
+
+** Low-Dimensional Modeling of Ice Shape Data
+#+begin_latex
+\begin{columns}[c]
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=1.3\textwidth]{HornsUnaligned} \\
+    \bf{Original Data}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=1.25\textwidth]{PODReconstruction2} \\
+    {\bf POD Reconstruction}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=1.25\textwidth]{PODModes} \\
+    {\bf POD Modes}
+\end{columns}
+#+end_latex
+\vspace{1cm}
+\begin{equation*}
+N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
+\end{equation*}
+
+- /h, a, b/ are scaling parameters
+- $c_1, c_2$ are POD coefficients
+- This collapses 100 different snapshots into 5 parameters
+
+** PCE with Sparse Grids
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.7\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{SparseGrid1} \\
+    \bf{Full Tensor Product vs. Sparse Grid}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{SparseGrid2} \\
+    {\bf Anisotropic Grid}
+\end{columns}
+#+end_latex
+
+- *Sparse Grids*
+  - Sacrifice quadrature accuracy for efficiency
+  - Only a subset of the full quadrature grid is used
+  - Start with a coarse mesh, adaptively refine in most ``important"
+    directions
+  - For $d >> 1$, number of samples scales as $2^N {N+d \choose d} <<
+    (N+1)^d$
+
+** 5-Dimensional UQ Study
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.75\textwidth]{DifferentShapesPODModes} \\
+    \bf{POD Modes} \\
+    \includegraphics[width=.75\textwidth]{DifferentShapesWidth} \\
+    \bf{Width}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.75\textwidth]{DifferentShapesHeight} \\
+    {\bf Height} \\
+    \includegraphics[width=.75\textwidth]{DifferentShapesPosition} \\
+    {\bf Position}    
+\end{columns}
+#+end_latex
+
+- 2 POD coefficients (/shape/) + width, height, position parameters (/scaling/)
+
+** 5-Dimensional UQ Study Statistics
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{PDFCLMAX} \\
+    $\bm{C_{L_{MAX}}}$
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{PDFalphaMAX} \\
+    $\bm{\alpha_{MAX}}$
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{PDFLDMAX} \\
+    $\bm{L/D_{MAX}}$
+\end{columns}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{Sobol}
+\end{figure}
+#+end_latex
+- Sobol index $T_i = \frac{\mathbb{E}\left[ Var\left(
+  Y|Z_{-i}\right)\right]}{Var\left( Y\right)}$ is a measure of how much
+  $Z_i$ contributes to the total variance of $Y(\bv{Z})$
+- Convergence based on $L_2$ norm of the surrogate covariance matrix
+- TOL = $\left( 1, 0.5, 0.25 \right)$ required $\left( 135, 231, 431
+  \right)$ samples
+- Full $4^{th}$ order tensor grids would require $5^5 = 3,125$ samples  
+
+
+* Computational-Based UQ
+
+** Motivation
+- *Investigate uncertainty in the physical process of icing*
+  - Airfoils are exposed to supercooled droplets in icing conditions
+  - The state of these droplets follows some distribution
+  - Unclear how droplet distributions affect ice shape statistics
+  - Experimental ice shapes can exhibit wide variation, even if
+    exposed to similar icing conditions
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FAADropletDist1}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FAADropletDist2}
+\end{columns}
+#+end_latex
+
+- *Contribute to fast Lagrangian methods for droplet modeling*
+  - Standard particle methods for icing are computationally intensive
+    - ``Typical" conditions: $LWC=0.25 g/m^3$, $U = 100 m/s$, $MVD = 50 \mu m$
+    - This gives free-stream droplet flux of 50 million droplets$/(m^2 s)$
+  - Utilize techniques from spray modeling to reduce computational burden
+
+** Airfoil Icing Code Flowchart 
+
+#+begin_latex
+\fontsize{7}\selectfont
+% Define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% Define block styles used later
+
+\tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, 
+    text centered, minimum height=2.5em,drop shadow]
+\tikzstyle{ann} = [above, text width=5em, text centered]
+\tikzstyle{wa} = [sensor, text width=7.5em, fill=blue!20, 
+    minimum height=3em, rounded corners, drop shadow]
+
+% Define distances for bordering
+\def\blockdist{2.3}
+\def\edgedist{2.5}
+
+\begin{tikzpicture}
+    \node (CleanAirfoil) [wa]  {Clean Airfoil Geometry};
+    \path (CleanAirfoil)+(4,2.5) node (FlowSolver) [wa] {Mesh/Flow Solver};
+    \path (FlowSolver)+(0,-1.25) node (DropletDist) [wa] {Droplet\\Statistics Module};
+    \path (DropletDist)+(0,-1.25) node (SLDModule) [wa] {Droplet\\Dynamics Module};
+    \path (SLDModule)+(0,-1.25) node (ThermoModule) [wa] {Thermodynamic Module};
+    \path (ThermoModule)+(0,-1.25) node (IcedAirfoil) [wa] {Iced Airfoil Geometry};
+    \path (CleanAirfoil)+(8,0) node (FinalAirfoil) [wa] {Final Iced Airfoil Geometry};
+
+    \path [draw, ->, thick] (CleanAirfoil.north) |- node [above] {} (FlowSolver.west);
+    \path [draw, ->, thick] (FlowSolver.south) -- node [below] {} (DropletDist.north);
+    \path [draw, ->, thick] (DropletDist.south) -- node [below] {} (SLDModule.north);
+    \path [draw, ->, thick] (SLDModule.south) -- node [below] {} (ThermoModule.north);
+    \path [draw, ->, thick] (ThermoModule.south) -- node [below] {} (IcedAirfoil.north);
+    \path [draw, ->, thick] (IcedAirfoil.east) -| node [above] {} (FinalAirfoil.south);
+    \path [draw, ->, thick] (IcedAirfoil.east) -- ++(0.75,0cm) |- node [above]
+                      {} (FlowSolver.east);
+
+    \begin{pgfonlayer}{background}
+        \path (FlowSolver.west)+(-1,1) node (a) {};
+        \path (IcedAirfoil.east)+(1,-1) node (b) {};
+        \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
+            
+    \end{pgfonlayer}
+    \begin{pgfonlayer}{background}
+        \path (DropletDist.west)+(-0.5,0.6) node (a) {};
+        \path (SLDModule.east)+(0.5,-0.6) node (b) {};
+        \path[fill=orange!40,rounded corners, draw=black!50, dashed] (a) rectangle (b);
+            
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+
+#+end_latex
+
+** Probabilistic Formulation of Droplet Distribution
+- Let $\bv{X} = [\bv{x},\bv{u},R,e] \in \mathcal{R}^8$ denote the
+  state of a droplet at a particular time
+- Define a probability density function $f(\bv{X},t): \mathcal{R}^9
+  \mapsto \mathcal{R}$ over the state space
+- *Local droplet number*
+  \begin{equation*}
+    N(\mathbf{X},t_0) \approx f(\mathbf{X},t_0) \left| \Delta \mathbf{X} \right|\Delta t
+  \end{equation*}
+- *Conservation of mass*
+  \begin{equation*}
+    \sum_{i}^{M} N_i m_i = \int_V m(R) ~f(\mathbf{X}) ~d\mathbf{X}dt
+  \end{equation*}
+- Think of this as replacing particles with /clumps/ of particles
+  - Each clump contains $N$ identical particles
+  - Each clump represents the local average droplet properties
+
+** Parcel Advection 
+- *Conservation of Droplet Numbers*
+  #+begin_latex
+    \begin{equation*}
+      \diff{N_i}{t} + \nabla_{\mathbf{X}} \cdot (N_i \dot{\mathbf{X}}) = 0 ~~~~~ i=1 \ldots M 
+    \end{equation*}
+  #+end_latex
+- *Method of Characteristics*
+  #+begin_latex
+    \begin{equation*}
+      \frac{d}{dt} \left{   
+        \begin{bmatrix}
+          \bm{x} \\
+          \bm{u} \\
+          R \\
+          e
+        \end{bmatrix}
+      \right} = 
+      \left{
+        \begin{bmatrix}
+          \mathbf{u} \\
+          \sum \left( \frac{\mathbf{F_d}}{m_d} \right) \\
+          -\frac{\dot{m}}{4\pi\rho R^2} \\
+          \frac{\dot{m}}{m} \left(\Delta e + \frac{\dot{q}}{m} \right)
+        \end{bmatrix}
+      \right}  
+    \end{equation*}
+  #+end_latex
+- These characteristic ODE's resemble Lagrangian equations of motion
+
+** Droplet Impingement Modeling
+- Droplets may /rebound/, /deposit/, or /splash/ upon impact with the
+  airfoil (Villedieu, 2012; Cossali, 1997) depending on the relative
+  strengths of inertial forces, surface tension, and viscous forces
+- Post-splash velocities are modeled as a stochastic process
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.15\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{Bounce} \\
+    {\bf Rebound}
+  \column{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{Spread} \\
+    {\bf Deposit}
+  \column{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{Splash} \\
+    {\bf Splash}
+\end{columns}
+#+end_latex
+
+** Solution Process: Distribution Sampling and Droplet Advection
+- *Distribution Sampling*
+  - Specify desired number of parcels $M$, simulation time $T$
+  - Draw $M$ random ``parcels" from $f(\mathbf{X},t_0)$
+  - Calculate local parcel droplet number by conserving mass
+- *Droplet Advection*
+  - Solve parcel advection equations
+  - Upon impact, determine whether parcel rebounds, deposits, or
+    splashs
+  - Implement stochastic process model for splashing
+- These two modules allow us to compute a mass flux of water over the
+  airfoil surface
+- To compute ice shapes, we need a thermodynamic module (forthcoming)
+  
+** Preliminary Intermediate Results: Mass Flux
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BetaSample} \\
+    {\bf Statistics}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BetaComparison} \\
+    {\bf Validation}
+\end{columns}
+#+end_latex
+
+- Collection efficiency is the ratio of surface to free-stream water flux
+- Results with/without splashing module are shown
+- Agreement is marginal; may require additional work/analysis of the
+  splashing module
+
+** Conclusions/Future Work
+
+*Conclusions*
+- Airfoil icing is a process subject to much uncertainty
+  - Wide variation in ice shapes
+  - Sensitivity to perturbations in physical conditions
+- We have briefly demonstrated three approaches to quantifying
+  uncertainty in this problem
+  - Heuristic parameterization
+  - Data-based parameterization
+  - Stochastic processes and in computational models 
+*Future Work*
+- Parameterized UQ
+  - Investigate effect of more shape parameters
+  - Extend efforts to 3D wing icing
+- Computational modeling
+  - Continue development and testing of icing code
+  - Use icing code to investigate statistical variation of ice shapes

@@ -1,0 +1,372 @@
+#+STARTUP: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [9pt]
+
+#+latex_header: \mode<beamer>{\usetheme{Warsaw}}
+#+latex_header: \mode<beamer>{\setbeamertemplate{blocks}[rounded][shadow=false]}
+#+latex_header: \mode<beamer>{\addtobeamertemplate{block begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}}
+#+latex_header: \mode<beamer>{\setbeamercolor{structure}{fg=orange}}
+#+latex_header: \mode<beamer>{\setbeamercovered{transparent}}
+#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+
+#+latex_header: \usepackage{subcaption}
+#+latex_header: \usepackage{multimedia}
+#+latex_header: \usepackage{tikz}
+#+latex_header: \usepackage{subfigure,subfigmat}
+#+latex_header: \usepackage{threeparttable}
+#+latex_header: \usetikzlibrary{shapes,arrows,shadows}
+#+latex_header: \usepackage{bm, amssymb, amsmath, array, pdfpages}
+
+#+begin_latex
+% Define my settings
+
+\graphicspath{{Figures/}}
+% Add Princeton shield logo
+\addtobeamertemplate{frametitle}{}{%
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,yshift=2pt] at (current page.north east) {\includegraphics[height=0.7cm]{Shield}};
+\end{tikzpicture}}
+%
+#+end_latex
+
+#+latex_header: \newcommand{\bv}[1]{\mathbf{#1}}
+#+latex_header: \newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
+#+latex_header: \newcommand{\beq}[0]{\begin{equation}}
+#+latex_header: \newcommand{\eeq}[0]{\end{equation}}
+#+latex_header: \newcommand{\beqa}[0]{\begin{eqnarray}}
+#+latex_header: \newcommand{\eeqa}[0]{\end{eqnarray}}
+#+latex_header: \newcommand{\beqq}[0]{\begin{equation*}}
+#+latex_header: \newcommand{\eeqq}[0]{\end{equation*}}
+#+latex_header: \newcommand{\bs}[1]{\boldsymbol{#1}}
+#+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
+#+BEAMER_FRAME_LEVEL: 2
+
+
+
+#+DATE: AIAA Aviation 2015 Conference \\ Dallas, TX \\ 26 June 2015
+#+TITLE: Data-Driven Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing
+#+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
+\institute{Princeton University}
+
+
+* Motivation/Background
+
+** Introduction
+*Motivation*
+- Wing icing is a serious issue for pilots
+  - Can cause flow separation, unpredictable stall
+  - Linked to 388 accidents between 1990-2000 (/AOPA database/)
+- Wing ice shapes exhibit wide variation, sensitivity to physical
+  parameters
+  - Complex physics (coupled airflow-thermodynamics)
+  - Uncertainty in physical parameters
+*Research Goals*
+- How does uncertainty in the ice shape create uncertainty in
+  aerodynamic performance?
+  - Heuristic parameterization and UQ
+  - Data-based parameterization and UQ
+  - Stochastic physics modeling and UQ
+
+** Experimental/Computational Variation in Ice Shape
+
+\begin{figure}
+  \begin{subfigmatrix}{2}
+      \subfigure[Habashi, 2006]{\includegraphics[width=0.45\textwidth]{Habashi2006ShapeVariation}}
+      \subfigure[Wright, 2004]{\includegraphics[width=0.45\textwidth]{Wright2004ShapeVariation}}
+  \end{subfigmatrix}
+\end{figure}
+
+- Variation in experimental/computational ice shapes
+- Suggestive of random processes not fully modelled
+- /UQ approach:/ parameterize the shape variation and study its
+  effects on aerodynamics
+
+
+* Methodology
+
+** Low-Dimensional Modeling
+
+- The space of all ice shapes is infinite dimensional
+- Consider small number of parameters that describe /likely/ shapes
+- Analyze database of shapes from experiments/simulations
+- *Proper Orthogonal Decomposition* [fn:POD]
+  - Assume database of /M/ ice shapes
+  - Each individual ice shape can be represented by a vector $\bv{x}
+    \in \mathbb{R}^N$
+  - Approximate $\bv{x}$ using some basis vectors $\psi_i$:
+    \begin{equation*}
+      \bv{x} \approx \sum_{i=1}^P a_i \psi_i
+    \end{equation*}
+  - Choose basis vectors to be the eigenvectors of the dataset
+    covariance matrix
+    \begin{equation*}
+    \begin{aligned}
+      \mathcal{R} \psi_k = \lambda_k \psi_k& \text{   where:   } \\ 
+      \mathcal{R} = \frac{1}{M}\mathbf{X}\mathbf{X}^T \text{   and:   }&
+      \mathbf{X} =
+       \begin{bmatrix}
+        \vline & & \vline \\
+        x_1 & \cdots & x_M \\
+        \vline & & \vline \\
+       \end{bmatrix}
+    \end{aligned}
+    \end{equation*}
+[fn:POD] Here is the cited reference for POD
+
+** Polynomial Chaos Expansions (PCE)
+
+- *Polynomial Chaos Framework* [fn:PCE]
+  - Let $\bv{Z} = (Z_1, Z_2)$ be random variables with PDF
+    $\rho(\bv{Z})$ that parameterize ice
+  - Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
+    which are orthogonal w.r.t. $\rho(\bv{Z})$
+  - Let $y(\bv{Z})$ denote the mapping from $\bv{Z}$ to an aerodynamic
+    performance metric
+- *Probabilistic Collocation Method:*
+  - /Representation/ 
+    \begin{equation*}
+      y(\bv{Z}) \approx \sum_{|i|=0}^N y_i \Phi_i(\bv{Z})
+    \end{equation*}
+  - /Orthonormality/ 
+    \begin{equation*}
+    \begin{aligned}
+      \ip{f}{g} &= \int_{\Gamma} f(\bv{z})g(\bv{z}) d\bv{z} \\
+      \ip{\Phi_i}{\Phi_j} &= \delta_{ij}
+    \end{aligned}
+    \end{equation*}
+  - /Quadrature/ 
+    \begin{equation*}
+      y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
+    y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k
+    \end{equation*}
+[fn:PCE] Here is a cited reference for PCE
+
+** PCE with Sparse Grids
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.7\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{SparseGrid1} \\
+    \bf{Full Tensor Product vs. Sparse Grid}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{SparseGrid2} \\
+    {\bf Anisotropic Grid}
+\end{columns}
+#+end_latex
+
+- *Sparse Grids*
+  - Sacrifice quadrature accuracy for efficiency
+  - Only a subset of the full quadrature grid is used
+  - Start with a coarse mesh, adaptively refine in most ``important"
+    directions
+  - For $d >> 1$, number of samples scales as $2^N {N+d \choose d} <<
+    (N+1)^d$
+
+
+* Simulation Dataset
+
+** Dataset Description 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{CRMHorn}
+\end{figure}
+
+- NASA Common Research Model (CRM), $65\%$ scale [fn:1]
+  - 45 min accretion time, altitude = 10,000 ft, velocity = 232 knots,
+    temperature = $-4^{\text{o}}$ C, MVD = 20 $\mu m$, LWC = 0.55
+    $g/m^3$
+[fn:1] Here is the cited paper
+
+** Low-Dimensional Modeling of Dataset
+#+begin_latex
+\begin{columns}[c]
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=1.3\textwidth]{HornsUnaligned} \\
+    \bf{Original Data}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=1.25\textwidth]{PODReconstruction2} \\
+    {\bf POD Reconstruction}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=1.25\textwidth]{PODModes} \\
+    {\bf POD Modes}
+\end{columns}
+#+end_latex
+\vspace{1cm}
+\begin{equation*}
+N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
+\end{equation*}
+
+- /h, a, b/ are scaling parameters
+- $c_1, c_2$ are POD coefficients
+- This collapses 100 different snapshots into 5 parameters
+
+** 5-Dimensional UQ Study
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.75\textwidth]{DifferentShapesPODModes} \\
+    \bf{POD Modes} \\
+    \includegraphics[width=.75\textwidth]{DifferentShapesWidth} \\
+    \bf{Width}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.75\textwidth]{DifferentShapesHeight} \\
+    {\bf Height} \\
+    \includegraphics[width=.75\textwidth]{DifferentShapesPosition} \\
+    {\bf Position}    
+\end{columns}
+#+end_latex
+
+- 2 POD coefficients (/shape/) + width, height, position parameters (/scaling/)
+
+** Statistics
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.37\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{PDFCLMAX} \\
+    $\bm{C_L}$ {\bf Statistics}
+  \column{0.37\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{PDFCDMAX} \\
+    $\bm{C_D}$ {\bf Statistics}
+\end{columns}
+
+#+end_latex
+
+|           | Width | Position | Height | POD 1 | POD 2 |
+|-----------+-------+----------+--------+-------+------ |
+| T ($C_L$) |  0.03 |  0.69    | 0.15   | 0.11  | 0.14  |
+
+- Our surrogate is an explicit polynomial function of the input
+  variables, making statistical inference easy/quick
+- PCE surrogate computed using 1,103 sparse grid points
+- Sobol index $T_i = \frac{\mathbb{E}\left[ Var\left(
+  Y|Z_{-i}\right)\right]}{Var\left( Y\right)}$ is a measure of how much
+  $Z_i$ contributes to the total variance of $Y(\bv{Z})$
+- For our parameter ranges, position perturbation accounts for most of
+  the statistical variation
+** Statistical Inference
+
+- Analyze statistical clustering of horns that produce bottom and top
+  $10\%$ of $C_L$ variation
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.40\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{GoodHornParamLocs} \\
+    {\bf Favorable Horns}
+    \begin{itemize}
+      \item Wider/rounded
+      \item Lower surface
+      \item Shorter
+      \item Sharp, upper skew shape
+    \end{itemize}
+  \column{0.40\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BadHornParamLocs} \\
+    {\bf Unfavorable Horns}
+    \begin{itemize}
+      \item Sharper/narrower
+      \item Upper surface
+      \item Taller
+      \item Gentle downward skew
+    \end{itemize}
+\end{columns}
+
+#+end_latex
+
+** Flow Solutions
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.30\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{GoodHorn.png} \\
+    {\bf Favorable Position}
+    \includegraphics[width=1\textwidth]{GoodHornPOD.png} \\
+    {\bf Favorable shape skew}
+  \column{0.30\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BadHorn.png} \\
+    {\bf Unfavorable Position}
+    \includegraphics[width=1\textwidth]{BadHornPOD.png} \\
+    {\bf Unfavorable shape skew}
+\end{columns}
+
+#+end_latex
+
+* Experiment Dataset
+
+** Dataset Description
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{Dataset}
+\end{figure}
+
+- Business jet clean airfoil geometry
+- 54 ice shapes, exposed to wide range of various icing conditions
+  consistent with FAA certification guidelines
+- POD dataset will consist of binary values defined on a static
+  Cartesian mesh (`1' if mesh point is on the ice, `0' if not)
+
+** Low-Dimensional Modeling of Dataset
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    \centering
+    \hspace{-2.17em}
+    \includegraphics[width=0.9\textwidth]{MEAN.png} \\
+    {\bf Mean} \\
+    \includegraphics[width=1\textwidth]{MODE2.png} \\
+    {\bf Mode 2} \\
+    \includegraphics[width=1\textwidth]{MODE4.png} \\
+    {\bf Mode 4}
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{MODE1.png} \\
+    {\bf Mode 1} \\
+    \includegraphics[width=1\textwidth]{MODE3.png} \\
+    {\bf Mode 3} \\
+    \includegraphics[width=1\textwidth]{MODE5.png} \\
+    {\bf Mode 5}
+\end{columns}
+
+#+end_latex
+
+- 8 Modes retained; this is where POD eigenvalue magnitudes have
+  decayed by an order of magnitude
+** Ice Shape Reconstructions
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    \centering
+    \hspace{-0.5em}
+    \includegraphics[width=1\textwidth]{UnfilteredReconstruction.png} \\
+    {\bf Unfiltered Reconstruction} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE1} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE9} \\
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FilteredReconstruction.png} \\
+    {\bf Filtered Reconstruction} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE3} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE4} \\
+\end{columns}
+\begin{center}
+{\bf Ice Reconstructions}
+\end{center}
+
+#+end_latex

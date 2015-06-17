@@ -54,32 +54,71 @@
 ** Introduction
 *Motivation*
 - Wing icing is a serious issue for pilots
-  - Can cause flow separation, unpredictable stall
-  - Linked to 388 accidents between 1990-2000 (/AOPA database/)
+  - Massive flow separation, lower lift + higher drag
+  - Unpredictable stall
 - Wing ice shapes exhibit wide variation, sensitivity to physical
   parameters
   - Complex physics (coupled airflow-thermodynamics)
   - Uncertainty in physical parameters
 *Research Goals*
+- How can extensive, observed variations in ice shape be modeled
+  efficiently with a low number of parameters?
 - How does uncertainty in the ice shape create uncertainty in
   aerodynamic performance?
-  - Heuristic parameterization and UQ
-  - Data-based parameterization and UQ
-  - Stochastic physics modeling and UQ
 
 ** Experimental/Computational Variation in Ice Shape
 
-\begin{figure}
+\vspace*{-0.5cm}\begin{figure}
   \begin{subfigmatrix}{2}
-      \subfigure[Habashi, 2006]{\includegraphics[width=0.45\textwidth]{Habashi2006ShapeVariation}}
-      \subfigure[Wright, 2004]{\includegraphics[width=0.45\textwidth]{Wright2004ShapeVariation}}
+      \subfigure[Habashi, 2006]{\includegraphics[width=0.4\textwidth]{Habashi2006ShapeVariation}}
+      \subfigure[Wright, 2004]{\includegraphics[width=0.4\textwidth]{Wright2004ShapeVariation}}
   \end{subfigmatrix}
 \end{figure}
 
-- Variation in experimental/computational ice shapes
-- Suggestive of random processes not fully modelled
+- Wide variation in experimental/computational ice shapes[fn:Habashi][fn:Wright]
+- Suggests sensitivity to perturbations in underlying physical
+  processes
 - /UQ approach:/ parameterize the shape variation and study its
   effects on aerodynamics
+
+[fn:Habashi] Beaugendre H., Morency M., and Habashi W.G. /Development
+of a Second Generation in-Flight Icing Simulation Code/. Journal of
+Fluids Engineering, ASME, 2006.
+[fn:Wright] Wright W. and Potapczuk, M.G. /Semi-Empirical Modeling of
+SLD Physics/, AIAA 2004-412. 42$^{nd}$ AIAA Aerospace Sciences
+Meeting, Reno, NV, 2004.
+
+** Relation to Previous Work
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{RidgeRVariation} \\
+    \includegraphics[width=0.95\textwidth]{RidgeSVariation} \\
+    {\bf Ridge}
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{HornHVariation} \\
+    \includegraphics[width=0.95\textwidth]{HornSVariation} \\
+    {\bf Horn}
+  \column{0.33\textwidth}
+    \centering    
+    \includegraphics[width=0.9\textwidth]{MC_surrogate_LargeUnc_CL} \\
+    \includegraphics[width=0.9\textwidth]{MCgpcPDFLargeUnc_CL} \\
+    {\bf Statistics}
+\end{columns}
+#+end_latex
+
+- Previous study examined parameterized ridge and horn ice
+  shapes[fn:DeGennaro]
+- Approach was heuristic, not directly based on observed shape
+  variations
+- Parameter space was low dimensional; no low-dimensional modeling
+
+[fn:DeGennaro] DeGennaro A., Rowley C.W., and Martinelli,
+L. /Uncertainty Quantification for Airfoil Icing using Polynomial
+Chaos Expansions/. To appear in Journal of Aircraft, 2015.
 
 
 * Methodology
@@ -111,11 +150,12 @@
        \end{bmatrix}
     \end{aligned}
     \end{equation*}
-[fn:POD] Here is the cited reference for POD
+[fn:POD] Holmes P. et. al. /Turbulence, Coherent Structures, Dynamical
+Systems and Symmetry/, Cambridge University Press, New York, 2012.
 
 ** Polynomial Chaos Expansions (PCE)
 
-- *Polynomial Chaos Framework* [fn:PCE]
+- *Polynomial Chaos Framework* [fn:XiuBook][fn:LeMaitre]
   - Let $\bv{Z} = (Z_1, Z_2)$ be random variables with PDF
     $\rho(\bv{Z})$ that parameterize ice
   - Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
@@ -139,7 +179,10 @@
       y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
     y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k
     \end{equation*}
-[fn:PCE] Here is a cited reference for PCE
+[fn:XiuBook] Xiu D. /Numerical Methods for Stochastic Computations: A
+Spectral Method Approach/. Princeton University Press, 2010.
+[fn:LeMaitre] LeMaitre O. /Spectral Methods for Uncertainty
+Quantification/. Springer, 2010.
 
 ** PCE with Sparse Grids
 
@@ -173,11 +216,12 @@
   \includegraphics[width=0.6\textwidth]{CRMHorn}
 \end{figure}
 
-- NASA Common Research Model (CRM), $65\%$ scale [fn:1]
+- NASA Common Research Model (CRM), $65\%$ scale[fn:CRM]
   - 45 min accretion time, altitude = 10,000 ft, velocity = 232 knots,
     temperature = $-4^{\text{o}}$ C, MVD = 20 $\mu m$, LWC = 0.55
     $g/m^3$
-[fn:1] Here is the cited paper
+[fn:CRM] Broeren A. et. al. /Swept-Wing Ice Accretion Characterization
+and Aerodynamics/, AIAA 2013-2824.
 
 ** Low-Dimensional Modeling of Dataset
 #+begin_latex
@@ -305,6 +349,7 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 
 #+end_latex
 
+
 * Experiment Dataset
 
 ** Dataset Description
@@ -314,11 +359,14 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
   \includegraphics[width=0.7\textwidth]{Dataset}
 \end{figure}
 
-- Business jet clean airfoil geometry
+- Business jet clean airfoil geometry[fn:Addy]
 - 54 ice shapes, exposed to wide range of various icing conditions
   consistent with FAA certification guidelines
 - POD dataset will consist of binary values defined on a static
   Cartesian mesh (`1' if mesh point is on the ice, `0' if not)
+
+[fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
+Airfoils/. NASA TR 2000-210031.
 
 ** Low-Dimensional Modeling of Dataset
 
@@ -370,3 +418,37 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 \end{center}
 
 #+end_latex
+** Preliminary Findings
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{GoodBadHornExamps}
+\end{figure}
+
+- *Green:* Horns which produce lower 10$\%$ of $C_L$
+  - Lower amounts of ice accumulation
+  - Ice mass concentrated on lower surface
+- *Red:* Horns which produce upper 10$\%$ of $C_L$
+  - Higher amounts of ice accumulation
+  - Ice mass forms sharp upper surface horn
+- Results derived from $\sim 5,500$ sparse grid evaluations
+- More sparse grid evaluations are currently underway to produce a
+  faithful, converged PCE surrogate
+
+
+
+** Conclusions/Future Work
+
+- *Conclusions*
+  - Introduced a framework for studying the statistical effects of
+    parameterized perturbations to airfoil ice shape
+    - Approach is data-driven (not heuristic)
+    - Low-dimensional modeling via Proper Orthogonal Decomposition (POD)
+    - Uncertainty quantification via Polynomial Chaos Expansions (PCE)
+  - Illustrated methodology on two example datasets
+
+- *Future Work*
+  - Finish UQ work on last dataset
+  - First pre-process data into ``classes", and then apply framework
+    separately to each class
+  - Extend methodology to 3D datasets

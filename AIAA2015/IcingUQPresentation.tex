@@ -1,0 +1,566 @@
+% Created 2015-06-19 Fri 14:54
+\documentclass[9pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\mode<beamer>{\usetheme{Warsaw}}
+\mode<beamer>{\setbeamertemplate{blocks}[rounded][shadow=false]}
+\mode<beamer>{\addtobeamertemplate{block begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}}
+\mode<beamer>{\setbeamercolor{structure}{fg=orange}}
+\mode<beamer>{\setbeamercovered{transparent}}
+\AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+\usepackage{subcaption}
+\usepackage{multimedia}
+\usepackage{tikz}
+\usepackage{subfigure,subfigmat}
+\usepackage{threeparttable}
+\usetikzlibrary{shapes,arrows,shadows}
+\usepackage{bm, amssymb, amsmath, array, pdfpages}
+\newcommand{\bv}[1]{\mathbf{#1}}
+\newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\beq}[0]{\begin{equation}}
+\newcommand{\eeq}[0]{\end{equation}}
+\newcommand{\beqa}[0]{\begin{eqnarray}}
+\newcommand{\eeqa}[0]{\end{eqnarray}}
+\newcommand{\beqq}[0]{\begin{equation*}}
+\newcommand{\eeqq}[0]{\end{equation*}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\ip}[2]{\langle #1, #2\rangle}
+\providecommand{\alert}[1]{\textbf{#1}}
+\graphicspath{{Figures/}}
+
+\title[Data-Driven Modeling and UQ for Airfoil Icing]{Data-Driven Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing}
+\author[DeGennaro, Rowley, and Martinelli]{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
+\date{AIAA Aviation 2015 Conference \\ Dallas, TX \\ 26 June 2015}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+% Add Princeton shield logo
+\titlegraphic{\includegraphics[height=.7cm]{Shield}}
+
+\begin{document}
+
+\maketitle
+
+% Define my settings
+% Add Princeton shield logo
+\addtobeamertemplate{frametitle}{}{%
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,yshift=2pt] at (current page.north east) {\includegraphics[height=0.7cm]{Shield}};
+\end{tikzpicture}}
+
+\begin{frame}
+\frametitle{Outline}
+\setcounter{tocdepth}{3}
+\tableofcontents
+\end{frame}
+
+%
+
+
+\institute{Princeton University}
+
+
+\section{Motivation/Background}
+\label{sec-1}
+\begin{frame}
+\frametitle{Introduction}
+\label{sec-1-1}
+
+\textbf{Motivation}
+\begin{itemize}
+\item Wing icing is a serious issue for pilots
+\begin{itemize}
+\item Massive flow separation, lower lift + higher drag
+\item Unpredictable stall
+\end{itemize}
+\item Wing ice shapes exhibit wide variation, sensitivity to physical
+  parameters
+\begin{itemize}
+\item Complex physics (coupled airflow-thermodynamics)
+\item Uncertainty in physical parameters
+\end{itemize}
+\end{itemize}
+\textbf{Research Goals}
+\begin{itemize}
+\item How can observed variations in ice shape be modeled
+  efficiently with a low number of parameters?
+\item How does uncertainty in the ice shape create uncertainty in
+  aerodynamic performance?
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Experimental/Computational Variation in Ice Shape}
+\label{sec-1-2}
+
+
+\vspace*{-0.5cm}\begin{figure}
+  \begin{subfigmatrix}{2}
+      \subfigure[Habashi, 2006]{\includegraphics[width=0.4\textwidth]{Habashi2006ShapeVariation}}
+      \subfigure[Wright, 2004]{\includegraphics[width=0.4\textwidth]{Wright2004ShapeVariation}}
+  \end{subfigmatrix}
+\end{figure}
+
+\begin{itemize}
+\item Wide variation in experimental/computational ice shapes\footnote{Beaugendre H., Morency M., and Habashi W.G. \emph{Development of a Second Generation in-Flight Icing Simulation Code}. Journal of
+Fluids Engineering, ASME, 2006.
+ }\textsuperscript{,}\,\footnote{Wright W. and Potapczuk, M.G. \emph{Semi-Empirical Modeling of SLD Physics}, AIAA 2004-412. 42$^{nd}$ AIAA Aerospace Sciences
+Meeting, Reno, NV, 2004.
+ }
+\item Suggests sensitivity to perturbations in underlying physical
+  processes
+\item \emph{UQ approach:} parameterize the shape variation and study its
+  effects on aerodynamics
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Relation to Previous Work}
+\label{sec-1-3}
+
+
+\begin{columns}[c]
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{RidgeRVariation} \\
+    \includegraphics[width=0.95\textwidth]{RidgeSVariation} \\
+    {\bf Ridge}
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{HornHVariation} \\
+    \includegraphics[width=0.95\textwidth]{HornSVariation} \\
+    {\bf Horn}
+  \column{0.33\textwidth}
+    \centering    
+    \includegraphics[width=0.9\textwidth]{MC_surrogate_LargeUnc_CL} \\
+    \includegraphics[width=0.9\textwidth]{MCgpcPDFLargeUnc_CL} \\
+    {\bf Statistics}
+\end{columns}
+
+\begin{itemize}
+\item Previous study examined parameterized ridge and horn ice
+  shapes\footnote{DeGennaro A., Rowley C.W., and Martinelli,
+L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Expansions}. To appear in Journal of Aircraft, 2015.
+ }
+\item Approach was heuristic, not directly based on observed shape
+  variations
+\item Parameter space was low dimensional; no low-dimensional modeling
+\end{itemize}
+\end{frame}
+\section{Methodology}
+\label{sec-2}
+\begin{frame}
+\frametitle{Low-Dimensional Modeling}
+\label{sec-2-1}
+
+
+\begin{itemize}
+\item The space of all ice shapes is infinite dimensional
+\item Consider small number of parameters that describe \emph{likely} shapes
+\item Analyze database of shapes from experiments/simulations
+\item \textbf{Proper Orthogonal Decomposition} \footnote{Holmes P. et. al. \emph{Turbulence, Coherent Structures, Dynamical Systems and Symmetry}, Cambridge University Press, New York, 2012.
+ }
+\begin{itemize}
+\item Assume database of \emph{M} ice shapes
+\item Each individual ice shape can be represented by a vector $\bv{x}
+    \in \mathbb{R}^N$
+\item Approximate $\bv{x}$ using some basis vectors $\psi_i$:
+    \begin{equation*}
+      \bv{x} \approx \sum_{i=1}^P a_i \psi_i
+    \end{equation*}
+\item Choose basis vectors to be the eigenvectors of the dataset
+    covariance matrix
+    \begin{equation*}
+    \begin{aligned}
+      \mathcal{R} \psi_k = \lambda_k \psi_k& \text{   where:   } \\ 
+      \mathcal{R} = \frac{1}{M}\mathbf{X}\mathbf{X}^T \text{   and:   }&
+      \mathbf{X} =
+       \begin{bmatrix}
+        \vline & & \vline \\
+        x_1 & \cdots & x_M \\
+        \vline & & \vline \\
+       \end{bmatrix}
+    \end{aligned}
+    \end{equation*}
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Polynomial Chaos Expansions (PCE)}
+\label{sec-2-2}
+
+
+\begin{itemize}
+\item \textbf{Polynomial Chaos Framework} \footnote{Xiu D. \emph{Numerical Methods for Stochastic Computations: A Spectral Method Approach}. Princeton University Press, 2010.
+ }
+\begin{itemize}
+\item Let $\bv{Z} = (Z_1 \ldots Z_d)$ be $d$ random variables with PDF
+    $\rho(\bv{Z})$ that parameterize ice
+\item Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
+    which are orthogonal w.r.t. $\rho(\bv{Z})$
+\item Let $y(\bv{Z})$ denote the mapping from $\bv{Z}$ to an aerodynamic
+    performance metric
+\end{itemize}
+\item \textbf{Probabilistic Collocation Method:}
+\begin{itemize}
+\item \emph{Representation} 
+    \begin{equation*}
+      y(\bv{Z}) \approx \sum_{|i|=0}^N y_i \Phi_i(\bv{Z})
+    \end{equation*}
+\item \emph{Orthonormality} 
+    \begin{equation*}
+    \begin{aligned}
+      \ip{f}{g} &= \int_{\Gamma} f(\bv{z})g(\bv{z}) \rho(\bv{z}) d\bv{z} \\
+      \ip{\Phi_i}{\Phi_j} &= \delta_{ij}
+    \end{aligned}
+    \end{equation*}
+\item \emph{Quadrature} 
+    \begin{equation*}
+      y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
+    y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k
+    \end{equation*}
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{PCE with Sparse Grids}
+\label{sec-2-3}
+
+
+\begin{columns}[c]
+  \column{0.7\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{SparseGrid1} \\
+    \bf{Full Tensor Product vs. Sparse Grid}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{SparseGrid2} \\
+    {\bf Anisotropic Grid}
+\end{columns}
+
+\begin{itemize}
+\item \textbf{Sparse Grids}\footnote{LeMaitre O. \emph{Spectral Methods for Uncertainty Quantification}. Springer, 2010.
+ }
+\begin{itemize}
+\item \emph{Efficient}: Only a subset of the full quadrature grid is used
+\begin{itemize}
+\item For $d >> 1$, number of samples scales as $2^N {N+d \choose d} <<
+      (N+1)^d$
+\end{itemize}
+\item \emph{Adaptive}: Start with a coarse mesh, adaptively refine until
+    achieve desired resolution
+\item \emph{Anisotropic}: Refine grid in most ``important'' directions
+\item Implemented in DAKOTA\footnote{Adams et. al. \emph{DAKOTA, A Multilevel Parallel Object-Oriented Framework for Design Optimization\ldots{}} V. 5.3 User's
+Manual. SAND2010-2183.
+ } (open-source UQ code)
+\end{itemize}
+\end{itemize}
+\end{frame}
+\section{Simulation Dataset}
+\label{sec-3}
+\begin{frame}
+\frametitle{Dataset Description}
+\label{sec-3-1}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{CRMHorn}
+\end{figure}
+
+\begin{itemize}
+\item NASA Common Research Model (CRM), $65\%$ scale\footnote{Broeren A. et. al. \emph{Swept-Wing Ice Accretion Characterization and Aerodynamics}, AIAA 2013-2824.
+ }
+\begin{itemize}
+\item 45 min accretion time, altitude = 10,000 ft, velocity = 232 knots,
+    temperature = $-4^{\text{o}}$ C, MVD = 20 $\mu m$, LWC = 0.55
+    $g/m^3$
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Low-Dimensional Modeling of Dataset}
+\label{sec-3-2}
+
+\begin{columns}[c]
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=1.3\textwidth]{HornsUnaligned} \\
+    \bf{Original Data}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=1.25\textwidth]{PODReconstruction2} \\
+    {\bf POD Reconstruction}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=1.25\textwidth]{PODModes} \\
+    {\bf POD Modes}
+\end{columns}
+\vspace{1cm}
+\begin{equation*}
+N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
+\end{equation*}
+
+\begin{itemize}
+\item \emph{h, a, b} are scaling parameters
+\item $c_1, c_2$ are POD coefficients
+\item This collapses 100 different snapshots into 5 parameters
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{5-Dimensional UQ Study}
+\label{sec-3-3}
+
+
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.75\textwidth]{DifferentShapesPODModes} \\
+    \bf{POD Modes} \\
+    \includegraphics[width=.75\textwidth]{DifferentShapesWidth} \\
+    \bf{Width}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.75\textwidth]{DifferentShapesHeight} \\
+    {\bf Height} \\
+    \includegraphics[width=.75\textwidth]{DifferentShapesPosition} \\
+    {\bf Position}    
+\end{columns}
+
+\begin{itemize}
+\item 2 POD coefficients (\emph{shape}) + width, height, position parameters (\emph{scaling})
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Statistics}
+\label{sec-3-4}
+
+
+\begin{columns}[c]
+  \column{0.37\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{PDFCLMAX} \\
+    $\bm{C_L}$ {\bf Statistics}
+  \column{0.37\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{PDFCDMAX} \\
+    $\bm{C_D}$ {\bf Statistics}
+\end{columns}
+
+
+
+\begin{center}
+\begin{tabular}{lrrrrr}
+            &  Width  &  Position  &  Height  &  POD 1  &  POD 2  \\
+\hline
+ T ($C_L$)  &   0.03  &      0.69  &    0.15  &   0.11  &   0.14  \\
+\end{tabular}
+\end{center}
+
+
+
+\begin{itemize}
+\item Our surrogate is an explicit polynomial function of the input
+  variables, making statistical inference easy/quick
+\item PCE surrogate computed using 1,103 sparse grid points
+\item Sobol index $T_i = \frac{\mathbb{E}\left[ Var\left(
+  Y|Z_{-i}\right)\right]}{Var\left( Y\right)}$ is a measure of how much
+  $Z_i$ contributes to the total variance of $Y(\bv{Z})$
+\item For our parameter ranges, position perturbation accounts for most of
+  the statistical variation
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Statistical Inference}
+\label{sec-3-5}
+
+
+\begin{itemize}
+\item Analyze statistical clustering of horns that produce bottom and top
+  $10\%$ of $C_L$ variation
+\end{itemize}
+
+\begin{columns}[c]
+  \column{0.40\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{GoodHornParamLocs.png} \\
+    {\bf Favorable Horns}
+    \begin{itemize}
+      \item Wider/rounded
+      \item Lower surface
+      \item Shorter
+      \item Gentle downward skew
+    \end{itemize}
+  \column{0.40\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BadHornParamLocs.png} \\
+    {\bf Unfavorable Horns}
+    \begin{itemize}
+      \item Sharper/narrower
+      \item Upper surface
+      \item Taller
+      \item Sharp, upper skew shape
+    \end{itemize}
+\end{columns}
+\end{frame}
+\begin{frame}
+\frametitle{Flow Solutions}
+\label{sec-3-6}
+
+
+\begin{columns}[c]
+  \column{0.30\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{GoodHorn.png} \\
+    {\bf Favorable Position}
+    \includegraphics[width=1\textwidth]{GoodHornPOD.png} \\
+    {\bf Favorable shape skew}
+  \column{0.30\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BadHorn.png} \\
+    {\bf Unfavorable Position}
+    \includegraphics[width=1\textwidth]{BadHornPOD.png} \\
+    {\bf Unfavorable shape skew}
+\end{columns}
+\end{frame}
+\section{Experiment Dataset}
+\label{sec-4}
+\begin{frame}
+\frametitle{Dataset Description}
+\label{sec-4-1}
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{Dataset}
+\end{figure}
+
+\begin{itemize}
+\item Business jet clean airfoil geometry\footnote{Addy, H.E. \emph{Ice Accretions and Icing Effects for Modern Airfoils}. NASA TR 2000-210031.
+ }
+\item 54 ice shapes, exposed to wide range of various icing conditions
+  consistent with FAA certification guidelines
+\item POD dataset will consist of binary values defined on a static
+  Cartesian mesh (`1' if mesh point is on the ice, `0' if not)
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Low-Dimensional Modeling of Dataset}
+\label{sec-4-2}
+
+
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    \centering
+    \hspace{-2.17em}
+    \includegraphics[width=0.9\textwidth]{MEAN.png} \\
+    {\bf Mean} \\
+    \includegraphics[width=1\textwidth]{MODE2.png} \\
+    {\bf Mode 2} \\
+    \includegraphics[width=1\textwidth]{MODE4.png} \\
+    {\bf Mode 4}
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{MODE1.png} \\
+    {\bf Mode 1} \\
+    \includegraphics[width=1\textwidth]{MODE3.png} \\
+    {\bf Mode 3} \\
+    \includegraphics[width=1\textwidth]{MODE5.png} \\
+    {\bf Mode 5}
+\end{columns}
+
+
+\begin{itemize}
+\item 8 Modes retained; this is where POD eigenvalue magnitudes have
+  decayed by an order of magnitude
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Ice Shape Reconstructions}
+\label{sec-4-3}
+
+
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    \centering
+    \hspace{-0.5em}
+    \includegraphics[width=1\textwidth]{UnfilteredReconstruction.png} \\
+    {\bf Unfiltered Reconstruction} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE1} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE9} \\
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FilteredReconstruction.png} \\
+    {\bf Filtered Reconstruction} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE3} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE4} \\
+\end{columns}
+\begin{center}
+{\bf Ice Reconstructions}
+\end{center}
+\end{frame}
+\begin{frame}
+\frametitle{Preliminary Findings}
+\label{sec-4-4}
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{GoodBadHornExamps}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{Green:} Horns which produce upper 10$\%$ of $C_L$
+\begin{itemize}
+\item Lower amounts of ice accumulation
+\item Ice mass concentrated on lower surface
+\end{itemize}
+\item \textbf{Red:} Horns which produce lower 10$\%$ of $C_L$
+\begin{itemize}
+\item Higher amounts of ice accumulation
+\item Ice mass forms sharp upper surface horn
+\end{itemize}
+\item Results derived from $\sim 5,500$ sparse grid evaluations
+\item More sparse grid evaluations are currently underway to produce a
+  faithful, converged PCE surrogate
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Conclusions/Future Work}
+\label{sec-4-5}
+
+
+\begin{itemize}
+\item \textbf{Conclusions}
+\begin{itemize}
+\item Introduced a framework for studying the statistical effects of
+    parameterized perturbations to airfoil ice shape
+\begin{itemize}
+\item Approach is data-driven (not heuristic)
+\item Low-dimensional modeling via Proper Orthogonal Decomposition (POD)
+\item Uncertainty quantification via Polynomial Chaos Expansions (PCE)
+\end{itemize}
+\item Illustrated methodology on two example datasets
+\end{itemize}
+\item \textbf{Future Work}
+\begin{itemize}
+\item Finish UQ work on last dataset
+\item First pre-process data into ``classes'', and then apply framework
+    separately to each class
+\item Extend methodology to 3D datasets
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\end{document}

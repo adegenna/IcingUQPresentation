@@ -41,8 +41,6 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-
-
 #+DATE: AIAA Aviation 2015 Conference \\ Dallas, TX \\ 26 June 2015
 #+TITLE: Data-Driven Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing
 #+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
@@ -155,7 +153,7 @@ Systems and Symmetry/, Cambridge University Press, New York, 2012.
 
 ** Polynomial Chaos Expansions (PCE)
 
-- *Polynomial Chaos Framework* [fn:XiuBook][fn:LeMaitre]
+- *Polynomial Chaos Framework* [fn:XiuBook]
   - Let $\bv{Z} = (Z_1 \ldots Z_d)$ be $d$ random variables with PDF
     $\rho(\bv{Z})$ that parameterize ice
   - Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
@@ -181,8 +179,6 @@ Systems and Symmetry/, Cambridge University Press, New York, 2012.
     \end{equation*}
 [fn:XiuBook] Xiu D. /Numerical Methods for Stochastic Computations: A
 Spectral Method Approach/. Princeton University Press, 2010.
-[fn:LeMaitre] LeMaitre O. /Spectral Methods for Uncertainty
-Quantification/. Springer, 2010.
 
 ** PCE with Sparse Grids
 
@@ -199,13 +195,20 @@ Quantification/. Springer, 2010.
 \end{columns}
 #+end_latex
 
-- *Sparse Grids*
+- *Sparse Grids*[fn:LeMaitre]
   - /Efficient/: Only a subset of the full quadrature grid is used
     - For $d >> 1$, number of samples scales as $2^N {N+d \choose d} <<
       (N+1)^d$
   - /Adaptive/: Start with a coarse mesh, adaptively refine until
     achieve desired resolution
   - /Anisotropic/: Refine grid in most ``important" directions
+  - Implemented in DAKOTA[fn:Dakota] (open-source UQ code)
+
+[fn:LeMaitre] LeMaitre O. /Spectral Methods for Uncertainty
+Quantification/. Springer, 2010.
+[fn:Dakota] Adams et. al. /DAKOTA, A Multilevel Parallel
+Object-Oriented Framework for Design Optimization.../ V. 5.3 User's
+Manual. SAND2010-2183.
 
 
 * Simulation Dataset
@@ -307,7 +310,7 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 \begin{columns}[c]
   \column{0.40\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{GoodHornParamLocs} \\
+    \includegraphics[width=1\textwidth]{GoodHornParamLocs.png} \\
     {\bf Favorable Horns}
     \begin{itemize}
       \item Wider/rounded
@@ -317,7 +320,7 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
     \end{itemize}
   \column{0.40\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{BadHornParamLocs} \\
+    \includegraphics[width=1\textwidth]{BadHornParamLocs.png} \\
     {\bf Unfavorable Horns}
     \begin{itemize}
       \item Sharper/narrower

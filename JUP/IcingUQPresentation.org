@@ -41,11 +41,9 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-
-
-#+DATE: FAA JUP Meeting \\ Princeton, NJ \\ 13-14 April 2015
-#+TITLE: Uncertainty Quantification for Airfoil Icing
-#+AUTHOR: Anthony DeGennaro \newline Princeton University
+#+DATE: AIAA Aviation 2015 Conference \\ Dallas, TX \\ 26 June 2015
+#+TITLE: Data-Driven Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing
+#+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}
 
 
@@ -54,82 +52,41 @@
 ** Introduction
 *Motivation*
 - Wing icing is a serious issue for pilots
-  - Can cause flow separation, unpredictable stall
-  - Linked to 388 accidents between 1990-2000 (/AOPA database/)
+  - Massive flow separation, lower lift + higher drag
+  - Unpredictable stall
 - Wing ice shapes exhibit wide variation, sensitivity to physical
   parameters
   - Complex physics (coupled airflow-thermodynamics)
   - Uncertainty in physical parameters
 *Research Goals*
+- How can observed variations in ice shape be modeled
+  efficiently with a low number of parameters?
 - How does uncertainty in the ice shape create uncertainty in
   aerodynamic performance?
-  - Heuristic parameterization and UQ
-  - Data-based parameterization and UQ
-  - Stochastic physics modeling and UQ
 
 ** Experimental/Computational Variation in Ice Shape
 
-\begin{figure}
+\vspace*{-0.5cm}\begin{figure}
   \begin{subfigmatrix}{2}
-      \subfigure[Habashi, 2006]{\includegraphics[width=0.45\textwidth]{Habashi2006ShapeVariation}}
-      \subfigure[Wright, 2004]{\includegraphics[width=0.45\textwidth]{Wright2004ShapeVariation}}
+      \subfigure[Habashi, 2006]{\includegraphics[width=0.4\textwidth]{Habashi2006ShapeVariation}}
+      \subfigure[Wright, 2004]{\includegraphics[width=0.4\textwidth]{Wright2004ShapeVariation}}
   \end{subfigmatrix}
 \end{figure}
 
-- Variation in experimental/computational ice shapes
-- Suggestive of random processes not fully modelled
+- Wide variation in experimental/computational ice shapes[fn:Habashi][fn:Wright]
+- Suggests sensitivity to perturbations in underlying physical
+  processes
 - /UQ approach:/ parameterize the shape variation and study its
   effects on aerodynamics
 
+[fn:Habashi] Beaugendre H., Morency M., and Habashi W.G. /Development
+of a Second Generation in-Flight Icing Simulation Code/. Journal of
+Fluids Engineering, ASME, 2006.
+[fn:Wright] Wright W. and Potapczuk, M.G. /Semi-Empirical Modeling of
+SLD Physics/, AIAA 2004-412. 42$^{nd}$ AIAA Aerospace Sciences
+Meeting, Reno, NV, 2004.
 
-* Low-Dimensional Parameter Space UQ
-
-** Canonical Airfoil Ice Shapes
-
-#+begin_latex
-\begin{columns}[c]
-  \column{0.5\textwidth}
-    \includegraphics[width=0.95\textwidth]{RidgeParameters}
-  \column{0.5\textwidth}
-    \includegraphics[width=0.95\textwidth]{NominalHorn}
-\end{columns}
-#+end_latex
-
-- *Ridge Ice:*
-  - Forms by refreezing of runback water
-  - Generally aft of deicing equipment
-- *Horn Ice:*
-  - Leading edge protruberance
-  - Can form quickly and be difficult to break up
-
-** Polynomial Chaos Expansions (PCE)
-
-- *Polynomial Chaos Framework*
-  - Let $\bv{Z} = (Z_1, Z_2)$ be random variables with PDF
-    $\rho(\bv{Z})$ that parameterize ice
-  - Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
-    which are orthogonal w.r.t. $\rho(\bv{Z})$
-  - Let $y(\bv{Z})$ denote the mapping from $\bv{Z}$ to an aerodynamic
-    performance metric
-- *Probabilistic Collocation Method:*
-  - /Representation/ 
-    \begin{equation*}
-      y(\bv{Z}) \approx \sum_{|i|=0}^N y_i \Phi_i(\bv{Z})
-    \end{equation*}
-  - /Orthonormality/ 
-    \begin{equation*}
-    \begin{aligned}
-      \ip{f}{g} &= \int_{\Gamma} f(\bv{z})g(\bv{z}) d\bv{z} \\
-      \ip{\Phi_i}{\Phi_j} &= \delta_{ij}
-    \end{aligned}
-    \end{equation*}
-  - /Quadrature/ 
-    \begin{equation*}
-      y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
-    y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k
-    \end{equation*}
-
-** Uncertainty Quantification Studies
+** Relation to Previous Work
 
 #+begin_latex
 \begin{columns}[c]
@@ -151,27 +108,125 @@
 \end{columns}
 #+end_latex
 
-- PCE results required 25 samples; Monte Carlo required 500
-- Nonlinear basis allows for wide variations in parameter space
-- PCE surrogate is a smooth function
-  - Monte Carlo sampling of the surrogate is cheap
-  - Sensitivities are easily calculated
+- Previous study examined parameterized ridge and horn ice
+  shapes[fn:DeGennaro]
+- Approach was heuristic, not directly based on observed shape
+  variations
+- Parameter space was low dimensional; no low-dimensional modeling
+
+[fn:DeGennaro] DeGennaro A., Rowley C.W., and Martinelli,
+L. /Uncertainty Quantification for Airfoil Icing using Polynomial
+Chaos Expansions/. To appear in Journal of Aircraft, 2015.
 
 
+* Methodology
+
+** Low-Dimensional Modeling
+
+- The space of all ice shapes is infinite dimensional
+- Consider small number of parameters that describe /likely/ shapes
+- Analyze database of shapes from experiments/simulations
+- *Proper Orthogonal Decomposition* [fn:POD]
+  - Assume database of /M/ ice shapes
+  - Each individual ice shape can be represented by a vector $\bv{x}
+    \in \mathbb{R}^N$
+  - Approximate $\bv{x}$ using some basis vectors $\psi_i$:
+    \begin{equation*}
+      \bv{x} \approx \sum_{i=1}^P a_i \psi_i
+    \end{equation*}
+  - Choose basis vectors to be the eigenvectors of the dataset
+    covariance matrix
+    \begin{equation*}
+    \begin{aligned}
+      \mathcal{R} \psi_k = \lambda_k \psi_k& \text{   where:   } \\ 
+      \mathcal{R} = \frac{1}{M}\mathbf{X}\mathbf{X}^T \text{   and:   }&
+      \mathbf{X} =
+       \begin{bmatrix}
+        \vline & & \vline \\
+        x_1 & \cdots & x_M \\
+        \vline & & \vline \\
+       \end{bmatrix}
+    \end{aligned}
+    \end{equation*}
+[fn:POD] Holmes P. et. al. /Turbulence, Coherent Structures, Dynamical
+Systems and Symmetry/, Cambridge University Press, New York, 2012.
+
+** Polynomial Chaos Expansions (PCE)
+
+- *Polynomial Chaos Framework* [fn:XiuBook]
+  - Let $\bv{Z} = (Z_1 \ldots Z_d)$ be $d$ random variables with PDF
+    $\rho(\bv{Z})$ that parameterize ice
+  - Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
+    which are orthogonal w.r.t. $\rho(\bv{Z})$
+  - Let $y(\bv{Z})$ denote the mapping from $\bv{Z}$ to an aerodynamic
+    performance metric
+- *Probabilistic Collocation Method:*
+  - /Representation/ 
+    \begin{equation*}
+      y(\bv{Z}) \approx \sum_{|i|=0}^N y_i \Phi_i(\bv{Z})
+    \end{equation*}
+  - /Orthonormality/ 
+    \begin{equation*}
+    \begin{aligned}
+      \ip{f}{g} &= \int_{\Gamma} f(\bv{z})g(\bv{z}) \rho(\bv{z}) d\bv{z} \\
+      \ip{\Phi_i}{\Phi_j} &= \delta_{ij}
+    \end{aligned}
+    \end{equation*}
+  - /Quadrature/ 
+    \begin{equation*}
+      y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
+    y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k
+    \end{equation*}
+[fn:XiuBook] Xiu D. /Numerical Methods for Stochastic Computations: A
+Spectral Method Approach/. Princeton University Press, 2010.
+
+** PCE with Sparse Grids
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.7\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{SparseGrid1} \\
+    \bf{Full Tensor Product vs. Sparse Grid}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{SparseGrid2} \\
+    {\bf Anisotropic Grid}
+\end{columns}
+#+end_latex
+
+- *Sparse Grids*[fn:LeMaitre]
+  - /Efficient/: Only a subset of the full quadrature grid is used
+    - For $d >> 1$, number of samples scales as $2^N {N+d \choose d} <<
+      (N+1)^d$
+  - /Adaptive/: Start with a coarse mesh, adaptively refine until
+    achieve desired resolution
+  - /Anisotropic/: Refine grid in most ``important" directions
+  - Implemented in DAKOTA[fn:Dakota] (open-source UQ code)
+
+[fn:LeMaitre] LeMaitre O. /Spectral Methods for Uncertainty
+Quantification/. Springer, 2010.
+[fn:Dakota] Adams et. al. /DAKOTA, A Multilevel Parallel
+Object-Oriented Framework for Design Optimization.../ V. 5.3 User's
+Manual. SAND2010-2183.
 
 
-* Data-Based UQ
+* Simulation Dataset
 
-** Extracting Ice Shape Parameters from Data
+** Dataset Description 
 \begin{figure}
   \centering
   \includegraphics[width=0.6\textwidth]{CRMHorn}
 \end{figure}
 
-- Previous approach was heuristic
-- Would like a way of identifying shape parameters from data
+- NASA Common Research Model (CRM), $65\%$ scale[fn:CRM]
+  - 45 min accretion time, altitude = 10,000 ft, velocity = 232 knots,
+    temperature = $-4^{\text{o}}$ C, MVD = 20 $\mu m$, LWC = 0.55
+    $g/m^3$
+[fn:CRM] Broeren A. et. al. /Swept-Wing Ice Accretion Characterization
+and Aerodynamics/, AIAA 2013-2824.
 
-** Low-Dimensional Modeling of Ice Shape Data
+** Low-Dimensional Modeling of Dataset
 #+begin_latex
 \begin{columns}[c]
   \column{0.3\textwidth}
@@ -197,29 +252,6 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 - $c_1, c_2$ are POD coefficients
 - This collapses 100 different snapshots into 5 parameters
 
-** PCE with Sparse Grids
-
-#+begin_latex
-\begin{columns}[c]
-  \column{0.7\textwidth}
-    \centering
-    \includegraphics[width=0.95\textwidth]{SparseGrid1} \\
-    \bf{Full Tensor Product vs. Sparse Grid}
-  \column{0.3\textwidth}
-    \centering
-    \includegraphics[width=0.95\textwidth]{SparseGrid2} \\
-    {\bf Anisotropic Grid}
-\end{columns}
-#+end_latex
-
-- *Sparse Grids*
-  - Sacrifice quadrature accuracy for efficiency
-  - Only a subset of the full quadrature grid is used
-  - Start with a coarse mesh, adaptively refine in most ``important"
-    directions
-  - For $d >> 1$, number of samples scales as $2^N {N+d \choose d} <<
-    (N+1)^d$
-
 ** 5-Dimensional UQ Study
 
 #+begin_latex
@@ -241,64 +273,269 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 
 - 2 POD coefficients (/shape/) + width, height, position parameters (/scaling/)
 
-** 5-Dimensional UQ Study Statistics
+** Statistics
 
 #+begin_latex
 \begin{columns}[c]
-  \column{0.33\textwidth}
+  \column{0.37\textwidth}
     \centering
     \includegraphics[width=1\textwidth]{PDFCLMAX} \\
-    $\bm{C_{L_{MAX}}}$
-  \column{0.33\textwidth}
+    $\bm{C_L}$ {\bf Statistics}
+  \column{0.37\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{PDFalphaMAX} \\
-    $\bm{\alpha_{MAX}}$
-  \column{0.33\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{PDFLDMAX} \\
-    $\bm{L/D_{MAX}}$
+    \includegraphics[width=1\textwidth]{PDFCDMAX} \\
+    $\bm{C_D}$ {\bf Statistics}
 \end{columns}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{Sobol}
-\end{figure}
 #+end_latex
+
+|           | Width | Position | Height | POD 1 | POD 2 |
+|-----------+-------+----------+--------+-------+------ |
+| T ($C_L$) |  0.03 |  0.69    | 0.15   | 0.11  | 0.14  |
+
+- Our surrogate is an explicit polynomial function of the input
+  variables, making statistical inference easy/quick
+- PCE surrogate computed using 1,103 sparse grid points
 - Sobol index $T_i = \frac{\mathbb{E}\left[ Var\left(
   Y|Z_{-i}\right)\right]}{Var\left( Y\right)}$ is a measure of how much
   $Z_i$ contributes to the total variance of $Y(\bv{Z})$
-- Convergence based on $L_2$ norm of the surrogate covariance matrix
-- TOL = $\left( 1, 0.5, 0.25 \right)$ required $\left( 135, 231, 431
-  \right)$ samples
-- Full $4^{th}$ order tensor grids would require $5^5 = 3,125$ samples  
+- For our parameter ranges, position perturbation accounts for most of
+  the statistical variation
+** Statistical Inference
+
+- Analyze statistical clustering of horns that produce bottom and top
+  $10\%$ of $C_L$ variation
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.40\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{GoodHornParamLocs.png} \\
+    {\bf Favorable Horns}
+    \begin{itemize}
+      \item Wider/rounded
+      \item Lower surface
+      \item Shorter
+      \item Gentle downward skew
+    \end{itemize}
+  \column{0.40\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BadHornParamLocs.png} \\
+    {\bf Unfavorable Horns}
+    \begin{itemize}
+      \item Sharper/narrower
+      \item Upper surface
+      \item Taller
+      \item Sharp, upper skew shape
+    \end{itemize}
+\end{columns}
+
+#+end_latex
+
+** Flow Solutions
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.30\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{GoodHorn.png} \\
+    {\bf Favorable Position}
+    \includegraphics[width=1\textwidth]{GoodHornPOD.png} \\
+    {\bf Favorable shape skew}
+  \column{0.30\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BadHorn.png} \\
+    {\bf Unfavorable Position}
+    \includegraphics[width=1\textwidth]{BadHornPOD.png} \\
+    {\bf Unfavorable shape skew}
+\end{columns}
+
+#+end_latex
+
+
+* Experiment Dataset
+
+** Dataset Description
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{Dataset}
+\end{figure}
+
+- Business jet clean airfoil geometry[fn:Addy]
+- 54 ice shapes, exposed to wide range of various icing conditions
+  consistent with FAA certification guidelines
+- POD dataset will consist of binary values defined on a static
+  Cartesian mesh (`1' if mesh point is on the ice, `0' if not)
+
+[fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
+Airfoils/. NASA TR 2000-210031.
+
+** Low-Dimensional Modeling of Dataset
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    \centering
+    \hspace{-2.17em}
+    \includegraphics[width=0.9\textwidth]{MEAN.png} \\
+    {\bf Mean} \\
+    \includegraphics[width=1\textwidth]{MODE2.png} \\
+    {\bf Mode 2} \\
+    \includegraphics[width=1\textwidth]{MODE4.png} \\
+    {\bf Mode 4}
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{MODE1.png} \\
+    {\bf Mode 1} \\
+    \includegraphics[width=1\textwidth]{MODE3.png} \\
+    {\bf Mode 3} \\
+    \includegraphics[width=1\textwidth]{MODE5.png} \\
+    {\bf Mode 5}
+\end{columns}
+
+#+end_latex
+
+- 8 Modes retained; this is where POD eigenvalue magnitudes have
+  decayed by an order of magnitude
+** Ice Shape Reconstructions
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    \centering
+    \hspace{-0.5em}
+    \includegraphics[width=1\textwidth]{UnfilteredReconstruction.png} \\
+    {\bf Unfiltered Reconstruction} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE1} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE9} \\
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FilteredReconstruction.png} \\
+    {\bf Filtered Reconstruction} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE3} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE4} \\
+\end{columns}
+\begin{center}
+{\bf Ice Reconstructions}
+\end{center}
+
+#+end_latex
+** Preliminary Findings
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{GoodBadHornExamps}
+\end{figure}
+
+- *Green:* Horns which produce upper 10$\%$ of $C_L$
+  - Lower amounts of ice accumulation
+  - Ice mass concentrated on lower surface
+- *Red:* Horns which produce lower 10$\%$ of $C_L$
+  - Higher amounts of ice accumulation
+  - Ice mass forms sharp upper surface horn
+- Results derived from $\sim 5,500$ sparse grid evaluations
+- More sparse grid evaluations are currently underway to produce a
+  faithful, converged PCE surrogate
+
+
+
+** Conclusions/Future Work
+
+- *Conclusions*
+  - Introduced a framework for studying the statistical effects of
+    parameterized perturbations to airfoil ice shape
+    - Approach is data-driven (not heuristic)
+    - Low-dimensional modeling via Proper Orthogonal Decomposition (POD)
+    - Uncertainty quantification via Polynomial Chaos Expansions (PCE)
+  - Illustrated methodology on two example datasets
+
+- *Future Work*
+  - Finish UQ work on last dataset
+  - First pre-process data into ``classes", and then apply framework
+    separately to each class
+  - Extend methodology to 3D datasets
 
 
 * Computational-Based UQ
 
 ** Motivation
 - *Investigate uncertainty in the physical process of icing*
-  - Airfoils are exposed to supercooled droplets in icing conditions
-  - The state of these droplets follows some distribution
-  - Unclear how droplet distributions affect ice shape statistics
-  - Experimental ice shapes can exhibit wide variation, even if
-    exposed to similar icing conditions
+  - Distribution of droplet diameters affects collection efficiency
+  - Surface tension of SLDs varies with their temperature
+  - Surface roughness could vary as SLDs impinge and freeze
 
 #+begin_latex
 \begin{columns}[c]
   \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{FAADropletDist1}
+    \includegraphics[width=1\textwidth]{FAADropletDist1} \\
+    {\bf Freezing Drizzle MVD PDF}
+    \includegraphics[width=0.4\textwidth]{SurfaceTensionVsTemp.jpeg} \\
+    {\bf Surface Tension vs. Temperature}
   \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{FAADropletDist2}
+    \includegraphics[width=1\textwidth]{FAADropletDist2} \\
+    {\bf Freezing Rain MVD PDF}
+    \includegraphics[width=0.4\textwidth]{RoughnessGrowth.png} \\
+    {\bf Roughness Growth}
+\end{columns}
+#+end_latex
+** Droplet Diameter Distribution
+#+begin_latex
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FAADropletDist1} \\
+    {\bf Freezing Drizzle MVD PDF}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FAADropletDist2} \\
+    {\bf Freezing Rain MVD PDF}
 \end{columns}
 #+end_latex
 
-- *Contribute to fast Lagrangian methods for droplet modeling*
-  - Standard particle methods for icing are computationally intensive
-    - ``Typical" conditions: $LWC=0.25 g/m^3$, $U = 100 m/s$, $MVD = 50 \mu m$
-    - This gives free-stream droplet flux of 50 million droplets$/(m^2 s)$
-  - Utilize techniques from spray modeling to reduce computational burden
+- Several MVD distributions exist for different flight conditions [fn:FAARegs]
+- Each gives a different collection efficiency
+- How much does collection efficiency and ice shape vary with MVD distribution?
+
+[fn:FAARegs] Airplane and Engine Certification Requirements in
+Supercooled Large Drop, Mixed Phase, and Ice Crystal Icing Conditions;
+Final Rule. Federal Register, Vol. 79, No. 213.
+
+** Surface Tension vs. Temperature
+\begin{figure}
+  \centering
+  \includegraphics[width=0.33\textwidth]{SurfaceTensionVsTemp.jpeg} \\
+  {\bf Surface Tension vs. Temperature}
+\end{figure}
+
+- Surface tension of SLDs varies with temperature [fn:SurfTens]
+- Varying surface tension can affect collection efficiency
+- Higher surface tension may give rise to ``beading" on surface
+  (vs. deposition into film), which could affect surface roughness
+
+[fn:SurfTens] Hruby, J. et. al. Surface Tension of Supercooled Water:
+No Inflection Point down -25 Degrees
+Celsius. J. Phys. Chem. Lett. 2014, 5, 425-28.
+
+** Roughness Variations
+\begin{figure}
+  \centering
+  \includegraphics[width=1\textwidth]{IcingRoughness.png} \\
+  {\bf Roughness Growth}
+\end{figure}
+
+- *Surface roughness varies with parameters* [fn:Shin]
+  - Roughness height increases with temperature and LWC
+  - Beginning of roughness varies with temperature, speed, LWC
+- *Surface roughness affects shape/aerodynamics* [fn:Shin]
+  - Roughness elements probably protrude out of boundary layer and cause transition
+  - Irregularity of shape should be calculated by ice accretion code, not treated as part of roughness model
+
+[fn:Shin] Shin, J. Characteristics of Surface Roughness Associated
+with Leading-Edge Ice Accretion. Journal of Aircraft, Vol. 33, No.2,
+April 1996.
 
 ** Airfoil Icing Code Flowchart 
 
@@ -356,90 +593,6 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 
 #+end_latex
 
-** Probabilistic Formulation of Droplet Distribution
-- Let $\bv{X} = [\bv{x},\bv{u},R,e] \in \mathcal{R}^8$ denote the
-  state of a droplet at a particular time
-- Define a probability density function $f(\bv{X},t): \mathcal{R}^9
-  \mapsto \mathcal{R}$ over the state space
-- *Local droplet number*
-  \begin{equation*}
-    N(\mathbf{X},t_0) \approx f(\mathbf{X},t_0) \left| \Delta \mathbf{X} \right|\Delta t
-  \end{equation*}
-- *Conservation of mass*
-  \begin{equation*}
-    \sum_{i}^{M} N_i m_i = \int_V m(R) ~f(\mathbf{X}) ~d\mathbf{X}dt
-  \end{equation*}
-- Think of this as replacing particles with /clumps/ of particles
-  - Each clump contains $N$ identical particles
-  - Each clump represents the local average droplet properties
-
-** Parcel Advection 
-- *Conservation of Droplet Numbers*
-  #+begin_latex
-    \begin{equation*}
-      \diff{N_i}{t} + \nabla_{\mathbf{X}} \cdot (N_i \dot{\mathbf{X}}) = 0 ~~~~~ i=1 \ldots M 
-    \end{equation*}
-  #+end_latex
-- *Method of Characteristics*
-  #+begin_latex
-    \begin{equation*}
-      \frac{d}{dt} \left{   
-        \begin{bmatrix}
-          \bm{x} \\
-          \bm{u} \\
-          R \\
-          e
-        \end{bmatrix}
-      \right} = 
-      \left{
-        \begin{bmatrix}
-          \mathbf{u} \\
-          \sum \left( \frac{\mathbf{F_d}}{m_d} \right) \\
-          -\frac{\dot{m}}{4\pi\rho R^2} \\
-          \frac{\dot{m}}{m} \left(\Delta e + \frac{\dot{q}}{m} \right)
-        \end{bmatrix}
-      \right}  
-    \end{equation*}
-  #+end_latex
-- These characteristic ODE's resemble Lagrangian equations of motion
-
-** Droplet Impingement Modeling
-- Droplets may /rebound/, /deposit/, or /splash/ upon impact with the
-  airfoil (Villedieu, 2012; Cossali, 1997) depending on the relative
-  strengths of inertial forces, surface tension, and viscous forces
-- Post-splash velocities are modeled as a stochastic process
-
-#+begin_latex
-\begin{columns}[c]
-  \column{0.15\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{Bounce} \\
-    {\bf Rebound}
-  \column{0.4\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{Spread} \\
-    {\bf Deposit}
-  \column{0.4\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{Splash} \\
-    {\bf Splash}
-\end{columns}
-#+end_latex
-
-** Solution Process: Distribution Sampling and Droplet Advection
-- *Distribution Sampling*
-  - Specify desired number of parcels $M$, simulation time $T$
-  - Draw $M$ random ``parcels" from $f(\mathbf{X},t_0)$
-  - Calculate local parcel droplet number by conserving mass
-- *Droplet Advection*
-  - Solve parcel advection equations
-  - Upon impact, determine whether parcel rebounds, deposits, or
-    splashs
-  - Implement stochastic process model for splashing
-- These two modules allow us to compute a mass flux of water over the
-  airfoil surface
-- To compute ice shapes, we need a thermodynamic module (forthcoming)
-  
 ** Preliminary Intermediate Results: Mass Flux
 
 #+begin_latex
@@ -477,4 +630,4 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
   - Extend efforts to 3D wing icing
 - Computational modeling
   - Continue development and testing of icing code
-  - Use icing code to investigate statistical variation of ice shapes
+  - Use icing code to investigate statistical variation of ice shape

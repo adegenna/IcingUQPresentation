@@ -440,46 +440,19 @@ Airfoils/. NASA TR 2000-210031.
 
 
 
-** Conclusions/Future Work
-
-- *Conclusions*
-  - Introduced a framework for studying the statistical effects of
-    parameterized perturbations to airfoil ice shape
-    - Approach is data-driven (not heuristic)
-    - Low-dimensional modeling via Proper Orthogonal Decomposition (POD)
-    - Uncertainty quantification via Polynomial Chaos Expansions (PCE)
-  - Illustrated methodology on two example datasets
-
-- *Future Work*
-  - Finish UQ work on last dataset
-  - First pre-process data into ``classes", and then apply framework
-    separately to each class
-  - Extend methodology to 3D datasets
-
-
 * Computational-Based UQ
 
 ** Motivation
 - *Investigate uncertainty in the physical process of icing*
   - Distribution of droplet diameters affects collection efficiency
+    - How sensitive is collection efficiency to perturbations in MVD distribution?
   - Surface tension of SLDs varies with their temperature
+    - Can affect impingement details $\rightarrow$ collection efficiency
+    - Can affect surface roughness
   - Surface roughness could vary as SLDs impinge and freeze
+    - Can affect local convective heat transfer
+    - Can influence local rate of ice accretion
 
-#+begin_latex
-\begin{columns}[c]
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{FAADropletDist1} \\
-    {\bf Freezing Drizzle MVD PDF}
-    \includegraphics[width=0.4\textwidth]{SurfaceTensionVsTemp.jpeg} \\
-    {\bf Surface Tension vs. Temperature}
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{FAADropletDist2} \\
-    {\bf Freezing Rain MVD PDF}
-    \includegraphics[width=0.4\textwidth]{RoughnessGrowth.png} \\
-    {\bf Roughness Growth}
-\end{columns}
 #+end_latex
 ** Droplet Diameter Distribution
 #+begin_latex
@@ -497,7 +470,7 @@ Airfoils/. NASA TR 2000-210031.
 
 - Several MVD distributions exist for different flight conditions [fn:FAARegs]
 - Each gives a different collection efficiency
-- How much does collection efficiency and ice shape vary with MVD distribution?
+- How sensitive are collection efficiency and ice shape to perturbations in MVD distribution?
 
 [fn:FAARegs] Airplane and Engine Certification Requirements in
 Supercooled Large Drop, Mixed Phase, and Ice Crystal Icing Conditions;
@@ -599,19 +572,20 @@ April 1996.
 \begin{columns}[c]
   \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{BetaSample} \\
-    {\bf Statistics}
+    \includegraphics[width=0.65\textwidth]{MVD52} \\
+    {\bf MVD 52} \\
+    \includegraphics[width=0.65\textwidth]{MVD154} \\
+    {\bf MVD 154}
   \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{BetaComparison} \\
-    {\bf Validation}
+    \includegraphics[width=0.65\textwidth]{MVD111} \\
+    {\bf MVD 111} \\
+    \includegraphics[width=0.65\textwidth]{MVD236} \\
+    {\bf MVD 236}
 \end{columns}
 #+end_latex
 
 - Collection efficiency is the ratio of surface to free-stream water flux
-- Results with/without splashing module are shown
-- Agreement is marginal; may require additional work/analysis of the
-  splashing module
 
 ** Conclusions/Future Work
 

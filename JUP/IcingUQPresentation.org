@@ -41,8 +41,8 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-#+DATE: AIAA Aviation 2015 Conference \\ Dallas, TX \\ 26 June 2015
-#+TITLE: Data-Driven Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing
+#+DATE: FAA JUP Summer 2015 Quarterly Meeting \\ Athens, OH \\ August 2015
+#+TITLE: Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing
 #+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}
 
@@ -597,7 +597,7 @@ April 1996.
   uncertainty in this problem
   - Heuristic parameterization
   - Data-based parameterization
-  - Stochastic processes and in computational models 
+  - Computational-based UQ
 *Future Work*
 - Parameterized UQ
   - Investigate effect of more shape parameters

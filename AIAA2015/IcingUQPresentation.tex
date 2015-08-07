@@ -26,8 +26,8 @@
 \usepackage{tikz}
 \usepackage{subfigure,subfigmat}
 \usepackage{threeparttable}
-\usetikzlibrary{shapes,arrows,shadows}
-\usepackage{bm, amssymb, amsmath, array, pdfpages}
+\usetikzlibrary{shapes,arrows,shadows,positioning,backgrounds}
+\usepackage{bm, amssymb, amsmath, array, pdfpages, epstopdf}
 \newcommand{\bv}[1]{\mathbf{#1}}
 \newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\beq}[0]{\begin{equation}}
@@ -108,9 +108,10 @@
 
 
 \vspace*{-0.5cm}\begin{figure}
-  \begin{subfigmatrix}{2}
-      \subfigure[Habashi, 2006]{\includegraphics[width=0.4\textwidth]{Habashi2006ShapeVariation}}
-      \subfigure[Wright, 2004]{\includegraphics[width=0.4\textwidth]{Wright2004ShapeVariation}}
+  \begin{subfigmatrix}{3}
+      \subfigure[Habashi, 2006]{\includegraphics[width=0.28\textwidth]{Habashi2006ShapeVariation}}
+      \subfigure[Wright, 2004]{\includegraphics[width=0.32\textwidth]{Wright2004ShapeVariation}}
+      \subfigure[Addy, 2000]{\includegraphics[trim=0cm 0cm 10cm 0cm,clip=true,width=0.32\textwidth]{Dataset}}
   \end{subfigmatrix}
 \end{figure}
 
@@ -119,6 +120,7 @@
 Fluids Engineering, ASME, 2006.
  }\textsuperscript{,}\,\footnote{Wright W. and Potapczuk, M.G. \emph{Semi-Empirical Modeling of SLD Physics}, AIAA 2004-412. 42$^{nd}$ AIAA Aerospace Sciences
 Meeting, Reno, NV, 2004.
+ }\textsuperscript{,}\,\footnote{Addy, H.E. \emph{Ice Accretions and Icing Effects for Modern Airfoils}. NASA TR 2000-210031.
  }
 \item Suggests sensitivity to perturbations in underlying physical
   processes
@@ -268,6 +270,52 @@ Manual. SAND2010-2183.
 \end{itemize}
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Overall Framework Illustration}
+\label{sec-2-4}
+
+\fontsize{7}\selectfont
+% Define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% Define block styles used later
+
+\tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, 
+    text centered, minimum height=2.5em,drop shadow]
+\tikzstyle{wa} = [sensor, text width=15em, fill=blue!20, 
+    minimum height=3em, rounded corners, drop shadow]
+\tikzstyle{inout} = [sensor, text width=7.5em, fill=blue!20, 
+    minimum height=3em, rounded corners, drop shadow]
+
+% Define distances for bordering
+\def\blockdist{2.3}
+\def\edgedist{2.5}
+
+\centering
+\begin{tikzpicture}
+    \node[align=center] (Dataset) [inout] {{\bf Dataset}};
+    \path (Dataset)+(0,-1.5) node (POD) [wa] {{\bf Proper Orthogonal Decomposition}\\\begin{itemize} \item Reduced-order model \item Generate parameter space \end{itemize} };
+    \path (POD)+(0,-1.5) node (PCE) [wa] {{\bf Polynomial Chaos}\\\begin{itemize} \item Build surrogate model \item Quantify statistics \end{itemize} };
+    \path (PCE)+(0,-1.5) node (Statistics) [inout] {{\bf Statistics}};
+
+    \path [draw, ->, thick] (Dataset.south) -- node [below] {} (POD.north);
+    \path [draw, ->, thick] (POD.south) -- node [below] {} (PCE.north);
+    \path [draw, ->, thick] (PCE.south) -- node [below] {} (Statistics.north);
+            
+    \begin{pgfonlayer}{background}
+        \path (POD.west)+(-0.5,0.8) node (a) {};
+        \path (PCE.east)+(0.5,-0.8) node (b) {};
+        \path[fill=orange!40,rounded corners, draw=black!50, dashed] (a) rectangle (b);
+            
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+
+\end{frame}
+
 \section{Simulation Dataset}
 \label{sec-3}
 \begin{frame}

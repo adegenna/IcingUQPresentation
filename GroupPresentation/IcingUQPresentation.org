@@ -41,8 +41,8 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-#+DATE: FAA JUP Summer 2015 Quarterly Meeting \\ Athens, OH \\ August 2015
-#+TITLE: Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing
+#+DATE: Group Presentation \\ Princeton, NJ \\ September 2015
+#+TITLE: Uncertainty Quantification for Airfoil Icing
 #+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}
 
@@ -239,7 +239,8 @@ Celsius. J. Phys. Chem. Lett. 2014, 5, 425-28.
   - Beginning of roughness varies with temperature, speed, LWC
 - *Surface roughness affects shape/aerodynamics* [fn:Shin]
   - Roughness elements probably protrude out of boundary layer and cause transition
-  - Irregularity of shape should be calculated by ice accretion code, not treated as part of roughness model
+  - Affects convective heat transfer since greater roughness gives
+    greater turbulent eddy viscosity
 
 [fn:Shin] Shin, J. Characteristics of Surface Roughness Associated
 with Leading-Edge Ice Accretion. Journal of Aircraft, Vol. 33, No.2,
@@ -310,6 +311,19 @@ April 1996.
     ``elephant gun": Jacobian-free Newton-Krylov (JFNK) iteration, or
     (2) guess solution, drive to steady-state
 ** State of Code: Advection Module
+#+begin_latex
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR10em6} \\
+    {\bf R = 10$\mu$m}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR100em6} \\
+    {\bf R = 100$\mu$m}
+\end{columns}
+#+end_latex
+** State of Code: Advection Module
 
 #+begin_latex
 \begin{columns}[c]
@@ -375,7 +389,7 @@ April 1996.
   \column{0.5\textwidth}
     \centering
     \includegraphics[width=0.99\textwidth]{SLeigs_PCE} \\
-    {\bf PCE Evalss (129 Samples)}
+    {\bf PCE Evals (129 Samples)}
   \column{0.5\textwidth}
     \centering
     \includegraphics[width=0.99\textwidth]{SLeigs_MC} \\
@@ -413,3 +427,8 @@ N = \begin{bmatrix} \horzbar & N_1(\mu_1,\sigma_1) & \horzbar \\ \horzbar & N_2(
 
 ** Future Work
 - Extending work to ``realistic" cases where the state dimension is large
+- If we have a forward model from noise --> eigenvalues, can we
+  invert it and use eigenvalue observations to estimate and correct
+  sensor noise?
+- Investigate if we can quantify uncertainty in eigenmodes/values to
+  get a parameter-varying model

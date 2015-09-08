@@ -1,4 +1,4 @@
-% Created 2015-09-07 Mon 21:22
+% Created 2015-09-08 Tue 11:31
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -40,9 +40,9 @@
 \newcommand{\ip}[2]{\langle #1, #2\rangle}
 \providecommand{\alert}[1]{\textbf{#1}}
 
-\title{Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing}
+\title{Uncertainty Quantification for Airfoil Icing}
 \author{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
-\date{FAA JUP Summer 2015 Quarterly Meeting \\ Athens, OH \\ August 2015}
+\date{Group Presentation \\ Princeton, NJ \\ September 2015}
 \hypersetup{
   pdfkeywords={},
   pdfsubject={},
@@ -321,7 +321,8 @@ April 1996.
 \item \textbf{Surface roughness affects shape/aerodynamics} \footnotemark[8]
 \begin{itemize}
 \item Roughness elements probably protrude out of boundary layer and cause transition
-\item Irregularity of shape should be calculated by ice accretion code, not treated as part of roughness model
+\item Affects convective heat transfer since greater roughness gives
+    greater turbulent eddy viscosity
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -405,6 +406,21 @@ April 1996.
 \frametitle{State of Code: Advection Module}
 \label{sec-2-7}
 
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR10em6} \\
+    {\bf R = 10$\mu$m}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR100em6} \\
+    {\bf R = 100$\mu$m}
+\end{columns}
+\end{frame}
+\begin{frame}
+\frametitle{State of Code: Advection Module}
+\label{sec-2-8}
+
 
 \begin{columns}[c]
   \column{0.5\textwidth}
@@ -429,7 +445,7 @@ April 1996.
 \end{frame}
 \begin{frame}
 \frametitle{State of Code: Thermodynamic Module}
-\label{sec-2-8}
+\label{sec-2-9}
 
 \begin{itemize}
 \item \textbf{Completed work}
@@ -491,7 +507,7 @@ April 1996.
   \column{0.5\textwidth}
     \centering
     \includegraphics[width=0.99\textwidth]{SLeigs_PCE} \\
-    {\bf PCE Evalss (129 Samples)}
+    {\bf PCE Evals (129 Samples)}
   \column{0.5\textwidth}
     \centering
     \includegraphics[width=0.99\textwidth]{SLeigs_MC} \\
@@ -533,6 +549,11 @@ N = \begin{bmatrix} \horzbar & N_1(\mu_1,\sigma_1) & \horzbar \\ \horzbar & N_2(
 
 \begin{itemize}
 \item Extending work to ``realistic'' cases where the state dimension is large
+\item If we have a forward model from noise --> eigenvalues, can we
+  invert it and use eigenvalue observations to estimate and correct
+  sensor noise?
+\item Investigate if we can quantify uncertainty in eigenmodes/values to
+  get a parameter-varying model
 \end{itemize}
 \end{frame}
 

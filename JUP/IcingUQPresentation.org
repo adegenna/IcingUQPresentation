@@ -511,7 +511,6 @@ with Leading-Edge Ice Accretion. Journal of Aircraft, Vol. 33, No.2,
 April 1996.
 
 ** Airfoil Icing Code Flowchart 
-
 #+begin_latex
 \fontsize{7}\selectfont
 % Define the layers to draw the diagram
@@ -534,16 +533,14 @@ April 1996.
 \begin{tikzpicture}
     \node (CleanAirfoil) [wa]  {Clean Airfoil Geometry};
     \path (CleanAirfoil)+(4,2.5) node (FlowSolver) [wa] {Mesh/Flow Solver};
-    \path (FlowSolver)+(0,-1.25) node (DropletDist) [wa] {Droplet\\Statistics Module};
-    \path (DropletDist)+(0,-1.25) node (SLDModule) [wa] {Droplet\\Dynamics Module};
-    \path (SLDModule)+(0,-1.25) node (ThermoModule) [wa] {Thermodynamic Module};
+    \path (FlowSolver)+(0,-1.25) node (Droplet) [wa] {Droplet\\Advection Module};
+    \path (Droplet)+(0,-1.25) node (ThermoModule) [wa] {Thermodynamic Module};
     \path (ThermoModule)+(0,-1.25) node (IcedAirfoil) [wa] {Iced Airfoil Geometry};
     \path (CleanAirfoil)+(8,0) node (FinalAirfoil) [wa] {Final Iced Airfoil Geometry};
 
     \path [draw, ->, thick] (CleanAirfoil.north) |- node [above] {} (FlowSolver.west);
-    \path [draw, ->, thick] (FlowSolver.south) -- node [below] {} (DropletDist.north);
-    \path [draw, ->, thick] (DropletDist.south) -- node [below] {} (SLDModule.north);
-    \path [draw, ->, thick] (SLDModule.south) -- node [below] {} (ThermoModule.north);
+    \path [draw, ->, thick] (FlowSolver.south) -- node [below] {} (Droplet.north);
+    \path [draw, ->, thick] (Droplet.south) -- node [below] {} (ThermoModule.north);
     \path [draw, ->, thick] (ThermoModule.south) -- node [below] {} (IcedAirfoil.north);
     \path [draw, ->, thick] (IcedAirfoil.east) -| node [above] {} (FinalAirfoil.south);
     \path [draw, ->, thick] (IcedAirfoil.east) -- ++(0.75,0cm) |- node [above]
@@ -555,15 +552,30 @@ April 1996.
         \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
             
     \end{pgfonlayer}
-    \begin{pgfonlayer}{background}
-        \path (DropletDist.west)+(-0.5,0.6) node (a) {};
-        \path (SLDModule.east)+(0.5,-0.6) node (b) {};
-        \path[fill=orange!40,rounded corners, draw=black!50, dashed] (a) rectangle (b);
-            
-    \end{pgfonlayer}
 
 \end{tikzpicture}
 
+#+end_latex
+
+** Droplet Advection
+#+begin_latex
+\begin{equation*}
+  \begin{align}
+    \frac{d \bv{x}}{d t} &= \bv{v} \\
+    m \frac{d \bv{v}}{d t} &= \frac{1}{2} \rho_g C_D \pi r^2 ||\bv{v_g} - \bv{v}|| (\bv{v_g} - \bv{v}) + m \bv{g}
+  \end{align}
+\end{equation}
+
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR10em6} \\
+    {\bf R = 10$\mu$m}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR100em6} \\
+    {\bf R = 100$\mu$m}
+\end{columns}
 #+end_latex
 
 ** Preliminary Intermediate Results: Mass Flux
@@ -586,6 +598,58 @@ April 1996.
 #+end_latex
 
 - Collection efficiency is the ratio of surface to free-stream water flux
+** Thermodynamics
+#+begin_latex
+\begin{equation*}
+  \begin{align}
+    \rho_w \left \lbrace \frac{\partial h_f}{\partial t} + \nabla \cdot (\bv{u_f} h_f) \right \rbrace &= \dot{m}_{imp} {\color{red} - \dot{m}_{evap}} - \dot{m}_{ice} \\
+    \rho_w \left \lbrace \frac{\partial (h_f c_W T)}{\partial t} + \nabla \cdot (\bv{u_f} h_f c_W T) \right \rbrace &= \left [ c_W T_d + \frac{u_d^2}{2} \right ] \dot{m}_{imp} \\
+    & {\color{red} -0.5(L_{evap} + L_{sub})\dot{m}_{evap}} \\
+    & +(L_{fus} - c_{ice}T)\dot{m}_{ice} \\
+    & {\color{red} + \epsilon \sigma (T_{\infty}^4 - T^4)} \\
+    & + c_H (T_{\infty} - T)
+  \end{align}
+\end{equation}
+
+#+end_latex
+- \textbf{Mass} 
+  - Enters through impinging droplets
+  - Exits via evaporation/sublimation and freezing
+- \textbf{Energy} 
+  - Enters through impinging droplets, freezing of ice 
+  - Exits via evaporation/sublimation, radiation, convection
+- Solved explicitly using finite volume discretization with Roe scheme upwinding
+
+** Preliminary Intermediate Results: Ice Shapes
+#+begin_latex
+    \centering
+    \includegraphics[width=0.65\textwidth]{IceShapeTempSweep}
+#+end_latex
+
+- NACA0012, $\alpha = 4^o$, $U_{\infty}$ = 103 m/s, MVD = 20 $\mu m$, LWC = 0.55 g/m$^3$, Re = 4.14 million, T = 7 min
+- Low temperatures: convective heat transfer high enough to freeze all incoming droplets instantly (rime)
+- High temperatures: low amount of ice accretion with liquid film on top (glaze)
+- Intermediate temperatures (glaze/rime mix)
+  - Convective heat transfer is minimal at stagnation point and then rises sharply before decaying
+  - Results in familiar horn shapes
+** Sources of Error
+- \textbf{Convective Heat Transfer}
+  - Convective heat transfer calculation is lower than published benchmark test results
+  - Habashi,2006 uses rough-wall modification of Spalart-Almaras turbulence model (specifically developed for icing applications)
+  - Ice shapes are very sensitive to heat transfer by convection
+#+begin_latex
+    \centering
+    \includegraphics[width=0.65\textwidth]{HeatTransferComparison}
+#+end_latex
+- \textbf{Neglected Thermodynamic Mechanisms}
+  - Neglected mass/energy transfer via evaporation/sublimation and radiation
+
+** Work In-Progress
+- Implement rough-wall extension in Spalart-Almaras turbulence model
+- Implement neglected mass/energy transfer mechanisms
+- Verify icing calculations against published results
+- Perform UQ studies, investigate sensitivity to physical parameters
+  - Temperature, convective heat transfer coefficient, Reynolds number, MVD, LWC, angle of attack, etc.
 
 ** Conclusions/Future Work
 

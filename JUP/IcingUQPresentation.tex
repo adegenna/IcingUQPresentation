@@ -1,4 +1,4 @@
-% Created 2015-08-02 Sun 12:02
+% Created 2015-11-04 Wed 18:12
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -39,35 +39,35 @@
 \newcommand{\bs}[1]{\boldsymbol{#1}}
 \newcommand{\ip}[2]{\langle #1, #2\rangle}
 \providecommand{\alert}[1]{\textbf{#1}}
-\graphicspath{{Figures/}}
 
-\title[Modeling and UQ for Airfoil Icing]{Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing}
-\author[DeGennaro, Rowley, and Martinelli]{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
+\title{Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing}
+\author{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
 \date{FAA JUP Summer 2015 Quarterly Meeting \\ Athens, OH \\ August 2015}
 \hypersetup{
   pdfkeywords={},
   pdfsubject={},
   pdfcreator={Emacs Org-mode version 7.9.3f}}
-% Add Princeton shield logo
-\titlegraphic{\includegraphics[height=.7cm]{Shield}}
 
 \begin{document}
 
 \maketitle
-
-% Define my settings
-
-% Add Princeton shield logo
-\addtobeamertemplate{frametitle}{}{%
-\begin{tikzpicture}[remember picture,overlay]
-\node[anchor=north east,yshift=2pt] at (current page.north east) {\includegraphics[height=0.7cm]{Shield}};
-\end{tikzpicture}}
 
 \begin{frame}
 \frametitle{Outline}
 \setcounter{tocdepth}{3}
 \tableofcontents
 \end{frame}
+
+
+
+% Define my settings
+
+\graphicspath{{Figures/}}
+% Add Princeton shield logo
+\addtobeamertemplate{frametitle}{}{%
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,yshift=2pt] at (current page.north east) {\includegraphics[height=0.7cm]{Shield}};
+\end{tikzpicture}}
 %
 
 
@@ -636,7 +636,6 @@ April 1996.
 \frametitle{Airfoil Icing Code Flowchart}
 \label{sec-5-5}
 
-
 \fontsize{7}\selectfont
 % Define the layers to draw the diagram
 \pgfdeclarelayer{background}
@@ -658,16 +657,14 @@ April 1996.
 \begin{tikzpicture}
     \node (CleanAirfoil) [wa]  {Clean Airfoil Geometry};
     \path (CleanAirfoil)+(4,2.5) node (FlowSolver) [wa] {Mesh/Flow Solver};
-    \path (FlowSolver)+(0,-1.25) node (DropletDist) [wa] {Droplet\\Statistics Module};
-    \path (DropletDist)+(0,-1.25) node (SLDModule) [wa] {Droplet\\Dynamics Module};
-    \path (SLDModule)+(0,-1.25) node (ThermoModule) [wa] {Thermodynamic Module};
+    \path (FlowSolver)+(0,-1.25) node (Droplet) [wa] {Droplet\\Advection Module};
+    \path (Droplet)+(0,-1.25) node (ThermoModule) [wa] {Thermodynamic Module};
     \path (ThermoModule)+(0,-1.25) node (IcedAirfoil) [wa] {Iced Airfoil Geometry};
     \path (CleanAirfoil)+(8,0) node (FinalAirfoil) [wa] {Final Iced Airfoil Geometry};
 
     \path [draw, ->, thick] (CleanAirfoil.north) |- node [above] {} (FlowSolver.west);
-    \path [draw, ->, thick] (FlowSolver.south) -- node [below] {} (DropletDist.north);
-    \path [draw, ->, thick] (DropletDist.south) -- node [below] {} (SLDModule.north);
-    \path [draw, ->, thick] (SLDModule.south) -- node [below] {} (ThermoModule.north);
+    \path [draw, ->, thick] (FlowSolver.south) -- node [below] {} (Droplet.north);
+    \path [draw, ->, thick] (Droplet.south) -- node [below] {} (ThermoModule.north);
     \path [draw, ->, thick] (ThermoModule.south) -- node [below] {} (IcedAirfoil.north);
     \path [draw, ->, thick] (IcedAirfoil.east) -| node [above] {} (FinalAirfoil.south);
     \path [draw, ->, thick] (IcedAirfoil.east) -- ++(0.75,0cm) |- node [above]
@@ -679,18 +676,34 @@ April 1996.
         \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
             
     \end{pgfonlayer}
-    \begin{pgfonlayer}{background}
-        \path (DropletDist.west)+(-0.5,0.6) node (a) {};
-        \path (SLDModule.east)+(0.5,-0.6) node (b) {};
-        \path[fill=orange!40,rounded corners, draw=black!50, dashed] (a) rectangle (b);
-            
-    \end{pgfonlayer}
 
 \end{tikzpicture}
 \end{frame}
 \begin{frame}
-\frametitle{Preliminary Intermediate Results: Mass Flux}
+\frametitle{Droplet Advection}
 \label{sec-5-6}
+
+\begin{equation*}
+  \begin{align}
+    \frac{d \bv{x}}{d t} &= \bv{v} \\
+    m \frac{d \bv{v}}{d t} &= \frac{1}{2} \rho_g C_D \pi r^2 ||\bv{v_g} - \bv{v}|| (\bv{v_g} - \bv{v}) + m \bv{g}
+  \end{align}
+\end{equation}
+
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR10em6} \\
+    {\bf R = 10$\mu$m}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR100em6} \\
+    {\bf R = 100$\mu$m}
+\end{columns}
+\end{frame}
+\begin{frame}
+\frametitle{Preliminary Intermediate Results: Mass Flux}
+\label{sec-5-7}
 
 
 \begin{columns}[c]
@@ -713,8 +726,90 @@ April 1996.
 \end{itemize}
 \end{frame}
 \begin{frame}
+\frametitle{Thermodynamics}
+\label{sec-5-8}
+
+\begin{equation*}
+  \begin{align}
+    \rho_w \left \lbrace \frac{\partial h_f}{\partial t} + \nabla \cdot (\bv{u_f} h_f) \right \rbrace &= \dot{m}_{imp} {\color{red} - \dot{m}_{evap}} - \dot{m}_{ice} \\
+    \rho_w \left \lbrace \frac{\partial (h_f c_W T)}{\partial t} + \nabla \cdot (\bv{u_f} h_f c_W T) \right \rbrace &= \left [ c_W T_d + \frac{u_d^2}{2} \right ] \dot{m}_{imp} \\
+    & {\color{red} -0.5(L_{evap} + L_{sub})\dot{m}_{evap}} \\
+    & +(L_{fus} - c_{ice}T)\dot{m}_{ice} \\
+    & {\color{red} + \epsilon \sigma (T_{\infty}^4 - T^4)} \\
+    & + c_H (T_{\infty} - T)
+  \end{align}
+\end{equation}
+
+\begin{itemize}
+\item \textbf{Mass}
+\begin{itemize}
+\item Enters through impinging droplets
+\item Exits via evaporation/sublimation and freezing
+\end{itemize}
+\item \textbf{Energy}
+\begin{itemize}
+\item Enters through impinging droplets, freezing of ice
+\item Exits via evaporation/sublimation, radiation, convection
+\end{itemize}
+\item Solved explicitly using finite volume discretization with Roe scheme upwinding
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Preliminary Intermediate Results: Ice Shapes}
+\label{sec-5-9}
+
+    \centering
+    \includegraphics[width=0.65\textwidth]{IceShapeTempSweep}
+
+\begin{itemize}
+\item NACA0012, $\alpha = 4^o$, $U_{\infty}$ = 103 m/s, MVD = 20 $\mu m$, LWC = 0.55 g/m$^3$, Re = 4.14 million, T = 7 min
+\item Low temperatures: convective heat transfer high enough to freeze all incoming droplets instantly (rime)
+\item High temperatures: low amount of ice accretion with liquid film on top (glaze)
+\item Intermediate temperatures (glaze/rime mix)
+\begin{itemize}
+\item Convective heat transfer is minimal at stagnation point and then rises sharply before decaying
+\item Results in familiar horn shapes
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Sources of Error}
+\label{sec-5-10}
+
+\begin{itemize}
+\item \textbf{Convective Heat Transfer}
+\begin{itemize}
+\item Convective heat transfer calculation is lower than published benchmark test results
+\item Habashi,2006 uses rough-wall modification of Spalart-Almaras turbulence model (specifically developed for icing applications)
+\item Ice shapes are very sensitive to heat transfer by convection
+\end{itemize}
+\end{itemize}
+    \centering
+    \includegraphics[width=0.65\textwidth]{HeatTransferComparison}
+\begin{itemize}
+\item \textbf{Neglected Thermodynamic Mechanisms}
+\begin{itemize}
+\item Neglected mass/energy transfer via evaporation/sublimation and radiation
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Work In-Progress}
+\label{sec-5-11}
+
+\begin{itemize}
+\item Implement rough-wall extension in Spalart-Almaras turbulence model
+\item Implement neglected mass/energy transfer mechanisms
+\item Verify icing calculations against published results
+\item Perform UQ studies, investigate sensitivity to physical parameters
+\begin{itemize}
+\item Temperature, convective heat transfer coefficient, Reynolds number, MVD, LWC, angle of attack, etc.
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
 \frametitle{Conclusions/Future Work}
-\label{sec-5-7}
+\label{sec-5-12}
 
 
 \textbf{Conclusions}

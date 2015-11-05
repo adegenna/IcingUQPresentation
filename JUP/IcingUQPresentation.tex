@@ -40,9 +40,9 @@
 \newcommand{\ip}[2]{\langle #1, #2\rangle}
 \providecommand{\alert}[1]{\textbf{#1}}
 
-\title{Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing}
-\author{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
-\date{FAA JUP Summer 2015 Quarterly Meeting \\ Athens, OH \\ August 2015}
+\title[Modeling/UQ for Icing]{Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing}
+\author[DeGennaro, Rowley & Martinelli]{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
+\date{FAA JUP Fall 2015 Quarterly Meeting \\ Cambridge, MA \\ November 2015}
 \hypersetup{
   pdfkeywords={},
   pdfsubject={},
@@ -434,108 +434,6 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
     {\bf Unfavorable shape skew}
 \end{columns}
 \end{frame}
-\section{Experiment Dataset}
-\label{sec-4}
-\begin{frame}
-\frametitle{Dataset Description}
-\label{sec-4-1}
-
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.7\textwidth]{Dataset}
-\end{figure}
-
-\begin{itemize}
-\item Business jet clean airfoil geometry\footnote{Addy, H.E. \emph{Ice Accretions and Icing Effects for Modern Airfoils}. NASA TR 2000-210031.
- }
-\item 54 ice shapes, exposed to wide range of various icing conditions
-  consistent with FAA certification guidelines
-\item POD dataset will consist of binary values defined on a static
-  Cartesian mesh (`1' if mesh point is on the ice, `0' if not)
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Low-Dimensional Modeling of Dataset}
-\label{sec-4-2}
-
-
-\begin{columns}[c]
-  \column{0.45\textwidth}
-    \centering
-    \hspace{-2.17em}
-    \includegraphics[width=0.9\textwidth]{MEAN.png} \\
-    {\bf Mean} \\
-    \includegraphics[width=1\textwidth]{MODE2.png} \\
-    {\bf Mode 2} \\
-    \includegraphics[width=1\textwidth]{MODE4.png} \\
-    {\bf Mode 4}
-  \column{0.45\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{MODE1.png} \\
-    {\bf Mode 1} \\
-    \includegraphics[width=1\textwidth]{MODE3.png} \\
-    {\bf Mode 3} \\
-    \includegraphics[width=1\textwidth]{MODE5.png} \\
-    {\bf Mode 5}
-\end{columns}
-
-
-\begin{itemize}
-\item 8 Modes retained; this is where POD eigenvalue magnitudes have
-  decayed by an order of magnitude
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Ice Shape Reconstructions}
-\label{sec-4-3}
-
-
-\begin{columns}[c]
-  \column{0.45\textwidth}
-    \centering
-    \hspace{-0.5em}
-    \includegraphics[width=1\textwidth]{UnfilteredReconstruction.png} \\
-    {\bf Unfiltered Reconstruction} \\
-    \includegraphics[width=1\textwidth]{ReconstructionE1} \\
-    \includegraphics[width=1\textwidth]{ReconstructionE9} \\
-  \column{0.45\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{FilteredReconstruction.png} \\
-    {\bf Filtered Reconstruction} \\
-    \includegraphics[width=1\textwidth]{ReconstructionE3} \\
-    \includegraphics[width=1\textwidth]{ReconstructionE4} \\
-\end{columns}
-\begin{center}
-{\bf Ice Reconstructions}
-\end{center}
-\end{frame}
-\begin{frame}
-\frametitle{Preliminary Findings}
-\label{sec-4-4}
-
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.7\textwidth]{GoodBadHornExamps}
-\end{figure}
-
-\begin{itemize}
-\item \textbf{Green:} Horns which produce upper 10$\%$ of $C_L$
-\begin{itemize}
-\item Lower amounts of ice accumulation
-\item Ice mass concentrated on lower surface
-\end{itemize}
-\item \textbf{Red:} Horns which produce lower 10$\%$ of $C_L$
-\begin{itemize}
-\item Higher amounts of ice accumulation
-\item Ice mass forms sharp upper surface horn
-\end{itemize}
-\item Results derived from $\sim 5,500$ sparse grid evaluations
-\item More sparse grid evaluations are currently underway to produce a
-  faithful, converged PCE surrogate
-\end{itemize}
-\end{frame}
 \section{Computational-Based UQ}
 \label{sec-5}
 \begin{frame}
@@ -549,15 +447,11 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 \begin{itemize}
 \item How sensitive is collection efficiency to perturbations in MVD distribution?
 \end{itemize}
-\item Surface tension of SLDs varies with their temperature
+\item Temperature, LWC, and convective heat transfer strongly affect icing conditions
 \begin{itemize}
-\item Can affect impingement details $\rightarrow$ collection efficiency
-\item Can affect surface roughness
-\end{itemize}
-\item Surface roughness could vary as SLDs impinge and freeze
-\begin{itemize}
-\item Can affect local convective heat transfer
-\item Can influence local rate of ice accretion
+\item Glaze: warmer temperature, lower convective heat transfer, higher LWC --> horn shapes
+\item Rime: colder temperature, higher convective heat transfer, lower LWC --> ``blob'' shapes
+\item Convective heat transfer is strongly affected by surface roughness (difficult to model accurately)
 \end{itemize}
 \end{itemize}
 \end{itemize}
@@ -587,26 +481,6 @@ Final Rule. Federal Register, Vol. 79, No. 213.
 \end{itemize}
 \end{frame}
 \begin{frame}
-\frametitle{Surface Tension vs. Temperature}
-\label{sec-5-3}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.33\textwidth]{SurfaceTensionVsTemp.jpeg} \\
-  {\bf Surface Tension vs. Temperature}
-\end{figure}
-
-\begin{itemize}
-\item Surface tension of SLDs varies with temperature \footnote{Hruby, J. et. al. Surface Tension of Supercooled Water:
-No Inflection Point down -25 Degrees
-Celsius. J. Phys. Chem. Lett. 2014, 5, 425-28.
- }
-\item Varying surface tension can affect collection efficiency
-\item Higher surface tension may give rise to ``beading'' on surface
-  (vs. deposition into film), which could affect surface roughness
-\end{itemize}
-\end{frame}
-\begin{frame}
 \frametitle{Roughness Variations}
 \label{sec-5-4}
 
@@ -632,6 +506,34 @@ April 1996.
 \end{itemize}
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Glaze vs. Rime Accretion}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{RimeGlazeIce.png} \\
+  {\bf Rime (left) vs. Glaze (right) Accretion}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{Glaze Ice} \footnote{Beaugendre H., Morency M., and Habashi W.G. \emph{Development of a Second Generation in-Flight Icing Simulation Code}. Journal of
+Fluids Engineering, ASME, 2006.
+ }
+\begin{itemize}
+\item Warmer temperature, higher LWC
+\iten Ice shape follows distribution of convective heat transfer over airfoil surface
+\item ``Horn'' shapes
+\end{itemize}
+\item \textbf{Rime Ice}
+\begin{itemize}
+\item Colder temperature, lower LWC 
+\item Ice shape follows distribution of incoming water (collection efficiency)
+\item ``Blob'' shapes
+\end{itemize}
+\end{itemize}
+\end{frame}
+
 \begin{frame}
 \frametitle{Airfoil Icing Code Flowchart}
 \label{sec-5-5}

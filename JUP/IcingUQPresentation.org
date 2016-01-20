@@ -41,13 +41,13 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-#+DATE: FAA JUP Summer 2015 Quarterly Meeting \\ Athens, OH \\ August 2015
-#+TITLE: Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing
-#+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
+#+DATE: FAA JUP Winter 2016 Quarterly Meeting \\ Atlantic City, NJ \\ January 2016
+#+TITLE: Uncertainty Quantification for Ice Accretion and Cargo Hold Fires
+#+AUTHOR: Anthony DeGennaro \newline Mark Lohry \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}
 
 
-* Motivation/Background
+* Icing: Introduction
 
 ** Introduction
 *Motivation*
@@ -86,42 +86,10 @@ Fluids Engineering, ASME, 2006.
 SLD Physics/, AIAA 2004-412. 42$^{nd}$ AIAA Aerospace Sciences
 Meeting, Reno, NV, 2004.
 
-** Relation to Previous Work
 
-#+begin_latex
-\begin{columns}[c]
-  \column{0.33\textwidth}
-    \centering
-    \includegraphics[width=0.95\textwidth]{RidgeRVariation} \\
-    \includegraphics[width=0.95\textwidth]{RidgeSVariation} \\
-    {\bf Ridge}
-  \column{0.33\textwidth}
-    \centering
-    \includegraphics[width=0.95\textwidth]{HornHVariation} \\
-    \includegraphics[width=0.95\textwidth]{HornSVariation} \\
-    {\bf Horn}
-  \column{0.33\textwidth}
-    \centering    
-    \includegraphics[width=0.9\textwidth]{MC_surrogate_LargeUnc_CL} \\
-    \includegraphics[width=0.9\textwidth]{MCgpcPDFLargeUnc_CL} \\
-    {\bf Statistics}
-\end{columns}
-#+end_latex
+* Icing: UQ Methodology
 
-- Previous study examined parameterized ridge and horn ice
-  shapes[fn:DeGennaro]
-- Approach was heuristic, not directly based on observed shape
-  variations
-- Parameter space was low dimensional; no low-dimensional modeling
-
-[fn:DeGennaro] DeGennaro A., Rowley C.W., and Martinelli,
-L. /Uncertainty Quantification for Airfoil Icing using Polynomial
-Chaos Expansions/. To appear in Journal of Aircraft, 2015.
-
-
-* Methodology
-
-** Low-Dimensional Modeling
+** Input-Process Modeling
 
 - The space of all ice shapes is infinite dimensional
 - Consider small number of parameters that describe /likely/ shapes
@@ -211,9 +179,41 @@ Object-Oriented Framework for Design Optimization.../ V. 5.3 User's
 Manual. SAND2010-2183.
 
 
-* Simulation Dataset
+* Icing: Data-Based UQ
 
-** Dataset Description 
+** Heuristic Input Processes
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{RidgeRVariation} \\
+    \includegraphics[width=0.95\textwidth]{RidgeSVariation} \\
+    {\bf Ridge}
+  \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{HornHVariation} \\
+    \includegraphics[width=0.95\textwidth]{HornSVariation} \\
+    {\bf Horn}
+  \column{0.33\textwidth}
+    \centering    
+    \includegraphics[width=0.9\textwidth]{MC_surrogate_LargeUnc_CL} \\
+    \includegraphics[width=0.9\textwidth]{MCgpcPDFLargeUnc_CL} \\
+    {\bf Statistics}
+\end{columns}
+#+end_latex
+
+- Previous study examined parameterized ridge and horn ice
+  shapes[fn:DeGennaro]
+- Approach was heuristic, not directly based on observed shape
+  variations
+- Parameter space was low dimensional; no low-dimensional modeling
+
+[fn:DeGennaro] DeGennaro A., Rowley C.W., and Martinelli,
+L. /Uncertainty Quantification for Airfoil Icing using Polynomial
+Chaos Expansions/. To appear in Journal of Aircraft, 2015.
+
+** Data-Based Input Processes: 3D Wing 
 \begin{figure}
   \centering
   \includegraphics[width=0.6\textwidth]{CRMHorn}
@@ -226,7 +226,7 @@ Manual. SAND2010-2183.
 [fn:CRM] Broeren A. et. al. /Swept-Wing Ice Accretion Characterization
 and Aerodynamics/, AIAA 2013-2824.
 
-** Low-Dimensional Modeling of Dataset
+** Data-Based Input Processes: 3D Wing
 #+begin_latex
 \begin{columns}[c]
   \column{0.3\textwidth}
@@ -252,7 +252,7 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 - $c_1, c_2$ are POD coefficients
 - This collapses 100 different snapshots into 5 parameters
 
-** 5-Dimensional UQ Study
+** Data-Based Input Processes: 3D Wing
 
 #+begin_latex
 \begin{columns}[c]
@@ -273,7 +273,74 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 
 - 2 POD coefficients (/shape/) + width, height, position parameters (/scaling/)
 
-** Statistics
+** Data-Based Input Processes: 2D Shapes
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{Dataset}
+\end{figure}
+
+- Business jet clean airfoil geometry[fn:Addy]
+- 54 ice shapes, exposed to wide range of various icing conditions
+  consistent with FAA certification guidelines
+- POD dataset will consist of binary values defined on a static
+  Cartesian mesh (`1' if mesh point is on the ice, `0' if not)
+
+[fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
+Airfoils/. NASA TR 2000-210031.
+
+** Data-Based Input Processes: 2D Shapes
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    \centering
+    \hspace{-2.17em}
+    \includegraphics[width=0.9\textwidth]{MEAN.png} \\
+    {\bf Mean} \\
+    \includegraphics[width=1\textwidth]{MODE2.png} \\
+    {\bf Mode 2} \\
+    \includegraphics[width=1\textwidth]{MODE4.png} \\
+    {\bf Mode 4}
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{MODE1.png} \\
+    {\bf Mode 1} \\
+    \includegraphics[width=1\textwidth]{MODE3.png} \\
+    {\bf Mode 3} \\
+    \includegraphics[width=1\textwidth]{MODE5.png} \\
+    {\bf Mode 5}
+\end{columns}
+
+#+end_latex
+
+- 8 Modes retained; this is where POD eigenvalue magnitudes have
+  decayed by an order of magnitude
+** Data-Based Input Processes: 2D Shapes
+
+#+begin_latex
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    \centering
+    \hspace{-0.5em}
+    \includegraphics[width=1\textwidth]{UnfilteredReconstruction.png} \\
+    {\bf Unfiltered Reconstruction} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE1} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE9} \\
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{FilteredReconstruction.png} \\
+    {\bf Filtered Reconstruction} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE3} \\
+    \includegraphics[width=1\textwidth]{ReconstructionE4} \\
+\end{columns}
+\begin{center}
+{\bf Ice Reconstructions}
+\end{center}
+
+#+end_latex
+
+** Statistics: 3D Wing
 
 #+begin_latex
 \begin{columns}[c]
@@ -301,7 +368,7 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
   $Z_i$ contributes to the total variance of $Y(\bv{Z})$
 - For our parameter ranges, position perturbation accounts for most of
   the statistical variation
-** Statistical Inference
+** Statistics: 3D Wing
 
 - Analyze statistical clustering of horns that produce bottom and top
   $10\%$ of $C_L$ variation
@@ -353,162 +420,16 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 #+end_latex
 
 
-* Experiment Dataset
-
-** Dataset Description
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.7\textwidth]{Dataset}
-\end{figure}
-
-- Business jet clean airfoil geometry[fn:Addy]
-- 54 ice shapes, exposed to wide range of various icing conditions
-  consistent with FAA certification guidelines
-- POD dataset will consist of binary values defined on a static
-  Cartesian mesh (`1' if mesh point is on the ice, `0' if not)
-
-[fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
-Airfoils/. NASA TR 2000-210031.
-
-** Low-Dimensional Modeling of Dataset
-
-#+begin_latex
-\begin{columns}[c]
-  \column{0.45\textwidth}
-    \centering
-    \hspace{-2.17em}
-    \includegraphics[width=0.9\textwidth]{MEAN.png} \\
-    {\bf Mean} \\
-    \includegraphics[width=1\textwidth]{MODE2.png} \\
-    {\bf Mode 2} \\
-    \includegraphics[width=1\textwidth]{MODE4.png} \\
-    {\bf Mode 4}
-  \column{0.45\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{MODE1.png} \\
-    {\bf Mode 1} \\
-    \includegraphics[width=1\textwidth]{MODE3.png} \\
-    {\bf Mode 3} \\
-    \includegraphics[width=1\textwidth]{MODE5.png} \\
-    {\bf Mode 5}
-\end{columns}
-
-#+end_latex
-
-- 8 Modes retained; this is where POD eigenvalue magnitudes have
-  decayed by an order of magnitude
-** Ice Shape Reconstructions
-
-#+begin_latex
-\begin{columns}[c]
-  \column{0.45\textwidth}
-    \centering
-    \hspace{-0.5em}
-    \includegraphics[width=1\textwidth]{UnfilteredReconstruction.png} \\
-    {\bf Unfiltered Reconstruction} \\
-    \includegraphics[width=1\textwidth]{ReconstructionE1} \\
-    \includegraphics[width=1\textwidth]{ReconstructionE9} \\
-  \column{0.45\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{FilteredReconstruction.png} \\
-    {\bf Filtered Reconstruction} \\
-    \includegraphics[width=1\textwidth]{ReconstructionE3} \\
-    \includegraphics[width=1\textwidth]{ReconstructionE4} \\
-\end{columns}
-\begin{center}
-{\bf Ice Reconstructions}
-\end{center}
-
-#+end_latex
-** Preliminary Findings
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.7\textwidth]{GoodBadHornExamps}
-\end{figure}
-
-- *Green:* Horns which produce upper 10$\%$ of $C_L$
-  - Lower amounts of ice accumulation
-  - Ice mass concentrated on lower surface
-- *Red:* Horns which produce lower 10$\%$ of $C_L$
-  - Higher amounts of ice accumulation
-  - Ice mass forms sharp upper surface horn
-- Results derived from $\sim 5,500$ sparse grid evaluations
-- More sparse grid evaluations are currently underway to produce a
-  faithful, converged PCE surrogate
-
-
-
-* Computational-Based UQ
+* Icing: Computational-Based UQ
 
 ** Motivation
 - *Investigate uncertainty in the physical process of icing*
-  - Distribution of droplet diameters affects collection efficiency
-    - How sensitive is collection efficiency to perturbations in MVD distribution?
-  - Surface tension of SLDs varies with their temperature
-    - Can affect impingement details $\rightarrow$ collection efficiency
-    - Can affect surface roughness
-  - Surface roughness could vary as SLDs impinge and freeze
-    - Can affect local convective heat transfer
-    - Can influence local rate of ice accretion
-
-#+end_latex
-** Droplet Diameter Distribution
-#+begin_latex
-\begin{columns}[c]
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{FAADropletDist1} \\
-    {\bf Freezing Drizzle MVD PDF}
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{FAADropletDist2} \\
-    {\bf Freezing Rain MVD PDF}
-\end{columns}
-#+end_latex
-
-- Several MVD distributions exist for different flight conditions [fn:FAARegs]
-- Each gives a different collection efficiency
-- How sensitive are collection efficiency and ice shape to perturbations in MVD distribution?
-
-[fn:FAARegs] Airplane and Engine Certification Requirements in
-Supercooled Large Drop, Mixed Phase, and Ice Crystal Icing Conditions;
-Final Rule. Federal Register, Vol. 79, No. 213.
-
-** Surface Tension vs. Temperature
-\begin{figure}
-  \centering
-  \includegraphics[width=0.33\textwidth]{SurfaceTensionVsTemp.jpeg} \\
-  {\bf Surface Tension vs. Temperature}
-\end{figure}
-
-- Surface tension of SLDs varies with temperature [fn:SurfTens]
-- Varying surface tension can affect collection efficiency
-- Higher surface tension may give rise to ``beading" on surface
-  (vs. deposition into film), which could affect surface roughness
-
-[fn:SurfTens] Hruby, J. et. al. Surface Tension of Supercooled Water:
-No Inflection Point down -25 Degrees
-Celsius. J. Phys. Chem. Lett. 2014, 5, 425-28.
-
-** Roughness Variations
-\begin{figure}
-  \centering
-  \includegraphics[width=1\textwidth]{IcingRoughness.png} \\
-  {\bf Roughness Growth}
-\end{figure}
-
-- *Surface roughness varies with parameters* [fn:Shin]
-  - Roughness height increases with temperature and LWC
-  - Beginning of roughness varies with temperature, speed, LWC
-- *Surface roughness affects shape/aerodynamics* [fn:Shin]
-  - Roughness elements probably protrude out of boundary layer and cause transition
-  - Irregularity of shape should be calculated by ice accretion code, not treated as part of roughness model
-
-[fn:Shin] Shin, J. Characteristics of Surface Roughness Associated
-with Leading-Edge Ice Accretion. Journal of Aircraft, Vol. 33, No.2,
-April 1996.
+  - What is the statistical effect of uncertainty in physical parameters?
+    - Free-stream temperature
+    - Angle of attack
+    - Convective heat transfer
+    - Droplet diameter distribution
+    - Accretion time
 
 ** Airfoil Icing Code Flowchart 
 #+begin_latex
@@ -578,35 +499,13 @@ April 1996.
 \end{columns}
 #+end_latex
 
-** Preliminary Intermediate Results: Mass Flux
-
-#+begin_latex
-\begin{columns}[c]
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.65\textwidth]{MVD52} \\
-    {\bf MVD 52} \\
-    \includegraphics[width=0.65\textwidth]{MVD154} \\
-    {\bf MVD 154}
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.65\textwidth]{MVD111} \\
-    {\bf MVD 111} \\
-    \includegraphics[width=0.65\textwidth]{MVD236} \\
-    {\bf MVD 236}
-\end{columns}
-#+end_latex
-
-- Collection efficiency is the ratio of surface to free-stream water flux
 ** Thermodynamics
 #+begin_latex
 \begin{equation*}
   \begin{align}
-    \rho_w \left \lbrace \frac{\partial h_f}{\partial t} + \nabla \cdot (\bv{u_f} h_f) \right \rbrace &= \dot{m}_{imp} {\color{red} - \dot{m}_{evap}} - \dot{m}_{ice} \\
+    \rho_w \left \lbrace \frac{\partial h_f}{\partial t} + \nabla \cdot (\bv{u_f} h_f) \right \rbrace &= \dot{m}_{imp} - \dot{m}_{ice} \\
     \rho_w \left \lbrace \frac{\partial (h_f c_W T)}{\partial t} + \nabla \cdot (\bv{u_f} h_f c_W T) \right \rbrace &= \left [ c_W T_d + \frac{u_d^2}{2} \right ] \dot{m}_{imp} \\
-    & {\color{red} -0.5(L_{evap} + L_{sub})\dot{m}_{evap}} \\
     & +(L_{fus} - c_{ice}T)\dot{m}_{ice} \\
-    & {\color{red} + \epsilon \sigma (T_{\infty}^4 - T^4)} \\
     & + c_H (T_{\infty} - T)
   \end{align}
 \end{equation}
@@ -623,26 +522,11 @@ April 1996.
 ** Preliminary Intermediate Results: Ice Shapes
 #+begin_latex
     \centering
-    \includegraphics[width=0.65\textwidth]{IceShapeTempSweep}
+    \includegraphics[width=0.65\textwidth]{Rime405Example.png}
 #+end_latex
 
-- NACA0012, $\alpha = 4^o$, $U_{\infty}$ = 103 m/s, MVD = 20 $\mu m$, LWC = 0.55 g/m$^3$, Re = 4.14 million, T = 7 min
+- NACA0012, $\alpha = 4^o$, $T_{\infty} = 256 K$, $U_{\infty}$ = 103 m/s, MVD = 20 $\mu m$, LWC = 0.55 g/m$^3$, Re = 4.14 million, $\Delta T$ = 7 min
 - Low temperatures: convective heat transfer high enough to freeze all incoming droplets instantly (rime)
-- High temperatures: low amount of ice accretion with liquid film on top (glaze)
-- Intermediate temperatures (glaze/rime mix)
-  - Convective heat transfer is minimal at stagnation point and then rises sharply before decaying
-  - Results in familiar horn shapes
-** Sources of Error
-- \textbf{Convective Heat Transfer}
-  - Convective heat transfer calculation is lower than published benchmark test results
-  - Habashi,2006 uses rough-wall modification of Spalart-Almaras turbulence model (specifically developed for icing applications)
-  - Ice shapes are very sensitive to heat transfer by convection
-#+begin_latex
-    \centering
-    \includegraphics[width=0.65\textwidth]{HeatTransferComparison}
-#+end_latex
-- \textbf{Neglected Thermodynamic Mechanisms}
-  - Neglected mass/energy transfer via evaporation/sublimation and radiation
 
 ** Work In-Progress
 - Implement rough-wall extension in Spalart-Almaras turbulence model
@@ -651,21 +535,483 @@ April 1996.
 - Perform UQ studies, investigate sensitivity to physical parameters
   - Temperature, convective heat transfer coefficient, Reynolds number, MVD, LWC, angle of attack, etc.
 
+
+
+
+
+
+* Fires: Introduction
+** Motivation
+- *Cargo hold fires are a significant safety hazard*
+  - Tight constraints for detection/suppression
+  - FAA requires detection of cargo fire within 60 seconds of ignition[fn:FAA][fn:Oztekin]
+#+begin_latex
+\centering
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{CargoHoldFire1.png} \\
+\textbf{Cargo hold fire generated from lithium-ion battery}
+\end{figure}
+\end{minipage}
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{CargoHoldFire2.png} \\
+\textbf{Cargo hold fire generated from e-tablet}
+\end{figure}
+\end{minipage}
+#+end_latex
+[fn:Oztekin] Oztekin, E. S. Heat and mass transfer due to a small-fire in
+an aircraft cargo compartment. \International Journal of Heat and Mass
+Transfer\, Vol. 73, 2014, pp. 562-573.
+[fn:FAA] Blake, D. et. al. 2014 Fire Safety Highlights. Federal
+Aviation Administration. Research Summary, 2014.
+
+** Motivation
+- *Current detection systems are overly conservative*[fn:alarms]
+  - 200-to-1 false alarm ratio (1995-99)
+  - Unscheduled landings are expensive
+#+begin_latex
+\centering
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}
+\includegraphics[width=0.9\linewidth]{alarmlandings.png} \\
+\textbf{Alarms and Unscheduled Landings}
+\end{figure}
+\end{minipage}
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}
+\includegraphics[width=0.9\linewidth]{alarms_vs_verified.png} \\
+\textbf{False/Verified Alarms}
+\end{figure}
+\end{minipage}
+#+end_latex
+
+[fn:alarms] Blake. Aircraft cargo compartment smoke detector alarm incidents on U.S.-registered aircraft. /FAA technical note/ FAA-TN00/29, 2000.
+** Motivation
+- *Fire dynamics are sensitive to boundary condition uncertainty*
+  - Fire source location and temperature within cargo hold can vary
+  - Cargo hold is cluttered with baggage, packages, pipes, etc.
+  - Spatio-temporal fire plume development is affected by this uncertainty
+
+#+begin_latex
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+\begin{figure}[ht]
+\includegraphics[width=0.7\textwidth]{CargoHoldClutter} \\
+\textbf{Cargo hold clutter}
+\end{figure}
+\end{minipage}
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+\movie[width=0.9\textwidth,height=0.39\textwidth,poster,autostart,loop,borderwidth]{}{FireHotCenter.avi} \\
+\movie[width=0.9\textwidth,height=0.39\textwidth,poster,autostart,loop,borderwidth]{}{FireHotRight.avi} \\
+\textbf{Effect of Source Position}
+\end{minipage}
+#+end_latex
+
+** Motivation
+- *Experiments are expensive*
+  - Destructive full-scale cargo hold fire experiments (FAA Tech Center)[fn:OztekinPres]
+  - Each experiment destroys an entire cargo hold
+  - Investigating boundary condition uncertainty is not feasible
+#+begin_latex
+\centering
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{Boeing707CargoHold} \\
+\textbf{Boeing 707 cargo hold}
+\end{figure}
+\end{minipage}
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{CargoHoldFire1.png} \\
+\textbf{Destructive cargo hold fire experiment}
+\end{figure}
+\end{minipage}
+#+end_latex
+[fn:OztekinPres] Oztekin, E. S. Modeling of smoke spread and gas
+transport in an aircraft. 7$^{th}$ International Fire and Cabin Safety
+Research Conference, 2013.
+** Motivation
+- *Computational methods must be accurate*
+  - Previous attempts at applying CFD to cargo hold fires have used
+    low-order finite-volume solvers on meshes that do not conform to
+    boundary[fn:OztekinAIAA]
+#+begin_latex
+\centering
+\begin{figure}[ht]
+\includegraphics[width=0.7\textwidth]{CutCellGeometry.png} \\
+\textbf{Non-conformal Cartesian mesh}
+\end{figure}
+#+end_latex
+[fn:OztekinAIAA] Oztekin, E.S et. al. Flow induced by a small fire in
+an aircraft cargo compartment. AIAA 2012-0311.
+** Motivation
+- *Computational methods must be accurate*
+  - Vorticity dominated, buoyancy-driven flows require high
+    computational accuracy
+#+begin_latex
+\centering
+\movie[width=0.7\textwidth,height=0.525\textwidth,poster,autostart,loop,borderwidth]{}{N1_N2_N3.avi} \\
+\textbf{Discontinuous Galerkin using varying degrees of accuracy}
+#+end_latex
+** Objectives
+- *Apply accurate CFD tools to the cargo hold problem*
+  - Boundary-fitted meshes for good boundary resolution
+  - Discontinuous Galerkin (DG) high-order method for high accuracy
+- *Apply UQ tools to study effects of uncertainty in cargo hold problem*
+  - Polynomial Chaos Expansions (PCE)
+  - Efficient sampling methodology
+  - Accurate surrogate construction
+- Methodology gives (1) accurate computational tool for simulating
+  cargo hold fires and (2) efficient framework for investigating cargo
+  hold uncertainty
+
+
+* Fires: Methodology
+** Discontinuous Galerkin (DG) Method
+- High-resolution CFD method[fn:Wang][fn:Hesthaven]
+  - Domain is divided into cells, collocation nodes computed within each cell
+  - N-S equations projected onto span of polynomials (of arbitrary degree)
+  - Flow variables within each cell represented in polynomial basis 
+\begin{figure}
+\includegraphics[width=0.5\linewidth]{errorvscostzj.png} \\
+\textbf{Generic error vs cost plot}
+\end{figure}
+[fn:Wang] Wang et. al. An eulerian-lagrangian DG method for transient advection-diffusion equations. /Numerical Methods for Partial Differential Equations/, 2007.
+[fn:Hesthaven] Hesthaven & Warburton. /Nodal Discontinuous Galerkin Methods/, 2008.
+** Discontinuous Galerkin (DG) Method
+*Method Synopsis*
+#+begin_latex
+\beqq
+\begin{aligned}
+\text{Conservation law:}\quad & \diff{\bv{u}}{t} + \nabla \cdot \bv{f}(\bv{u}) = 0 \\
+\text{Weak formulation:}\quad & \int_V \diff{\bv{u}}{t} \phi_j \ dV + \int_V  \nabla \cdot \bv{f}(\bv{u})\phi_j\ dV = 0 \\
+\text{Integrate by parts:}\quad & \int_V \diff{\bv{u}}{t} \phi_j\ dV - \int_V \nabla \phi_j \cdot \bv{f}\ dV + \oint_S \phi_j \bv{\hat{f}} \cdot \bv{\hat{n}}\ dS = 0 \\
+\ \bv{u}\approx \sum \bv{u}_i \phi_i\text{:}\quad & \int_V \diff{\bv{u}_i \phi_i}{t} \phi_j\ dV - \int_V \nabla \phi_j \cdot \bv{f}_i \phi_i\ dV + \oint_S \phi_j \bv{\hat{f}}_i \phi_i \cdot \bv{\hat{n}}\ dS = 0 \\
+\text{}\quad & \bv{M}_{ij} \frac{d\bv{u}_i}{dt} = \int_V \nabla \phi_j \cdot \bv{f}_i \phi_i\ dV + \oint_S \phi_j \bv{\hat{f}}_i \phi_i \cdot \bv{\hat{n}}\ dS \\
+\end{aligned}
+\eeqq
+#+end_latex
+*Polynomial Basis*
+- Collocation nodes are defined in each individual cell
+- Chebyschev-like schemes used (to avoid Runge-phenomenon)
+- Associated Lagrange interpolators form the polynomial basis ${\phi_k}$
+** Discontinuous Galerkin (DG) Method
+*Time-Stepping*
+- We now have a system of ODEs to solve for each DG mode:
+$$\frac{d\bv{u}}{dt} = \bf{f}(\bf{u,u',t})$$
+- CFL condition for explicit time-stepping gives $\Delta t = O(\frac{\Delta x}{N^2})$
+  - Mesh volume $\Delta x$ can be small
+  - State dimension $N$ grows rapidly with increasing polynomial order
+- Thus, implicit time-stepping is used, which gives the large nonlinear system:
+  $$\bv{F}(\bv{u}) = 0$$
+** Discontinuous Galerkin (DG) Method
+*Solution Procedure*
+- Newton's method gives sequence of linear systems:
+$$\bv{J}(\bv{u^{k}}) \delta \bv{u^k} = -\bv{F}(\bv{u^{k}}),\quad \bv{u^{k+1}}=\bv{u^{k}}+\delta \bv{u^k}$$
+- $\bv{J}$ is prohibitively large to compute/store
+- Jacobian-Free Newton-Krylov iteration
+  - Action of Jacobian on a vector is approximated as:
+  $$ \bv{J} \bv{v} \approx [\bv{F}(\bv{u} + \epsilon \bv{v}) - \bv{F}(\bv{v})]/\epsilon$$
+  - $\delta \bv{u}^k$ is solved for using Krylov iteration (GMRES, BiCGSTAB)
+** Polynomial Chaos Expansions (PCE)
+- Overview[fn:Xiu]:
+  - Method for quantifying parametric uncertainty
+  - Expand output in terms of basis polynomial functions of random variables
+  $$f(\xi) &\approx \sum_{i}^N a_i \psi_i(\xi)$$
+- Pros:
+  - Efficient sampling methodology
+  - Explicit surrogate model
+  - Easy statistical post-processing (eg., sampling, ANOVA) 
+#+begin_latex
+\fontsize{9}\selectfont
+% Define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% Define block styles used later
+
+\tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, 
+    text centered, minimum height=2.5em,drop shadow]
+\tikzstyle{ann} = [above, text width=5em, text centered]
+\tikzstyle{wa} = [sensor, text width=10em, fill=blue!20, 
+    minimum height=7em, rounded corners, drop shadow]
+
+% Define distances for bordering
+\def\blockdist{2.3}
+\def\edgedist{2.5}
+
+\begin{tikzpicture}
+    \node (CleanAirfoil) [wa]  {\includegraphics[width=0.9\textwidth]{ExamplePDF}\\\textbf{Input}};
+    \path (CleanAirfoil)+(4,0) node (FlowSolver) [wa] {\textbf{Computation/}\\\textbf{Experiment}};
+    \path (FlowSolver)+(4,0) node (Droplet) [wa] {\includegraphics[width=0.9\textwidth]{ExamplePDF2}\\\textbf{Output}};
+
+    \path [draw, ->, thick] (CleanAirfoil.east) |- node [right] {} (FlowSolver.west);
+    \path [draw, ->, thick] (FlowSolver.east) -- node [right] {} (Droplet.west);
+            
+\end{tikzpicture}
+
+#+end_latex
+
+[fn:Xiu] Xiu & Karniadakis. The weiner-askey polynomial chaos for stochastic differential equations. /SIAM Journal of Scientific Computing/, 2002.
+
+** Polynomial Chaos Expansions (PCE)
+*Setting*
+- Stochastic input process parameterized by $d$ independent random
+  variables $\xi_1 \cdots \xi_d$ with joint PDF $\rho(\xi)$
+- Objective: approximate statistical dependence of an output variable $f(\xi)$ 
+*Method Synopsis*
+#+begin_latex
+\beqq
+\begin{aligned}
+\text{Polynomial basis:} \quad & \lbrace \psi_k \rbrace_{k=1}^{\infty} \quad , \quad \langle \psi_i , \psi_j \rangle = \delta_{ij} \\
+&\langle f , g \rangle = \int_{\Gamma} f(\xi) g(\xi) \rho(\xi) d\xi \\
+\text{Output Representation:} \quad & f(\xi) \approx \sum_{i}^N a_i \psi_i(\xi) \\
+\text{Projection:} \quad & a_k = \frac{\langle f,\psi_k \rangle}{\| \psi_k \|^2} \\
+\text{Quadrature:} \quad & \langle f,\psi_k \rangle \approx \sum_{i=1}^Q f(\xi^i) \psi_k(\xi^i) w^i \\
+\end{aligned}
+\eeqq
+#+end_latex
+** Polynomial Chaos Expansions (PCE)
+#+begin_latex
+\begin{figure}[ht]
+\centering
+\begin{minipage}[b]{0.45\linewidth}
+\includegraphics[width=0.7\textwidth]{MonteCarlo} \\
+\centering
+\textbf{Monte Carlo} \\
+\begin{equation*}
+  y \approx \delta(\xi - \xi_k)
+\end{equation} \\
+\begin{itemize}
+\item Draw random samples
+\item Data exist at discrete points
+\end{itemize}
+\end{minipage}
+\begin{minipage}[b]{0.45\linewidth}
+\includegraphics[width=0.7\textwidth]{QuadraturePoints} \\
+\centering
+\textbf{Polynomial Chaos}
+\begin{equation*}
+  y \approx \sum_{i}^{Q} c_i \psi_i(\xi)
+\end{equation} \\
+\begin{itemize}
+\item Take data at collocation points
+\item Construct global surrogate
+\end{itemize}
+\end{minipage}
+\end{figure}
+#+end_latex
+
+
+
+
+* Fires: Example study
+** Input Processes
+*Parameters: Fire source temperature and location*
+- Empty cargo hold
+- Uniform distribution for both independent parameters
+#+begin_latex
+\fontsize{9}\selectfont
+% Define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% Define block styles used later
+
+\tikzstyle{basic}=[draw, fill=blue!20, text width=5em, 
+    text centered, minimum height=2.5em,drop shadow]
+\tikzstyle{mode} = [basic, text width=10em, fill=blue!20, 
+    minimum height=4em, rounded corners, drop shadow]
+
+% Define distances for bordering
+\def\blockdist{2.3}
+\def\edgedist{2.5}
+\centering
+\begin{tikzpicture}
+    \node (ColdLeft) [mode]  {\includegraphics[width=0.9\textwidth]{ColdLeft}};
+    \path (ColdLeft)+(6,0) node (HotLeft) [mode] {\includegraphics[width=0.9\textwidth]{HotLeft}};
+    \path (ColdLeft)+(0,-3) node (ColdRight) [mode] {\includegraphics[width=0.9\textwidth]{ColdRight}};
+    \path (ColdRight)+(6,0) node (HotRight) [mode] {\includegraphics[width=0.9\textwidth]{HotRight}};
+
+    \path [draw, ->, thick] (ColdLeft.east) |- node [right=1.3cm,above=2mm] {Temperature} (HotLeft.west);
+    \path [draw, ->, thick] (ColdLeft.south) -- node [left=0.25cm,down] {Position} (ColdRight.north);
+    \path [draw, ->, thick] (ColdLeft.south east) -- node [left] {} (HotRight.north west);
+
+    \begin{pgfonlayer}{background}
+        \path (ColdLeft.west)+(-1,1) node (a) {};
+        \path (HotRight.east)+(1,-1) node (b) {};
+        \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
+    \end{pgfonlayer}
+\end{tikzpicture}
+#+end_latex
+** Input Processes
+*Parameters: Fire source temperature and location*
+- Empty cargo hold
+- Uniform distribution for both independent parameters
+#+begin_latex
+\fontsize{9}\selectfont
+% Define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% Define block styles used later
+
+\tikzstyle{basic}=[draw, fill=blue!20, text width=5em, 
+    text centered, minimum height=2.5em,drop shadow]
+\tikzstyle{mode} = [basic, text width=10em, fill=blue!20, 
+    minimum height=4em, rounded corners, drop shadow]
+
+% Define distances for bordering
+\def\blockdist{2.3}
+\def\edgedist{2.5}
+\centering
+\begin{tikzpicture}
+    \node (ColdLeft) [mode]  {\movie[width=0.9\textwidth,height=0.39\textwidth,poster,autostart,loop,borderwidth]{}{FireColdCenter.avi}};
+    \path (ColdLeft)+(6,0) node (HotLeft) [mode] {\movie[width=0.9\textwidth,height=0.39\textwidth,poster,autostart,loop,borderwidth]{}{FireHotCenter.avi}};
+    \path (ColdLeft)+(0,-3) node (ColdRight) [mode] {\movie[width=0.9\textwidth,height=0.39\textwidth,poster,autostart,loop,borderwidth]{}{FireColdRight.avi}};
+    \path (ColdRight)+(6,0) node (HotRight) [mode] {\movie[width=0.9\textwidth,height=0.39\textwidth,poster,autostart,loop,borderwidth]{}{FireHotRight.avi}};
+
+    \path [draw, ->, thick] (ColdLeft.east) |- node [right=1.3cm,above=2mm] {Temperature} (HotLeft.west);
+    \path [draw, ->, thick] (ColdLeft.south) -- node [left=0.25cm,down] {Position} (ColdRight.north);
+    \path [draw, ->, thick] (ColdLeft.south east) -- node [left] {} (HotRight.north west);
+
+    \begin{pgfonlayer}{background}
+        \path (ColdLeft.west)+(-1,1) node (a) {};
+        \path (HotRight.east)+(1,-1) node (b) {};
+        \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
+    \end{pgfonlayer}
+\end{tikzpicture}
+#+end_latex
+
+** Output Measurements
+*Problem*
+- UQ for the entire flow field is difficult
+  - Spatio-temporal behavior varies significantly
+  - Need a more tractable set of observables
+*Solution*
+- Reduce spatial dimensionality
+  - Ceiling temperature is most important for detection
+- Separate time and space
+  - /Intuition/: buoyant plumes convect upwards at some characteristic
+    time $t_R$ dominated by source temperature
+  - Easier to compare ceiling temperatures at their respective values
+    of $t_R$ than at same time after ignition
+*Output Measurements*
+#+begin_latex
+\begin{equation*}
+\begin{aligned}
+t_R(Z) &= \text{(Rise time)} \\
+\overbar{T_C}(x;Z) &= \frac{1}{\Delta t} \int_{t_R(Z)}^{t_R(Z)+\Delta t} T_C(x,t;Z) dt
+\end{aligned}
+\end{equation}
+#+end_latex
+
+** Results: Rise Time
+
+#+begin_latex
+\centering
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth,trim = 40mm 0mm 40mm 0mm,clip]{PCEMapTR_matplotlib} \\
+\textbf{PCE surrogate map of $t_R(Z)$} \\
+\end{figure}
+\begin{itemize}
+\item $t_R$ is dominated by source temperature
+\item Clearly, hotter source gives shorter rise time
+\end{itemize}
+\end{minipage}
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{PCEStatTR_matplotlib} \\
+\textbf{Probability density function} \\
+\end{figure}
+\begin{itemize}
+\item Nonlinear mapping deforms (initially uniform) PDF
+\item Tail caused by low temperature and wall effect
+\end{itemize}
+\end{minipage}
+#+end_latex
+
+** Results: Ceiling Temperature
+
+#+begin_latex
+\centering
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{CeilingTempMeanPercentiles} \\
+\textbf{Mean and Confidence Intervals}
+\end{figure}
+\end{minipage}
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{SobolIndexCeilingTemp} \\
+\textbf{Sobol indices}
+\end{figure}
+\end{minipage}
+
+\begin{minipage}[t]{0.45\linewidth}
+\begin{itemize}
+\item ({\color{blue} 68$\%$}, {\color{red} 95$\%$}) C.I.
+\item Profile skewed right of center
+\item Wide variation in temperature range and locations possible
+\end{itemize}
+\end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{itemize}
+\item ({\color{blue} $x_S$}, {\color{red} $T_S$})
+\item Fraction of variance attributable to each individual parameter
+\item {\color{red} $T_S$}: dominant near maximum
+\item {\color{blue} $x_S$}: dominant near periphery
+\end{itemize}
+\end{minipage}
+
+#+end_latex
+
+** Results: Related Statistics
+
+#+begin_latex
+\centering
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{maxCeilingTempDistribution} \\
+\textbf{PDF of max($T_C$)}
+\end{figure}
+\end{minipage}
+\begin{minipage}[b]{0.45\linewidth}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{maxCeilingTempLocationDistribution} \\
+\textbf{PDF of Location(max($T_C$))}
+\end{figure}
+\end{minipage}
+#+end_latex
+
+- Can estimate statistics of quantities derived from output measurements
+- The maximum ceiling temperature and its location are of practical engineering interest
+- For this example, a temperature sensor must:
+  - Be able to detect temperatures roughly in the range $T_C \in [1.05,1.35] \times T_{\infty}$
+  - Be placed on the ceiling in roughly in the range $x_C \in [-0.25, 0.5]$
+
 ** Conclusions/Future Work
 
-*Conclusions*
-- Airfoil icing is a process subject to much uncertainty
-  - Wide variation in ice shapes
-  - Sensitivity to perturbations in physical conditions
-- We have briefly demonstrated three approaches to quantifying
-  uncertainty in this problem
-  - Heuristic parameterization
-  - Data-based parameterization
-  - Computational-based UQ
-*Future Work*
-- Parameterized UQ
-  - Investigate effect of more shape parameters
-  - Extend efforts to 3D wing icing
-- Computational modeling
-  - Continue development and testing of icing code
-  - Use icing code to investigate statistical variation of ice shape
+*Problem*
+- Airfoil icing/cargo hold fire safety is important and subject to uncertainty
+- Experiments are expensive
+- CFD methods must be high-resolution
+*Solutions: Icing*
+- Data-based modeling of shape variation
+- Computational-based UQ
+*Solutions: Fires*
+- Discontinuous-Galerkin solver for high CFD resolution
+- Polynomial Chaos for efficient sampling and accurate surrogate/statistics
+*Future Work: Fires*
+- Cargo holds in practice are not empty
+- Extend framework to handle cargo hold clutter (baggage, pipes, etc.)
+*Future Work: Icing*
+- Extend efforts to 3D wing icing
+- Continue development and testing of icing code
+- Use icing code to investigate statistical variation of ice shape

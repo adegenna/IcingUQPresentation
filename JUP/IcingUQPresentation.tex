@@ -1,23 +1,65 @@
-#+STARTUP: beamer
-#+LaTeX_CLASS: beamer
-#+LaTeX_CLASS_OPTIONS: [9pt]
+% Created 2016-01-20 Wed 14:17
+\documentclass[9pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\mode<beamer>{\usetheme{Warsaw}}
+\mode<beamer>{\setbeamertemplate{blocks}[rounded][shadow=false]}
+\mode<beamer>{\addtobeamertemplate{block begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}}
+\mode<beamer>{\setbeamercolor{structure}{fg=orange}}
+\mode<beamer>{\setbeamercovered{transparent}}
+\AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+\usepackage{subcaption}
+\usepackage{multimedia}
+\usepackage{tikz}
+\usepackage{subfigure,subfigmat}
+\usepackage{threeparttable}
+\usetikzlibrary{shapes,arrows,shadows}
+\usepackage{bm, amssymb, amsmath, array, pdfpages}
+\newcommand{\bv}[1]{\mathbf{#1}}
+\newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\beq}[0]{\begin{equation}}
+\newcommand{\eeq}[0]{\end{equation}}
+\newcommand{\beqa}[0]{\begin{eqnarray}}
+\newcommand{\eeqa}[0]{\end{eqnarray}}
+\newcommand{\beqq}[0]{\begin{equation*}}
+\newcommand{\eeqq}[0]{\end{equation*}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\ip}[2]{\langle #1, #2\rangle}
+\providecommand{\alert}[1]{\textbf{#1}}
 
-#+latex_header: \mode<beamer>{\usetheme{Warsaw}}
-#+latex_header: \mode<beamer>{\setbeamertemplate{blocks}[rounded][shadow=false]}
-#+latex_header: \mode<beamer>{\addtobeamertemplate{block begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}}
-#+latex_header: \mode<beamer>{\setbeamercolor{structure}{fg=orange}}
-#+latex_header: \mode<beamer>{\setbeamercovered{transparent}}
-#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+\title{Uncertainty Quantification for Ice Accretion and Cargo Hold Fires}
+\author[DeGennaro, Lohry, Rowley and Martinelli]{Anthony DeGennaro \newline Mark Lohry \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
+\date{FAA JUP Winter 2016 Quarterly Meeting \\ Atlantic City, NJ \\ January 2016}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
 
-#+latex_header: \usepackage{subcaption}
-#+latex_header: \usepackage{multimedia}
-#+latex_header: \usepackage{tikz}
-#+latex_header: \usepackage{subfigure,subfigmat}
-#+latex_header: \usepackage{threeparttable}
-#+latex_header: \usetikzlibrary{shapes,arrows,shadows}
-#+latex_header: \usepackage{bm, amssymb, amsmath, array, pdfpages}
+\begin{document}
 
-#+begin_latex
+\maketitle
+
+\begin{frame}
+\frametitle{Outline}
+\setcounter{tocdepth}{3}
+\tableofcontents
+\end{frame}
+
+
+
 % Define my settings
 
 \graphicspath{{Figures/}}
@@ -27,44 +69,43 @@
 \node[anchor=north east,yshift=2pt] at (current page.north east) {\includegraphics[height=0.7cm]{Shield}};
 \end{tikzpicture}}
 %
-#+end_latex
 
-#+latex_header: \newcommand{\bv}[1]{\mathbf{#1}}
-#+latex_header: \newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
-#+latex_header: \newcommand{\beq}[0]{\begin{equation}}
-#+latex_header: \newcommand{\eeq}[0]{\end{equation}}
-#+latex_header: \newcommand{\beqa}[0]{\begin{eqnarray}}
-#+latex_header: \newcommand{\eeqa}[0]{\end{eqnarray}}
-#+latex_header: \newcommand{\beqq}[0]{\begin{equation*}}
-#+latex_header: \newcommand{\eeqq}[0]{\end{equation*}}
-#+latex_header: \newcommand{\bs}[1]{\boldsymbol{#1}}
-#+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
-#+BEAMER_FRAME_LEVEL: 2
 
-#+DATE: FAA JUP Winter 2016 Quarterly Meeting \\ Atlantic City, NJ \\ January 2016
-#+TITLE: Uncertainty Quantification for Ice Accretion and Cargo Hold Fires
-#+AUTHOR: Anthony DeGennaro \newline Mark Lohry \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}
 
 
-* Icing: Introduction/Methodology
+\section{Icing: Introduction/Methodology}
+\label{sec-1}
+\begin{frame}
+\frametitle{Introduction}
+\label{sec-1-1}
 
-** Introduction
-*Motivation*
-- Wing icing is a serious issue for pilots
-  - Massive flow separation, lower lift + higher drag
-  - Unpredictable stall
-- Wing ice shapes exhibit wide variation, sensitivity to physical
+\textbf{Motivation}
+\begin{itemize}
+\item Wing icing is a serious issue for pilots
+\begin{itemize}
+\item Massive flow separation, lower lift + higher drag
+\item Unpredictable stall
+\end{itemize}
+\item Wing ice shapes exhibit wide variation, sensitivity to physical
   parameters
-  - Complex physics (coupled airflow-thermodynamics)
-  - Uncertainty in physical parameters
-*Research Goals*
-- How can observed variations in ice shape be modeled
+\begin{itemize}
+\item Complex physics (coupled airflow-thermodynamics)
+\item Uncertainty in physical parameters
+\end{itemize}
+\end{itemize}
+\textbf{Research Goals}
+\begin{itemize}
+\item How can observed variations in ice shape be modeled
   efficiently with a low number of parameters?
-- How does uncertainty in the ice shape create uncertainty in
+\item How does uncertainty in the ice shape create uncertainty in
   aerodynamic performance?
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Experimental/Computational Variation in Ice Shape}
+\label{sec-1-2}
 
-** Experimental/Computational Variation in Ice Shape
 
 \vspace*{-0.5cm}\begin{figure}
   \begin{subfigmatrix}{2}
@@ -73,33 +114,40 @@
   \end{subfigmatrix}
 \end{figure}
 
-- Wide variation in experimental/computational ice shapes[fn:Habashi][fn:Wright]
-- Suggests sensitivity to perturbations in underlying physical
-  processes
-- /UQ approach:/ parameterize the shape variation and study its
-  effects on aerodynamics
-
-[fn:Habashi] Beaugendre H., Morency M., and Habashi W.G. /Development
-of a Second Generation in-Flight Icing Simulation Code/. Journal of
+\begin{itemize}
+\item Wide variation in experimental/computational ice shapes\footnote{Beaugendre H., Morency M., and Habashi W.G. \emph{Development of a Second Generation in-Flight Icing Simulation Code}. Journal of
 Fluids Engineering, ASME, 2006.
-[fn:Wright] Wright W. and Potapczuk, M.G. /Semi-Empirical Modeling of
-SLD Physics/, AIAA 2004-412. 42$^{nd}$ AIAA Aerospace Sciences
+ }\textsuperscript{,}\,\footnote{Wright W. and Potapczuk, M.G. \emph{Semi-Empirical Modeling of SLD Physics}, AIAA 2004-412. 42$^{nd}$ AIAA Aerospace Sciences
 Meeting, Reno, NV, 2004.
+ }
+\item Suggests sensitivity to perturbations in underlying physical
+  processes
+\item \emph{UQ approach:} parameterize the shape variation and study its
+  effects on aerodynamics
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Input-Process Modeling}
+\label{sec-1-3}
 
-** Input-Process Modeling
 
-- *Heuristic*
-  - Ice shape parameters are selected by intuition
-  - Examples: horn height, angle
-- *Data-Based: Proper Orthogonal Decomposition* [fn:POD]
-  - Analyze database of /M/ shapes from experiments/simulations
-  - Each individual ice shape can be represented by a vector $\bv{x}
+\begin{itemize}
+\item \textbf{Heuristic}
+\begin{itemize}
+\item Ice shape parameters are selected by intuition
+\item Examples: horn height, angle
+\end{itemize}
+\item \textbf{Data-Based: Proper Orthogonal Decomposition} \footnote{Holmes P. et. al. \emph{Turbulence, Coherent Structures, Dynamical Systems and Symmetry}, Cambridge University Press, New York, 2012.
+ }
+\begin{itemize}
+\item Analyze database of \emph{M} shapes from experiments/simulations
+\item Each individual ice shape can be represented by a vector $\bv{x}
     \in \mathbb{R}^N$
-  - Approximate $\bv{x}$ using some basis vectors $\psi_i$:
+\item Approximate $\bv{x}$ using some basis vectors $\psi_i$:
     \begin{equation*}
       \bv{x} \approx \sum_{i=1}^P a_i \psi_i
     \end{equation*}
-  - Choose basis vectors to be the eigenvectors of the dataset
+\item Choose basis vectors to be the eigenvectors of the dataset
     covariance matrix
     \begin{equation*}
     \begin{aligned}
@@ -113,41 +161,51 @@ Meeting, Reno, NV, 2004.
        \end{bmatrix}
     \end{aligned}
     \end{equation*}
-[fn:POD] Holmes P. et. al. /Turbulence, Coherent Structures, Dynamical
-Systems and Symmetry/, Cambridge University Press, New York, 2012.
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Polynomial Chaos Expansions (PCE)}
+\label{sec-1-4}
 
-** Polynomial Chaos Expansions (PCE)
 
-- *Polynomial Chaos Framework* [fn:XiuBook]
-  - Let $\bv{Z} = (Z_1 \ldots Z_d)$ be $d$ random variables with PDF
+\begin{itemize}
+\item \textbf{Polynomial Chaos Framework} \footnote{Xiu D. \emph{Numerical Methods for Stochastic Computations: A Spectral Method Approach}. Princeton University Press, 2010.
+ }
+\begin{itemize}
+\item Let $\bv{Z} = (Z_1 \ldots Z_d)$ be $d$ random variables with PDF
     $\rho(\bv{Z})$ that parameterize ice
-  - Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
+\item Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
     which are orthogonal w.r.t. $\rho(\bv{Z})$
-  - Let $y(\bv{Z})$ denote the mapping from $\bv{Z}$ to an aerodynamic
+\item Let $y(\bv{Z})$ denote the mapping from $\bv{Z}$ to an aerodynamic
     performance metric
-- *Probabilistic Collocation Method:*
-  - /Representation/ 
+\end{itemize}
+\item \textbf{Probabilistic Collocation Method:}
+\begin{itemize}
+\item \emph{Representation} 
     \begin{equation*}
       y(\bv{Z}) \approx \sum_{|i|=0}^N y_i \Phi_i(\bv{Z})
     \end{equation*}
-  - /Orthonormality/ 
+\item \emph{Orthonormality} 
     \begin{equation*}
     \begin{aligned}
       \ip{f}{g} &= \int_{\Gamma} f(\bv{z})g(\bv{z}) \rho(\bv{z}) d\bv{z} \\
       \ip{\Phi_i}{\Phi_j} &= \delta_{ij}
     \end{aligned}
     \end{equation*}
-  - /Quadrature/ 
+\item \emph{Quadrature} 
     \begin{equation*}
       y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
     y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k
     \end{equation*}
-[fn:XiuBook] Xiu D. /Numerical Methods for Stochastic Computations: A
-Spectral Method Approach/. Princeton University Press, 2010.
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{PCE with Sparse Grids}
+\label{sec-1-5}
 
-** PCE with Sparse Grids
 
-#+begin_latex
 \begin{columns}[c]
   \column{0.7\textwidth}
     \centering
@@ -158,29 +216,32 @@ Spectral Method Approach/. Princeton University Press, 2010.
     \includegraphics[width=0.95\textwidth]{SparseGrid2} \\
     {\bf Anisotropic Grid}
 \end{columns}
-#+end_latex
 
-- *Sparse Grids*[fn:LeMaitre]
-  - /Efficient/: Only a subset of the full quadrature grid is used
-    - For $d >> 1$, number of samples scales as $2^N {N+d \choose d} <<
+\begin{itemize}
+\item \textbf{Sparse Grids}\footnote{LeMaitre O. \emph{Spectral Methods for Uncertainty Quantification}. Springer, 2010.
+ }
+\begin{itemize}
+\item \emph{Efficient}: Only a subset of the full quadrature grid is used
+\begin{itemize}
+\item For $d >> 1$, number of samples scales as $2^N {N+d \choose d} <<
       (N+1)^d$
-  - /Adaptive/: Start with a coarse mesh, adaptively refine until
+\end{itemize}
+\item \emph{Adaptive}: Start with a coarse mesh, adaptively refine until
     achieve desired resolution
-  - /Anisotropic/: Refine grid in most ``important" directions
-  - Implemented in DAKOTA[fn:Dakota] (open-source UQ code)
-
-[fn:LeMaitre] LeMaitre O. /Spectral Methods for Uncertainty
-Quantification/. Springer, 2010.
-[fn:Dakota] Adams et. al. /DAKOTA, A Multilevel Parallel
-Object-Oriented Framework for Design Optimization.../ V. 5.3 User's
+\item \emph{Anisotropic}: Refine grid in most ``important'' directions
+\item Implemented in DAKOTA\footnote{Adams et. al. \emph{DAKOTA, A Multilevel Parallel Object-Oriented Framework for Design Optimization\ldots{}} V. 5.3 User's
 Manual. SAND2010-2183.
+ } (open-source UQ code)
+\end{itemize}
+\end{itemize}
+\end{frame}
+\section{Icing: UQ Examples}
+\label{sec-2}
+\begin{frame}
+\frametitle{Heuristic Input Processes}
+\label{sec-2-1}
 
 
-* Icing: UQ Examples
-
-** Heuristic Input Processes
-
-#+begin_latex
 \begin{columns}[c]
   \column{0.33\textwidth}
     \centering
@@ -198,30 +259,37 @@ Manual. SAND2010-2183.
     \includegraphics[width=0.9\textwidth]{MCgpcPDFLargeUnc_CL} \\
     {\bf Statistics}
 \end{columns}
-#+end_latex
 
-- Heuristic approach[fn:DeGennaro]
-- 2-D shape parameter space
+\begin{itemize}
+\item Heuristic approach\footnote{DeGennaro A., Rowley C.W., and Martinelli,
+L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Expansions}. To appear in Journal of Aircraft, 2015.
+ }
+\item 2-D shape parameter space
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Data-Based Input Processes: 3D Wing}
+\label{sec-2-2}
 
-[fn:DeGennaro] DeGennaro A., Rowley C.W., and Martinelli,
-L. /Uncertainty Quantification for Airfoil Icing using Polynomial
-Chaos Expansions/. To appear in Journal of Aircraft, 2015.
-
-** Data-Based Input Processes: 3D Wing 
 \begin{figure}
   \centering
   \includegraphics[width=0.6\textwidth]{CRMHorn}
 \end{figure}
 
-- NASA Common Research Model (CRM), $65\%$ scale[fn:CRM]
-  - 45 min accretion time, altitude = 10,000 ft, velocity = 232 knots,
+\begin{itemize}
+\item NASA Common Research Model (CRM), $65\%$ scale\footnote{Broeren A. et. al. \emph{Swept-Wing Ice Accretion Characterization and Aerodynamics}, AIAA 2013-2824.
+ }
+\begin{itemize}
+\item 45 min accretion time, altitude = 10,000 ft, velocity = 232 knots,
     temperature = $-4^{\text{o}}$ C, MVD = 20 $\mu m$, LWC = 0.55
     $g/m^3$
-[fn:CRM] Broeren A. et. al. /Swept-Wing Ice Accretion Characterization
-and Aerodynamics/, AIAA 2013-2824.
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Data-Based Input Processes: 3D Wing}
+\label{sec-2-3}
 
-** Data-Based Input Processes: 3D Wing
-#+begin_latex
 \begin{columns}[c]
   \column{0.3\textwidth}
     \centering
@@ -236,19 +304,22 @@ and Aerodynamics/, AIAA 2013-2824.
     \includegraphics[width=1.25\textwidth]{PODModes} \\
     {\bf POD Modes}
 \end{columns}
-#+end_latex
 \vspace{1cm}
 \begin{equation*}
 N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
 \end{equation*}
 
-- /h, a, b/ are scaling parameters
-- $c_1, c_2$ are POD coefficients
-- This collapses 100 different snapshots into 5 parameters
+\begin{itemize}
+\item \emph{h, a, b} are scaling parameters
+\item $c_1, c_2$ are POD coefficients
+\item This collapses 100 different snapshots into 5 parameters
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Data-Based Input Processes: 3D Wing}
+\label{sec-2-4}
 
-** Data-Based Input Processes: 3D Wing
 
-#+begin_latex
 \begin{columns}[c]
   \column{0.5\textwidth}
     \centering
@@ -263,29 +334,35 @@ N(s) = h \lbrace \bar{N}(as + b) + \sum_{i=1}^2 c_i \Phi_i(as + b)   \rbrace
     \includegraphics[width=.75\textwidth]{DifferentShapesPosition} \\
     {\bf Position}    
 \end{columns}
-#+end_latex
 
-- 2 POD coefficients (/shape/) + width, height, position parameters (/scaling/)
+\begin{itemize}
+\item 2 POD coefficients (\emph{shape}) + width, height, position parameters (\emph{scaling})
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Data-Based Input Processes: 2D Shapes}
+\label{sec-2-5}
 
-** Data-Based Input Processes: 2D Shapes
 
 \begin{figure}
   \centering
   \includegraphics[width=0.7\textwidth]{Dataset}
 \end{figure}
 
-- Business jet clean airfoil geometry[fn:Addy]
-- 54 ice shapes, exposed to wide range of various icing conditions
+\begin{itemize}
+\item Business jet clean airfoil geometry\footnote{Addy, H.E. \emph{Ice Accretions and Icing Effects for Modern Airfoils}. NASA TR 2000-210031.
+ }
+\item 54 ice shapes, exposed to wide range of various icing conditions
   consistent with FAA certification guidelines
-- POD dataset will consist of binary values defined on a static
+\item POD dataset will consist of binary values defined on a static
   Cartesian mesh (`1' if mesh point is on the ice, `0' if not)
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Data-Based Input Processes: 2D Shapes}
+\label{sec-2-6}
 
-[fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
-Airfoils/. NASA TR 2000-210031.
 
-** Data-Based Input Processes: 2D Shapes
-
-#+begin_latex
 \begin{columns}[c]
   \column{0.45\textwidth}
     \centering
@@ -306,13 +383,17 @@ Airfoils/. NASA TR 2000-210031.
     {\bf Mode 5}
 \end{columns}
 
-#+end_latex
 
-- 8 Modes retained; this is where POD eigenvalue magnitudes have
+\begin{itemize}
+\item 8 Modes retained; this is where POD eigenvalue magnitudes have
   decayed by an order of magnitude
-** Data-Based Input Processes: 2D Shapes
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Data-Based Input Processes: 2D Shapes}
+\label{sec-2-7}
 
-#+begin_latex
+
 \begin{columns}[c]
   \column{0.45\textwidth}
     \centering
@@ -331,12 +412,12 @@ Airfoils/. NASA TR 2000-210031.
 \begin{center}
 {\bf Ice Reconstructions}
 \end{center}
+\end{frame}
+\begin{frame}
+\frametitle{Statistics: 3D Wing}
+\label{sec-2-8}
 
-#+end_latex
 
-** Statistics: 3D Wing
-
-#+begin_latex
 \begin{columns}[c]
   \column{0.37\textwidth}
     \centering
@@ -348,26 +429,39 @@ Airfoils/. NASA TR 2000-210031.
     $\bm{C_D}$ {\bf Statistics}
 \end{columns}
 
-#+end_latex
 
-|           | Width | Position | Height | POD 1 | POD 2 |
-|-----------+-------+----------+--------+-------+------ |
-| T ($C_L$) |  0.03 |  0.69    | 0.15   | 0.11  | 0.14  |
 
-- Our surrogate is an explicit polynomial function of the input
+\begin{center}
+\begin{tabular}{lrrrrr}
+            &  Width  &  Position  &  Height  &  POD 1  &  POD 2  \\
+\hline
+ T ($C_L$)  &   0.03  &      0.69  &    0.15  &   0.11  &   0.14  \\
+\end{tabular}
+\end{center}
+
+
+
+\begin{itemize}
+\item Our surrogate is an explicit polynomial function of the input
   variables, making statistical inference easy/quick
-- PCE surrogate computed using 1,103 sparse grid points
-- Sobol index $T_i = \frac{\mathbb{E}\left[ Var\left(
+\item PCE surrogate computed using 1,103 sparse grid points
+\item Sobol index $T_i = \frac{\mathbb{E}\left[ Var\left(
   Y|Z_{-i}\right)\right]}{Var\left( Y\right)}$ is a measure of how much
   $Z_i$ contributes to the total variance of $Y(\bv{Z})$
-- For our parameter ranges, position perturbation accounts for most of
+\item For our parameter ranges, position perturbation accounts for most of
   the statistical variation
-** Statistics: 3D Wing
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Statistics: 3D Wing}
+\label{sec-2-9}
 
-- Analyze statistical clustering of horns that produce bottom and top
+
+\begin{itemize}
+\item Analyze statistical clustering of horns that produce bottom and top
   $10\%$ of $C_L$ variation
+\end{itemize}
 
-#+begin_latex
 \begin{columns}[c]
   \column{0.40\textwidth}
     \centering
@@ -390,12 +484,12 @@ Airfoils/. NASA TR 2000-210031.
       \item Sharp, upper skew shape
     \end{itemize}
 \end{columns}
+\end{frame}
+\begin{frame}
+\frametitle{Flow Solutions}
+\label{sec-2-10}
 
-#+end_latex
 
-** Flow Solutions
-
-#+begin_latex
 \begin{columns}[c]
   \column{0.30\textwidth}
     \centering
@@ -410,23 +504,31 @@ Airfoils/. NASA TR 2000-210031.
     \includegraphics[width=1\textwidth]{BadHornPOD.png} \\
     {\bf Unfavorable shape skew}
 \end{columns}
+\end{frame}
+\section{Icing: Computational-Based UQ}
+\label{sec-3}
+\begin{frame}
+\frametitle{Motivation}
+\label{sec-3-1}
 
-#+end_latex
+\begin{itemize}
+\item \textbf{Investigate uncertainty in the physical process of icing}
+\begin{itemize}
+\item What is the statistical effect of uncertainty in physical parameters?
+\begin{itemize}
+\item Free-stream temperature
+\item Angle of attack
+\item Convective heat transfer
+\item Droplet diameter distribution
+\item Accretion time
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Airfoil Icing Code Flowchart}
+\label{sec-3-2}
 
-
-* Icing: Computational-Based UQ
-
-** Motivation
-- *Investigate uncertainty in the physical process of icing*
-  - What is the statistical effect of uncertainty in physical parameters?
-    - Free-stream temperature
-    - Angle of attack
-    - Convective heat transfer
-    - Droplet diameter distribution
-    - Accretion time
-
-** Airfoil Icing Code Flowchart 
-#+begin_latex
 \fontsize{7}\selectfont
 % Define the layers to draw the diagram
 \pgfdeclarelayer{background}
@@ -469,11 +571,11 @@ Airfoils/. NASA TR 2000-210031.
     \end{pgfonlayer}
 
 \end{tikzpicture}
+\end{frame}
+\begin{frame}
+\frametitle{Droplet Advection}
+\label{sec-3-3}
 
-#+end_latex
-
-** Droplet Advection
-#+begin_latex
 \begin{equation*}
   \begin{align}
     \frac{d \bv{x}}{d t} &= \bv{v} \\
@@ -491,10 +593,11 @@ Airfoils/. NASA TR 2000-210031.
     \includegraphics[width=1\textwidth]{ExampleR100em6} \\
     {\bf R = 100$\mu$m}
 \end{columns}
-#+end_latex
+\end{frame}
+\begin{frame}
+\frametitle{Thermodynamics}
+\label{sec-3-4}
 
-** Thermodynamics
-#+begin_latex
 \begin{equation*}
   \begin{align}
     \rho_w \left \lbrace \frac{\partial h_f}{\partial t} + \nabla \cdot (\bv{u_f} h_f) \right \rbrace &= \dot{m}_{imp} - \dot{m}_{ice} \\
@@ -504,42 +607,64 @@ Airfoils/. NASA TR 2000-210031.
   \end{align}
 \end{equation}
 
-#+end_latex
-- \textbf{Mass} 
-  - Enters through impinging droplets
-  - Exits via evaporation/sublimation and freezing
-- \textbf{Energy} 
-  - Enters through impinging droplets, freezing of ice 
-  - Exits via evaporation/sublimation, radiation, convection
-- Solved explicitly using finite volume discretization with Roe scheme upwinding
+\begin{itemize}
+\item \textbf{Mass}
+\begin{itemize}
+\item Enters through impinging droplets
+\item Exits via evaporation/sublimation and freezing
+\end{itemize}
+\item \textbf{Energy}
+\begin{itemize}
+\item Enters through impinging droplets, freezing of ice
+\item Exits via evaporation/sublimation, radiation, convection
+\end{itemize}
+\item Solved explicitly using finite volume discretization with Roe scheme upwinding
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Preliminary Intermediate Results: Ice Shapes}
+\label{sec-3-5}
 
-** Preliminary Intermediate Results: Ice Shapes
-#+begin_latex
     \centering
     \includegraphics[width=0.65\textwidth]{Rime405Example.png}
-#+end_latex
 
-- NACA0012, $\alpha = 4^o$, $T_{\infty} = 256 K$, $U_{\infty}$ = 103 m/s, MVD = 20 $\mu m$, LWC = 0.55 g/m$^3$, Re = 4.14 million, $\Delta T$ = 7 min
-- Low temperatures: convective heat transfer high enough to freeze all incoming droplets instantly (rime)
+\begin{itemize}
+\item NACA0012, $\alpha = 4^o$, $T_{\infty} = 256 K$, $U_{\infty}$ = 103 m/s, MVD = 20 $\mu m$, LWC = 0.55 g/m$^3$, Re = 4.14 million, $\Delta T$ = 7 min
+\item Low temperatures: convective heat transfer high enough to freeze all incoming droplets instantly (rime)
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Work In-Progress}
+\label{sec-3-6}
 
-** Work In-Progress
-- Implement rough-wall extension in Spalart-Almaras turbulence model
-- Implement neglected mass/energy transfer mechanisms
-- Verify icing calculations against published results
-- Perform UQ studies, investigate sensitivity to physical parameters
-  - Temperature, convective heat transfer coefficient, Reynolds number, MVD, LWC, angle of attack, etc.
+\begin{itemize}
+\item Implement rough-wall extension in Spalart-Almaras turbulence model
+\item Implement neglected mass/energy transfer mechanisms
+\item Verify icing calculations against published results
+\item Perform UQ studies, investigate sensitivity to physical parameters
+\begin{itemize}
+\item Temperature, convective heat transfer coefficient, Reynolds number, MVD, LWC, angle of attack, etc.
+\end{itemize}
+\end{itemize}
+\end{frame}
+\section{Fires: Introduction/Methodology}
+\label{sec-4}
+\begin{frame}
+\frametitle{Motivation}
+\label{sec-4-1}
 
-
-
-
-
-
-* Fires: Introduction/Methodology
-** Motivation
-- *Cargo hold fires are a significant safety hazard*
-  - Tight constraints for detection/suppression
-  - FAA requires detection of cargo fire within 60 seconds of ignition[fn:FAA][fn:Oztekin]
-#+begin_latex
+\begin{itemize}
+\item \textbf{Cargo hold fires are a significant safety hazard}
+\begin{itemize}
+\item Tight constraints for detection/suppression
+\item FAA requires detection of cargo fire within 60 seconds of ignition\footnote{Blake, D. et. al. 2014 Fire Safety Highlights. Federal
+Aviation Administration. Research Summary, 2014.
+ }\textsuperscript{,}\,\footnote{Oztekin, E. S. Heat and mass transfer due to a small-fire in
+an aircraft cargo compartment. \International Journal of Heat and Mass
+Transfer\, Vol. 73, 2014, pp. 562-573.
+ }
+\end{itemize}
+\end{itemize}
 \centering
 \begin{minipage}[b]{0.45\linewidth}
 \begin{figure}[ht]
@@ -553,18 +678,19 @@ Airfoils/. NASA TR 2000-210031.
 \textbf{Cargo hold fire generated from e-tablet}
 \end{figure}
 \end{minipage}
-#+end_latex
-[fn:Oztekin] Oztekin, E. S. Heat and mass transfer due to a small-fire in
-an aircraft cargo compartment. \International Journal of Heat and Mass
-Transfer\, Vol. 73, 2014, pp. 562-573.
-[fn:FAA] Blake, D. et. al. 2014 Fire Safety Highlights. Federal
-Aviation Administration. Research Summary, 2014.
+\end{frame}
+\begin{frame}
+\frametitle{Motivation}
+\label{sec-4-2}
 
-** Motivation
-- *Current detection systems are overly conservative*[fn:alarms]
-  - 200-to-1 false alarm ratio (1995-99)
-  - Unscheduled landings are expensive
-#+begin_latex
+\begin{itemize}
+\item \textbf{Current detection systems are overly conservative}\footnote{Blake. Aircraft cargo compartment smoke detector alarm incidents on U.S.-registered aircraft. \emph{FAA technical note} FAA-TN00/29, 2000.
+ }
+\begin{itemize}
+\item 200-to-1 false alarm ratio (1995-99)
+\item Unscheduled landings are expensive
+\end{itemize}
+\end{itemize}
 \centering
 \begin{minipage}[b]{0.45\linewidth}
 \begin{figure}
@@ -578,16 +704,20 @@ Aviation Administration. Research Summary, 2014.
 \textbf{False/Verified Alarms}
 \end{figure}
 \end{minipage}
-#+end_latex
+\end{frame}
+\begin{frame}
+\frametitle{Motivation}
+\label{sec-4-3}
 
-[fn:alarms] Blake. Aircraft cargo compartment smoke detector alarm incidents on U.S.-registered aircraft. /FAA technical note/ FAA-TN00/29, 2000.
-** Motivation
-- *Fire dynamics are sensitive to boundary condition uncertainty*
-  - Fire source location and temperature within cargo hold can vary
-  - Cargo hold is cluttered with baggage, packages, pipes, etc.
-  - Spatio-temporal fire plume development is affected by this uncertainty
+\begin{itemize}
+\item \textbf{Fire dynamics are sensitive to boundary condition uncertainty}
+\begin{itemize}
+\item Fire source location and temperature within cargo hold can vary
+\item Cargo hold is cluttered with baggage, packages, pipes, etc.
+\item Spatio-temporal fire plume development is affected by this uncertainty
+\end{itemize}
+\end{itemize}
 
-#+begin_latex
 \begin{minipage}[b]{0.45\linewidth}
 \centering
 \begin{figure}[ht]
@@ -601,14 +731,22 @@ Aviation Administration. Research Summary, 2014.
 \movie[width=0.9\textwidth,height=0.39\textwidth,poster,autostart,loop,borderwidth]{}{FireHotRight.avi} \\
 \textbf{Effect of Source Position}
 \end{minipage}
-#+end_latex
+\end{frame}
+\begin{frame}
+\frametitle{Motivation}
+\label{sec-4-4}
 
-** Motivation
-- *Experiments are expensive*
-  - Destructive full-scale cargo hold fire experiments (FAA Tech Center)[fn:OztekinPres]
-  - Each experiment destroys an entire cargo hold
-  - Investigating boundary condition uncertainty is not feasible
-#+begin_latex
+\begin{itemize}
+\item \textbf{Experiments are expensive}
+\begin{itemize}
+\item Destructive full-scale cargo hold fire experiments (FAA Tech Center)\footnote{Oztekin, E. S. Modeling of smoke spread and gas
+transport in an aircraft. 7$^{th}$ International Fire and Cabin Safety
+Research Conference, 2013.
+ }
+\item Each experiment destroys an entire cargo hold
+\item Investigating boundary condition uncertainty is not feasible
+\end{itemize}
+\end{itemize}
 \centering
 \begin{minipage}[b]{0.45\linewidth}
 \begin{figure}[ht]
@@ -622,59 +760,87 @@ Aviation Administration. Research Summary, 2014.
 \textbf{Destructive cargo hold fire experiment}
 \end{figure}
 \end{minipage}
-#+end_latex
-[fn:OztekinPres] Oztekin, E. S. Modeling of smoke spread and gas
-transport in an aircraft. 7$^{th}$ International Fire and Cabin Safety
-Research Conference, 2013.
-** Motivation
-- *Computational methods must be accurate*
-  - Previous attempts at applying CFD to cargo hold fires have used
+\end{frame}
+\begin{frame}
+\frametitle{Motivation}
+\label{sec-4-5}
+
+\begin{itemize}
+\item \textbf{Computational methods must be accurate}
+\begin{itemize}
+\item Previous attempts at applying CFD to cargo hold fires have used
     low-order finite-volume solvers on meshes that do not conform to
-    boundary[fn:OztekinAIAA]
-#+begin_latex
+    boundary\footnote{Oztekin, E.S et. al. Flow induced by a small fire in
+an aircraft cargo compartment. AIAA 2012-0311.
+ }
+\end{itemize}
+\end{itemize}
 \centering
 \begin{figure}[ht]
 \includegraphics[width=0.7\textwidth]{CutCellGeometry.png} \\
 \textbf{Non-conformal Cartesian mesh}
 \end{figure}
-#+end_latex
-[fn:OztekinAIAA] Oztekin, E.S et. al. Flow induced by a small fire in
-an aircraft cargo compartment. AIAA 2012-0311.
-** Motivation
-- *Computational methods must be accurate*
-  - Vorticity dominated, buoyancy-driven flows require high
+\end{frame}
+\begin{frame}
+\frametitle{Motivation}
+\label{sec-4-6}
+
+\begin{itemize}
+\item \textbf{Computational methods must be accurate}
+\begin{itemize}
+\item Vorticity dominated, buoyancy-driven flows require high
     computational accuracy
-#+begin_latex
+\end{itemize}
+\end{itemize}
 \centering
 \movie[width=0.7\textwidth,height=0.525\textwidth,poster,autostart,loop,borderwidth]{}{N1_N2_N3.avi} \\
 \textbf{Discontinuous Galerkin using varying degrees of accuracy}
-#+end_latex
-** Objectives
-- *Apply accurate CFD tools to the cargo hold problem*
-  - Boundary-fitted meshes for good boundary resolution
-  - Discontinuous Galerkin (DG) high-order method for high accuracy
-- *Apply UQ tools to study effects of uncertainty in cargo hold problem*
-  - Polynomial Chaos Expansions (PCE)
-  - Efficient sampling methodology
-  - Accurate surrogate construction
-- Methodology gives (1) accurate computational tool for simulating
+\end{frame}
+\begin{frame}
+\frametitle{Objectives}
+\label{sec-4-7}
+
+\begin{itemize}
+\item \textbf{Apply accurate CFD tools to the cargo hold problem}
+\begin{itemize}
+\item Boundary-fitted meshes for good boundary resolution
+\item Discontinuous Galerkin (DG) high-order method for high accuracy
+\end{itemize}
+\item \textbf{Apply UQ tools to study effects of uncertainty in cargo hold problem}
+\begin{itemize}
+\item Polynomial Chaos Expansions (PCE)
+\item Efficient sampling methodology
+\item Accurate surrogate construction
+\end{itemize}
+\item Methodology gives (1) accurate computational tool for simulating
   cargo hold fires and (2) efficient framework for investigating cargo
   hold uncertainty
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+\label{sec-4-8}
 
-** Discontinuous Galerkin (DG) Method
-- High-resolution CFD method[fn:Wang][fn:Hesthaven]
-  - Domain is divided into cells, collocation nodes computed within each cell
-  - N-S equations projected onto span of polynomials (of arbitrary degree)
-  - Flow variables within each cell represented in polynomial basis 
+\begin{itemize}
+\item High-resolution CFD method\footnote{Wang et. al. An eulerian-lagrangian DG method for transient advection-diffusion equations. \emph{Numerical Methods for Partial Differential Equations}, 2007.
+ }\textsuperscript{,}\,\footnote{Hesthaven \& Warburton. \emph{Nodal Discontinuous Galerkin Methods}, 2008.
+ }
+\begin{itemize}
+\item Domain is divided into cells, collocation nodes computed within each cell
+\item N-S equations projected onto span of polynomials (of arbitrary degree)
+\item Flow variables within each cell represented in polynomial basis
+\end{itemize}
+\end{itemize}
 \begin{figure}
 \includegraphics[width=0.5\linewidth]{errorvscostzj.png} \\
 \textbf{Generic error vs cost plot}
 \end{figure}
-[fn:Wang] Wang et. al. An eulerian-lagrangian DG method for transient advection-diffusion equations. /Numerical Methods for Partial Differential Equations/, 2007.
-[fn:Hesthaven] Hesthaven & Warburton. /Nodal Discontinuous Galerkin Methods/, 2008.
-** Discontinuous Galerkin (DG) Method
-*Method Synopsis*
-#+begin_latex
+\end{frame}
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+\label{sec-4-9}
+
+\textbf{Method Synopsis}
 \beqq
 \begin{aligned}
 \text{Conservation law:}\quad & \diff{\bv{u}}{t} + \nabla \cdot \bv{f}(\bv{u}) = 0 \\
@@ -684,39 +850,72 @@ an aircraft cargo compartment. AIAA 2012-0311.
 \text{}\quad & \bv{M}_{ij} \frac{d\bv{u}_i}{dt} = \int_V \nabla \phi_j \cdot \bv{f}_i \phi_i\ dV + \oint_S \phi_j \bv{\hat{f}}_i \phi_i \cdot \bv{\hat{n}}\ dS \\
 \end{aligned}
 \eeqq
-#+end_latex
-*Polynomial Basis*
-- Collocation nodes are defined in each individual cell
-- Chebyschev-like schemes used (to avoid Runge-phenomenon)
-- Associated Lagrange interpolators form the polynomial basis ${\phi_k}$
-** Discontinuous Galerkin (DG) Method
-*Time-Stepping*
-- We now have a system of ODEs to solve for each DG mode:
+\textbf{Polynomial Basis}
+\begin{itemize}
+\item Collocation nodes are defined in each individual cell
+\item Chebyschev-like schemes used (to avoid Runge-phenomenon)
+\item Associated Lagrange interpolators form the polynomial basis ${\phi_k}$
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+\label{sec-4-10}
+
+\textbf{Time-Stepping}
+\begin{itemize}
+\item We now have a system of ODEs to solve for each DG mode:
+\end{itemize}
 $$\frac{d\bv{u}}{dt} = \bf{f}(\bf{u,u',t})$$
-- CFL condition for explicit time-stepping gives $\Delta t = O(\frac{\Delta x}{N^2})$
-  - Mesh volume $\Delta x$ can be small
-  - State dimension $N$ grows rapidly with increasing polynomial order
-- Thus, implicit time-stepping is used, which gives the large nonlinear system:
+\begin{itemize}
+\item CFL condition for explicit time-stepping gives $\Delta t = O(\frac{\Delta x}{N^2})$
+\begin{itemize}
+\item Mesh volume $\Delta x$ can be small
+\item State dimension $N$ grows rapidly with increasing polynomial order
+\end{itemize}
+\item Thus, implicit time-stepping is used, which gives the large nonlinear system:
   $$\bv{F}(\bv{u}) = 0$$
-** Discontinuous Galerkin (DG) Method
-*Solution Procedure*
-- Newton's method gives sequence of linear systems:
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+\label{sec-4-11}
+
+\textbf{Solution Procedure}
+\begin{itemize}
+\item Newton's method gives sequence of linear systems:
+\end{itemize}
 $$\bv{J}(\bv{u^{k}}) \delta \bv{u^k} = -\bv{F}(\bv{u^{k}}),\quad \bv{u^{k+1}}=\bv{u^{k}}+\delta \bv{u^k}$$
-- $\bv{J}$ is prohibitively large to compute/store
-- Jacobian-Free Newton-Krylov iteration
-  - Action of Jacobian on a vector is approximated as:
-  $$ \bv{J} \bv{v} \approx [\bv{F}(\bv{u} + \epsilon \bv{v}) - \bv{F}(\bv{v})]/\epsilon$$
-  - $\delta \bv{u}^k$ is solved for using Krylov iteration (GMRES, BiCGSTAB)
-** Polynomial Chaos Expansions (PCE)
-- Overview[fn:Xiu]:
-  - Method for quantifying parametric uncertainty
-  - Expand output in terms of basis polynomial functions of random variables
-  $$f(\xi) &\approx \sum_{i}^N a_i \psi_i(\xi)$$
-- Pros:
-  - Efficient sampling methodology
-  - Explicit surrogate model
-  - Easy statistical post-processing (eg., sampling, ANOVA) 
-#+begin_latex
+\begin{itemize}
+\item $\bv{J}$ is prohibitively large to compute/store
+\item Jacobian-Free Newton-Krylov iteration
+\begin{itemize}
+\item Action of Jacobian on a vector is approximated as:
+\end{itemize}
+$$ \bv{J} \bv{v} \approx [\bv{F}(\bv{u} + \epsilon \bv{v}) - \bv{F}(\bv{v})]/\epsilon$$
+\begin{itemize}
+\item $\delta \bv{u}^k$ is solved for using Krylov iteration (GMRES, BiCGSTAB)
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Polynomial Chaos Expansions (PCE)}
+\label{sec-4-12}
+
+\begin{itemize}
+\item Overview\footnote{Xiu \& Karniadakis. The weiner-askey polynomial chaos for stochastic differential equations. \emph{SIAM Journal of Scientific Computing}, 2002.
+ }:
+\begin{itemize}
+\item Method for quantifying parametric uncertainty
+\item Expand output in terms of basis polynomial functions of random variables
+\end{itemize}
+$$f(\xi) &\approx \sum_{i}^N a_i \psi_i(\xi)$$
+\item Pros:
+\begin{itemize}
+\item Efficient sampling methodology
+\item Explicit surrogate model
+\item Easy statistical post-processing (eg., sampling, ANOVA)
+\end{itemize}
+\end{itemize}
 \fontsize{9}\selectfont
 % Define the layers to draw the diagram
 \pgfdeclarelayer{background}
@@ -744,18 +943,18 @@ $$\bv{J}(\bv{u^{k}}) \delta \bv{u^k} = -\bv{F}(\bv{u^{k}}),\quad \bv{u^{k+1}}=\b
     \path [draw, ->, thick] (FlowSolver.east) -- node [right] {} (Droplet.west);
             
 \end{tikzpicture}
+\end{frame}
+\begin{frame}
+\frametitle{Polynomial Chaos Expansions (PCE)}
+\label{sec-4-13}
 
-#+end_latex
-
-[fn:Xiu] Xiu & Karniadakis. The weiner-askey polynomial chaos for stochastic differential equations. /SIAM Journal of Scientific Computing/, 2002.
-
-** Polynomial Chaos Expansions (PCE)
-*Setting*
-- Stochastic input process parameterized by $d$ independent random
+\textbf{Setting}
+\begin{itemize}
+\item Stochastic input process parameterized by $d$ independent random
   variables $\xi_1 \cdots \xi_d$ with joint PDF $\rho(\xi)$
-- Objective: approximate statistical dependence of an output variable $f(\xi)$ 
-*Method Synopsis*
-#+begin_latex
+\item Objective: approximate statistical dependence of an output variable $f(\xi)$
+\end{itemize}
+\textbf{Method Synopsis}
 \beqq
 \begin{aligned}
 \text{Polynomial basis:} \quad & \lbrace \psi_k \rbrace_{k=1}^{\infty} \quad , \quad \langle \psi_i , \psi_j \rangle = \delta_{ij} \\
@@ -765,9 +964,11 @@ $$\bv{J}(\bv{u^{k}}) \delta \bv{u^k} = -\bv{F}(\bv{u^{k}}),\quad \bv{u^{k+1}}=\b
 \text{Quadrature:} \quad & \langle f,\psi_k \rangle \approx \sum_{i=1}^Q f(\xi^i) \psi_k(\xi^i) w^i \\
 \end{aligned}
 \eeqq
-#+end_latex
-** Polynomial Chaos Expansions (PCE)
-#+begin_latex
+\end{frame}
+\begin{frame}
+\frametitle{Polynomial Chaos Expansions (PCE)}
+\label{sec-4-14}
+
 \begin{figure}[ht]
 \centering
 \begin{minipage}[b]{0.45\linewidth}
@@ -795,17 +996,18 @@ $$\bv{J}(\bv{u^{k}}) \delta \bv{u^k} = -\bv{F}(\bv{u^{k}}),\quad \bv{u^{k+1}}=\b
 \end{itemize}
 \end{minipage}
 \end{figure}
-#+end_latex
+\end{frame}
+\section{Fires: Example study}
+\label{sec-5}
+\begin{frame}
+\frametitle{Input Processes}
+\label{sec-5-1}
 
-
-
-
-* Fires: Example study
-** Input Processes
-*Parameters: Fire source temperature and location*
-- Empty cargo hold
-- Uniform distribution for both independent parameters
-#+begin_latex
+\textbf{Parameters: Fire source temperature and location}
+\begin{itemize}
+\item Empty cargo hold
+\item Uniform distribution for both independent parameters
+\end{itemize}
 \fontsize{9}\selectfont
 % Define the layers to draw the diagram
 \pgfdeclarelayer{background}
@@ -839,12 +1041,16 @@ $$\bv{J}(\bv{u^{k}}) \delta \bv{u^k} = -\bv{F}(\bv{u^{k}}),\quad \bv{u^{k+1}}=\b
         \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
     \end{pgfonlayer}
 \end{tikzpicture}
-#+end_latex
-** Input Processes
-*Parameters: Fire source temperature and location*
-- Empty cargo hold
-- Uniform distribution for both independent parameters
-#+begin_latex
+\end{frame}
+\begin{frame}
+\frametitle{Input Processes}
+\label{sec-5-2}
+
+\textbf{Parameters: Fire source temperature and location}
+\begin{itemize}
+\item Empty cargo hold
+\item Uniform distribution for both independent parameters
+\end{itemize}
 \fontsize{9}\selectfont
 % Define the layers to draw the diagram
 \pgfdeclarelayer{background}
@@ -878,34 +1084,46 @@ $$\bv{J}(\bv{u^{k}}) \delta \bv{u^k} = -\bv{F}(\bv{u^{k}}),\quad \bv{u^{k+1}}=\b
         \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
     \end{pgfonlayer}
 \end{tikzpicture}
-#+end_latex
+\end{frame}
+\begin{frame}
+\frametitle{Output Measurements}
+\label{sec-5-3}
 
-** Output Measurements
-*Problem*
-- UQ for the entire flow field is difficult
-  - Spatio-temporal behavior varies significantly
-  - Need a more tractable set of observables
-*Solution*
-- Reduce spatial dimensionality
-  - Ceiling temperature is most important for detection
-- Separate time and space
-  - /Intuition/: buoyant plumes convect upwards at some characteristic
+\textbf{Problem}
+\begin{itemize}
+\item UQ for the entire flow field is difficult
+\begin{itemize}
+\item Spatio-temporal behavior varies significantly
+\item Need a more tractable set of observables
+\end{itemize}
+\end{itemize}
+\textbf{Solution}
+\begin{itemize}
+\item Reduce spatial dimensionality
+\begin{itemize}
+\item Ceiling temperature is most important for detection
+\end{itemize}
+\item Separate time and space
+\begin{itemize}
+\item \emph{Intuition}: buoyant plumes convect upwards at some characteristic
     time $t_R$ dominated by source temperature
-  - Easier to compare ceiling temperatures at their respective values
+\item Easier to compare ceiling temperatures at their respective values
     of $t_R$ than at same time after ignition
-*Output Measurements*
-#+begin_latex
+\end{itemize}
+\end{itemize}
+\textbf{Output Measurements}
 \begin{equation*}
 \begin{aligned}
 t_R(Z) &= \text{(Rise time)} \\
 \overbar{T_C}(x;Z) &= \frac{1}{\Delta t} \int_{t_R(Z)}^{t_R(Z)+\Delta t} T_C(x,t;Z) dt
 \end{aligned}
 \end{equation}
-#+end_latex
+\end{frame}
+\begin{frame}
+\frametitle{Results: Rise Time}
+\label{sec-5-4}
 
-** Results: Rise Time
 
-#+begin_latex
 \centering
 \begin{minipage}[b]{0.45\linewidth}
 \begin{figure}[ht]
@@ -927,11 +1145,12 @@ t_R(Z) &= \text{(Rise time)} \\
 \item Tail caused by low temperature and wall effect
 \end{itemize}
 \end{minipage}
-#+end_latex
+\end{frame}
+\begin{frame}
+\frametitle{Results: Ceiling Temperature}
+\label{sec-5-5}
 
-** Results: Ceiling Temperature
 
-#+begin_latex
 \centering
 \begin{minipage}[b]{0.45\linewidth}
 \begin{figure}[ht]
@@ -961,12 +1180,12 @@ t_R(Z) &= \text{(Rise time)} \\
 \item {\color{blue} $x_S$}: dominant near periphery
 \end{itemize}
 \end{minipage}
+\end{frame}
+\begin{frame}
+\frametitle{Results: Related Statistics}
+\label{sec-5-6}
 
-#+end_latex
 
-** Results: Related Statistics
-
-#+begin_latex
 \centering
 \begin{minipage}[b]{0.45\linewidth}
 \begin{figure}[ht]
@@ -980,30 +1199,49 @@ t_R(Z) &= \text{(Rise time)} \\
 \textbf{PDF of Location(max($T_C$))}
 \end{figure}
 \end{minipage}
-#+end_latex
 
-- Can estimate statistics of quantities derived from output measurements
-- The maximum ceiling temperature and its location are of practical engineering interest
-- For this example, a temperature sensor must:
-  - Be able to detect temperatures roughly in the range $T_C \in [1.05,1.35] \times T_{\infty}$
-  - Be placed on the ceiling in roughly in the range $x_C \in [-0.25, 0.5]$
+\begin{itemize}
+\item Can estimate statistics of quantities derived from output measurements
+\item The maximum ceiling temperature and its location are of practical engineering interest
+\item For this example, a temperature sensor must:
+\begin{itemize}
+\item Be able to detect temperatures roughly in the range $T_C \in [1.05,1.35] \times T_{\infty}$
+\item Be placed on the ceiling in roughly in the range $x_C \in [-0.25, 0.5]$
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Conclusions/Future Work}
+\label{sec-5-7}
 
-** Conclusions/Future Work
 
-*Problem*
-- Airfoil icing/cargo hold fire safety is important and subject to uncertainty
-- Experiments are expensive
-- CFD methods must be high-resolution
-*Solutions: Icing*
-- Data-based modeling of shape variation
-- Computational-based UQ
-*Solutions: Fires*
-- Discontinuous-Galerkin solver for high CFD resolution
-- Polynomial Chaos for efficient sampling and accurate surrogate/statistics
-*Future Work: Fires*
-- Cargo holds in practice are not empty
-- Extend framework to handle cargo hold clutter (baggage, pipes, etc.)
-*Future Work: Icing*
-- Extend efforts to 3D wing icing
-- Continue development and testing of icing code
-- Use icing code to investigate statistical variation of ice shape
+\textbf{Problem}
+\begin{itemize}
+\item Airfoil icing/cargo hold fire safety is important and subject to uncertainty
+\item Experiments are expensive
+\item CFD methods must be high-resolution
+\end{itemize}
+\textbf{Solutions: Icing}
+\begin{itemize}
+\item Data-based modeling of shape variation
+\item Computational-based UQ
+\end{itemize}
+\textbf{Solutions: Fires}
+\begin{itemize}
+\item Discontinuous-Galerkin solver for high CFD resolution
+\item Polynomial Chaos for efficient sampling and accurate surrogate/statistics
+\end{itemize}
+\textbf{Future Work: Fires}
+\begin{itemize}
+\item Cargo holds in practice are not empty
+\item Extend framework to handle cargo hold clutter (baggage, pipes, etc.)
+\end{itemize}
+\textbf{Future Work: Icing}
+\begin{itemize}
+\item Extend efforts to 3D wing icing
+\item Continue development and testing of icing code
+\item Use icing code to investigate statistical variation of ice shape
+\end{itemize}
+\end{frame}
+
+\end{document}

@@ -101,13 +101,71 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 
 * Clustering Techniques
 ** Spectral Graph Partitioning
-\vspace*{-0.0cm}\begin{figure}
-    \includegraphics[width=0.5\textwidth]{GraphPartition2.png}
+*Goal:* given an undirected graph $\mathcal{G}$, consisting of a
+  collection of vertices $\mathcal{V}$ and corresponding edges
+  $\mathcal{E}$, find (or approximate) the ``best" partition of that
+  graph into two connected subgraphs
+\vspace*{-0.5cm}\begin{figure}
+    \includegraphics[width=0.5\textwidth]{GraphPartition.png}
     \caption{Graph partition illustration}
 \end{figure}
+** Spectral Graph Partitioning
+Different formulations possible[fn:ShiMalik]
+  + /Average cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$
+  + /Normalized cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{\text{assoc}(A,V)} + \frac{\text{cut}(A,B)}{\text{assoc}(B,V)} \right \rbrace$
+#+begin_latex
+\vspace{-1.0cm}
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    $w(u,v) = \text{Similarity(u,v)}$ \\
+    $|A| = \text{Number of vertices in }A$ \\
+    $\text{cut}(A,B) = \sum_{u \in A,v \in B} w(u,v)$ \\ 
+    $\text{assoc}(A,B) = \sum_{u \in A, v \in V} w(u,v)$
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{GraphPartition.png}
+\end{columns}
+\vspace{-1.0cm}
+#+end_latex
+[fn:ShiMalik] Shi & Malik. /Normalized Cuts and Image
+Segmentation/, 2000.
+
+** Spectral Graph Partitioning
+- The graph /Laplacian/ provides a tool for computing these graph partitions
+$L = D - W$ \\
+$D = \text{diag}(d_k) \;\;\; , \;\;\; d_k = \sum_{j=1}^N w(v_k,v_j) \;\;\; , \;\;\; k=1 \cdots N$ \\
+$W(i,j) = w(v_i,v_j)$
+
+- Eigenvectors with zero eigenvalue correspond to unconnected subsets,
+  eigenvectors with small eigenvalue magnitudes correspond to almost
+  unconnected subsets
+  - Example: $L \bv{1} = \bv{0}$ (by definition) --> entire graph is an unconnected subset
+- It can be shown that the solution to the /average cut/ problem is
+  approximated using that eigenvector corresponding to the smallest
+  nonzero eigenvalue (/Fiedler vector/)
 
 
- 
+
+
+
+** Spectral Graph Partitioning
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{ExampleGraph.png}
+    \caption{Toy example}
+\end{figure}
+#+begin_latex
+\begin{equation*}
+L = \begin{bmatrix}
+1  & -0.9 & -0.1 & 0 & 0 & 0 & 0 \\
+-0.9 & 1  & -0.1 & 0 & 0 & 0 & 0 \\
+-0.1 & -0.1 & 0.2  & 0 & 0 & 0 & 0 \\
+0    & 0    & 0    & 1 & -0.5 & -0.5 & 0 \\
+0    & 0    & 0    & -0.5 & 1 & 0 & -0.5 \\
+0    & 0    & 0    & -0.5 & 0 & 1 & -0.5 \\
+0    & 0    & 0    & 0 & -0.5 & -0.5 & 1 \\ 
+\end{bmatrix}
+\end{equation}
+#+end_latex
 
 ** Previous Work: Heuristic UQ
 

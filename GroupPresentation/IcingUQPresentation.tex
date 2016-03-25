@@ -1,4 +1,4 @@
-% Created 2016-03-25 Fri 13:09
+% Created 2016-03-25 Fri 16:42
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -154,17 +154,84 @@
 \frametitle{Spectral Graph Partitioning}
 \label{sec-2-1}
 
-\vspace*{-0.0cm}\begin{figure}
-    \includegraphics[width=0.5\textwidth]{GraphPartition2.png}
+\textbf{Goal:} given an undirected graph $\mathcal{G}$, consisting of a
+  collection of vertices $\mathcal{V}$ and corresponding edges
+  $\mathcal{E}$, find (or approximate) the ``best'' partition of that
+  graph into two connected subgraphs
+\vspace*{-0.5cm}\begin{figure}
+    \includegraphics[width=0.5\textwidth]{GraphPartition.png}
     \caption{Graph partition illustration}
 \end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Spectral Graph Partitioning}
+\label{sec-2-2}
 
+Different formulations possible\footnote{Shi \& Malik. \emph{Normalized Cuts and Image Segmentation}, 2000.
+ }
+\begin{itemize}
+\item \emph{Average cut:} $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$
+\item \emph{Normalized cut:} $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{\text{assoc}(A,V)} + \frac{\text{cut}(A,B)}{\text{assoc}(B,V)} \right \rbrace$
+\end{itemize}
+\vspace{-1.0cm}
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    $w(u,v) = \text{Similarity(u,v)}$ \\
+    $|A| = \text{Number of vertices in }A$ \\
+    $\text{cut}(A,B) = \sum_{u \in A,v \in B} w(u,v)$ \\ 
+    $\text{assoc}(A,B) = \sum_{u \in A, v \in V} w(u,v)$
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{GraphPartition.png}
+\end{columns}
+\vspace{-1.0cm}
+\end{frame}
+\begin{frame}
+\frametitle{Spectral Graph Partitioning}
+\label{sec-2-3}
 
- 
+\begin{itemize}
+\item The graph \emph{Laplacian} provides a tool for computing these graph partitions
+\end{itemize}
+$L = D - W$ \\
+$D = \text{diag}(d_k) \;\;\; , \;\;\; d_k = \sum_{j=1}^N w(v_k,v_j) \;\;\; , \;\;\; k=1 \cdots N$ \\
+$W(i,j) = w(v_i,v_j)$
+
+\begin{itemize}
+\item Eigenvectors with zero eigenvalue correspond to unconnected subsets,
+  eigenvectors with small eigenvalue magnitudes correspond to almost
+  unconnected subsets
+\begin{itemize}
+\item Example: $L \bv{1} = \bv{0}$ (by definition) --> entire graph is an unconnected subset
+\end{itemize}
+\item It can be shown that the solution to the \emph{average cut} problem is
+  approximated using that eigenvector corresponding to the smallest
+  nonzero eigenvalue (\emph{Fiedler vector})
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Spectral Graph Partitioning}
+\label{sec-2-4}
+
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{ExampleGraph.png}
+    \caption{Toy example}
+\end{figure}
+\begin{equation*}
+L = \begin{bmatrix}
+1  & -0.9 & -0.1 & 0 & 0 & 0 & 0 \\
+-0.9 & 1  & -0.1 & 0 & 0 & 0 & 0 \\
+-0.1 & -0.1 & 0.2  & 0 & 0 & 0 & 0 \\
+0    & 0    & 0    & 1 & -0.5 & -0.5 & 0 \\
+0    & 0    & 0    & -0.5 & 1 & 0 & -0.5 \\
+0    & 0    & 0    & -0.5 & 0 & 1 & -0.5 \\
+0    & 0    & 0    & 0 & -0.5 & -0.5 & 1 \\ 
+\end{bmatrix}
+\end{equation}
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Heuristic UQ}
-\label{sec-2-2}
+\label{sec-2-5}
 
 
 \begin{columns}[c]
@@ -197,7 +264,7 @@ L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Exp
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Data-Driven UQ}
-\label{sec-2-3}
+\label{sec-2-6}
 
 \begin{figure}
   \centering
@@ -214,7 +281,7 @@ L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Exp
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Data-Driven UQ}
-\label{sec-2-4}
+\label{sec-2-7}
 
 \begin{columns}[c]
   \column{0.45\textwidth}
@@ -245,7 +312,7 @@ I(\bv{x}) = \overbar{I(\bv{x})} + \sum_{i=1}^M c_i \Phi_i(\bv{x})
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Data-Driven UQ}
-\label{sec-2-5}
+\label{sec-2-8}
 
 \begin{figure}
   \centering
@@ -353,7 +420,7 @@ April 1996.
 \item Roughness height increases with temperature and LWC
 \item Beginning of roughness varies with temperature, speed, LWC
 \end{itemize}
-\item \textbf{Surface roughness affects shape/aerodynamics} \footnotemark[7]
+\item \textbf{Surface roughness affects shape/aerodynamics} \footnotemark[8]
 \begin{itemize}
 \item Roughness elements probably protrude out of boundary layer and cause transition
 \item Affects convective heat transfer since greater roughness gives

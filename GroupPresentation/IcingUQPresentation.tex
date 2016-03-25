@@ -1,4 +1,4 @@
-% Created 2015-09-08 Tue 11:31
+% Created 2016-03-25 Fri 13:09
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -40,9 +40,9 @@
 \newcommand{\ip}[2]{\langle #1, #2\rangle}
 \providecommand{\alert}[1]{\textbf{#1}}
 
-\title{Uncertainty Quantification for Airfoil Icing}
+\title{Modeling and Uncertainty Quantification for Airfoil Icing}
 \author{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
-\date{Group Presentation \\ Princeton, NJ \\ September 2015}
+\date{Group Presentation \\ Princeton, NJ \\ March 2016}
 \hypersetup{
   pdfkeywords={},
   pdfsubject={},
@@ -82,53 +82,89 @@
 
 \textbf{Motivation}
 \begin{itemize}
-\item Wing icing is a serious issue for pilots
+\item Wing icing deteriorates airfoil aerodynamics
 \begin{itemize}
-\item Massive flow separation, lower lift + higher drag
+\item Leading edge flow separation bubble
+\item Lower lift, higher drag
 \item Unpredictable stall
 \end{itemize}
-\item Wing ice shapes exhibit wide variation, sensitivity to physical
-  parameters
+\end{itemize}
+
+\vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=0.4\textwidth]{BadHorn.png}
+    \caption{Leading edge horn separation}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Introduction}
+\label{sec-1-2}
+
+\textbf{Motivation}
 \begin{itemize}
-\item Complex physics (coupled airflow-thermodynamics)
+\item Significant ice shape variation, sensitivity to physical
+  parameters\footnote{Addy, H.E. \emph{Ice Accretions and Icing Effects for Modern Airfoils}. NASA TR 2000-210031.
+ }
+\begin{itemize}
+\item Complex physics (aero-thermodynamics, macro/micro scale physics)
 \item Uncertainty in physical parameters
 \end{itemize}
 \end{itemize}
-\textbf{Research Goals}
-\begin{itemize}
-\item How can observed variations in ice shape be modeled
-  efficiently with a low number of parameters?
-\item How does uncertainty in the ice shape create uncertainty in
-  aerodynamic performance?
-\end{itemize}
+
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.75\textwidth]{GlobalDataSet}
+      \caption{Wind tunnel experimental ice shapes}
+\end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Experimental/Computational Variation in Ice Shape}
-\label{sec-1-2}
+\frametitle{Introduction}
+\label{sec-1-3}
 
+\textbf{Motivation}
+\begin{itemize}
+\item There appear to be different types of ice accretion\footnote{Beaugendre et. al. \emph{Development of a Second Generation In-Flight Simulation Code}. J. Fluids Engineering, 2006.
+ }
+\begin{itemize}
+\item ``Horns'', ``ridges'', ``lobster tails'' refer to shape
+\item ``Glaze'', ``rime'' refer to icing thermodynamics
+\end{itemize}
+\end{itemize}
 
-\vspace*{-0.5cm}\begin{figure}
-  \begin{subfigmatrix}{2}
-      \subfigure[Habashi, 2006]{\includegraphics[width=0.4\textwidth]{Habashi2006ShapeVariation}}
-      \subfigure[Wright, 2004]{\includegraphics[width=0.4\textwidth]{Wright2004ShapeVariation}}
-  \end{subfigmatrix}
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Rime Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Rime.png}}
+      \subfigure[Horn Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Horn.png}}
+ 
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Introduction}
+\label{sec-1-4}
+
+\textbf{Research Goals}
+\begin{itemize}
+\item Apply clustering techniques to segregate database of ice shape data
+  into similar groups
+\item Build low-dimensional models of resulting clusters
+\item Perform parametric uncertainty quantification to understand
+  aerodynamic performance variation
+\end{itemize}
+\end{frame}
+\section{Clustering Techniques}
+\label{sec-2}
+\begin{frame}
+\frametitle{Spectral Graph Partitioning}
+\label{sec-2-1}
+
+\vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=0.5\textwidth]{GraphPartition2.png}
+    \caption{Graph partition illustration}
 \end{figure}
 
-\begin{itemize}
-\item Wide variation in experimental/computational ice shapes\footnote{Beaugendre H., Morency M., and Habashi W.G. \emph{Development of a Second Generation in-Flight Icing Simulation Code}. Journal of
-Fluids Engineering, ASME, 2006.
- }\textsuperscript{,}\,\footnote{Wright W. and Potapczuk, M.G. \emph{Semi-Empirical Modeling of SLD Physics}, AIAA 2004-412. 42$^{nd}$ AIAA Aerospace Sciences
-Meeting, Reno, NV, 2004.
- }
-\item Suggests sensitivity to perturbations in underlying physical
-  processes
-\item \emph{UQ approach:} parameterize the shape variation and study its
-  effects on aerodynamics
-\end{itemize}
+
+ 
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Heuristic UQ}
-\label{sec-1-3}
+\label{sec-2-2}
 
 
 \begin{columns}[c]
@@ -161,7 +197,7 @@ L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Exp
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Data-Driven UQ}
-\label{sec-1-4}
+\label{sec-2-3}
 
 \begin{figure}
   \centering
@@ -172,14 +208,13 @@ L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Exp
 \item \textbf{Select a database of ice shapes}
 \begin{itemize}
 \item 54 ice shapes, exposed to a wide range of various icing conditions
-    consistent with FAA certification guidelines\footnote{Addy, H.E. \emph{Ice Accretions and Icing Effects for Modern Airfoils}. NASA TR 2000-210031.
- }
+    consistent with FAA certification guidelines\footnotemark[1]
 \end{itemize}
 \end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Data-Driven UQ}
-\label{sec-1-5}
+\label{sec-2-4}
 
 \begin{columns}[c]
   \column{0.45\textwidth}
@@ -210,7 +245,7 @@ I(\bv{x}) = \overbar{I(\bv{x})} + \sum_{i=1}^M c_i \Phi_i(\bv{x})
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Data-Driven UQ}
-\label{sec-1-6}
+\label{sec-2-5}
 
 \begin{figure}
   \centering
@@ -230,10 +265,10 @@ L. \emph{Data-Driven Low-Dimensional Modeling and Uncertainty Quantification for
 \end{itemize}
 \end{frame}
 \section{Computational-Based UQ}
-\label{sec-2}
+\label{sec-3}
 \begin{frame}
 \frametitle{Motivation}
-\label{sec-2-1}
+\label{sec-3-1}
 
 \begin{itemize}
 \item \textbf{Investigate uncertainty in the physical process of icing}
@@ -257,7 +292,7 @@ L. \emph{Data-Driven Low-Dimensional Modeling and Uncertainty Quantification for
 \end{frame}
 \begin{frame}
 \frametitle{Droplet Diameter Distribution}
-\label{sec-2-2}
+\label{sec-3-2}
 
 \begin{columns}[c]
   \column{0.5\textwidth}
@@ -281,7 +316,7 @@ Final Rule. Federal Register, Vol. 79, No. 213.
 \end{frame}
 \begin{frame}
 \frametitle{Surface Tension vs. Temperature}
-\label{sec-2-3}
+\label{sec-3-3}
 
 \begin{figure}
   \centering
@@ -301,7 +336,7 @@ Celsius. J. Phys. Chem. Lett. 2014, 5, 425-28.
 \end{frame}
 \begin{frame}
 \frametitle{Roughness Variations}
-\label{sec-2-4}
+\label{sec-3-4}
 
 \begin{figure}
   \centering
@@ -318,7 +353,7 @@ April 1996.
 \item Roughness height increases with temperature and LWC
 \item Beginning of roughness varies with temperature, speed, LWC
 \end{itemize}
-\item \textbf{Surface roughness affects shape/aerodynamics} \footnotemark[8]
+\item \textbf{Surface roughness affects shape/aerodynamics} \footnotemark[7]
 \begin{itemize}
 \item Roughness elements probably protrude out of boundary layer and cause transition
 \item Affects convective heat transfer since greater roughness gives
@@ -328,7 +363,7 @@ April 1996.
 \end{frame}
 \begin{frame}
 \frametitle{Airfoil Icing Code Flowchart}
-\label{sec-2-5}
+\label{sec-3-5}
 
 
 \fontsize{7}\selectfont
@@ -376,7 +411,7 @@ April 1996.
 \end{frame}
 \begin{frame}
 \frametitle{Airfoil Icing Code Details}
-\label{sec-2-6}
+\label{sec-3-6}
 
 \begin{itemize}
 \item \textbf{Droplet advection}
@@ -404,7 +439,7 @@ April 1996.
 \end{frame}
 \begin{frame}
 \frametitle{State of Code: Advection Module}
-\label{sec-2-7}
+\label{sec-3-7}
 
 \begin{columns}[c]
   \column{0.5\textwidth}
@@ -419,7 +454,7 @@ April 1996.
 \end{frame}
 \begin{frame}
 \frametitle{State of Code: Advection Module}
-\label{sec-2-8}
+\label{sec-3-8}
 
 
 \begin{columns}[c]
@@ -445,7 +480,7 @@ April 1996.
 \end{frame}
 \begin{frame}
 \frametitle{State of Code: Thermodynamic Module}
-\label{sec-2-9}
+\label{sec-3-9}
 
 \begin{itemize}
 \item \textbf{Completed work}
@@ -470,10 +505,10 @@ April 1996.
 \end{itemize}
 \end{frame}
 \section{UQ for DMD}
-\label{sec-3}
+\label{sec-4}
 \begin{frame}
 \frametitle{Motivation}
-\label{sec-3-1}
+\label{sec-4-1}
 
 \begin{itemize}
 \item DMD models can change with (1) uncertain physical parameters, or (2) sensor noise
@@ -488,7 +523,7 @@ April 1996.
 \end{frame}
 \begin{frame}
 \frametitle{Basic Demonstration: Parametric Uncertainty}
-\label{sec-3-2}
+\label{sec-4-2}
 
 \begin{itemize}
 \item Stuart-Landau equation, $\mu = \mathcal{U}(1,1.2)$, $\beta = \mathcal{U}(0,0.2)$
@@ -516,7 +551,7 @@ April 1996.
 \end{frame}
 \begin{frame}
 \frametitle{Basic Demonstration: Noise-Corrupted Data}
-\label{sec-3-3}
+\label{sec-4-3}
 
 \newcommand*{\horzbar}{\rule[.5ex]{2.5ex}{0.5pt}}
 \begin{equation*}
@@ -545,7 +580,7 @@ N = \begin{bmatrix} \horzbar & N_1(\mu_1,\sigma_1) & \horzbar \\ \horzbar & N_2(
 \end{frame}
 \begin{frame}
 \frametitle{Future Work}
-\label{sec-3-4}
+\label{sec-4-4}
 
 \begin{itemize}
 \item Extending work to ``realistic'' cases where the state dimension is large

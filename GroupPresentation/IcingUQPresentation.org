@@ -41,50 +41,73 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-#+DATE: Group Presentation \\ Princeton, NJ \\ September 2015
-#+TITLE: Uncertainty Quantification for Airfoil Icing
+#+DATE: Group Presentation \\ Princeton, NJ \\ March 2016
+#+TITLE: Modeling and Uncertainty Quantification for Airfoil Icing
 #+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}
 
 
 * Motivation/Background
+** Introduction
+*Motivation*
+- Wing icing deteriorates airfoil aerodynamics
+  - Leading edge flow separation bubble
+  - Lower lift, higher drag
+  - Unpredictable stall
+
+\vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=0.4\textwidth]{BadHorn.png}
+    \caption{Leading edge horn separation}
+\end{figure}
 
 ** Introduction
 *Motivation*
-- Wing icing is a serious issue for pilots
-  - Massive flow separation, lower lift + higher drag
-  - Unpredictable stall
-- Wing ice shapes exhibit wide variation, sensitivity to physical
-  parameters
-  - Complex physics (coupled airflow-thermodynamics)
+- Significant ice shape variation, sensitivity to physical
+  parameters[fn:Addy]
+  - Complex physics (aero-thermodynamics, macro/micro scale physics)
   - Uncertainty in physical parameters
-*Research Goals*
-- How can observed variations in ice shape be modeled
-  efficiently with a low number of parameters?
-- How does uncertainty in the ice shape create uncertainty in
-  aerodynamic performance?
 
-** Experimental/Computational Variation in Ice Shape
-
-\vspace*{-0.5cm}\begin{figure}
-  \begin{subfigmatrix}{2}
-      \subfigure[Habashi, 2006]{\includegraphics[width=0.4\textwidth]{Habashi2006ShapeVariation}}
-      \subfigure[Wright, 2004]{\includegraphics[width=0.4\textwidth]{Wright2004ShapeVariation}}
-  \end{subfigmatrix}
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.75\textwidth]{GlobalDataSet}
+      \caption{Wind tunnel experimental ice shapes}
 \end{figure}
 
-- Wide variation in experimental/computational ice shapes[fn:Habashi][fn:Wright]
-- Suggests sensitivity to perturbations in underlying physical
-  processes
-- /UQ approach:/ parameterize the shape variation and study its
-  effects on aerodynamics
+[fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
+Airfoils/. NASA TR 2000-210031.
 
-[fn:Habashi] Beaugendre H., Morency M., and Habashi W.G. /Development
-of a Second Generation in-Flight Icing Simulation Code/. Journal of
-Fluids Engineering, ASME, 2006.
-[fn:Wright] Wright W. and Potapczuk, M.G. /Semi-Empirical Modeling of
-SLD Physics/, AIAA 2004-412. 42$^{nd}$ AIAA Aerospace Sciences
-Meeting, Reno, NV, 2004.
+** Introduction
+*Motivation*
+- There appear to be different types of ice accretion[fn:Habashi]
+  - ``Horns", ``ridges", ``lobster tails" refer to shape
+  - ``Glaze", ``rime" refer to icing thermodynamics
+
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Rime Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Rime.png}}
+      \subfigure[Horn Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Horn.png}}
+ 
+\end{figure}
+
+[fn:Habashi] Beaugendre et. al. /Development of a Second Generation
+In-Flight Simulation Code/. J. Fluids Engineering, 2006.
+
+** Introduction
+*Research Goals*
+- Apply clustering techniques to segregate database of ice shape data
+  into similar groups
+- Build low-dimensional models of resulting clusters
+- Perform parametric uncertainty quantification to understand
+  aerodynamic performance variation
+
+
+* Clustering Techniques
+** Spectral Graph Partitioning
+\vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=0.5\textwidth]{GraphPartition2.png}
+    \caption{Graph partition illustration}
+\end{figure}
+
+
+ 
 
 ** Previous Work: Heuristic UQ
 

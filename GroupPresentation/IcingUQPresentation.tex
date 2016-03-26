@@ -1,4 +1,4 @@
-% Created 2016-03-26 Sat 10:53
+% Created 2016-03-26 Sat 14:28
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -247,434 +247,125 @@ L = \begin{bmatrix}
 \item Eigenvalues close to zero give good partitions within clusters
 \end{itemize}
 \end{frame}
-\begin{frame}
-\frametitle{Previous Work: Heuristic UQ}
-\label{sec-2-6}
-
-
-\begin{columns}[c]
-  \column{0.33\textwidth}
-    \centering
-    \includegraphics[width=0.95\textwidth]{RidgeRVariation} \\
-    \includegraphics[width=0.95\textwidth]{RidgeSVariation} \\
-    {\bf Ridge}
-  \column{0.33\textwidth}
-    \centering
-    \includegraphics[width=0.95\textwidth]{HornHVariation} \\
-    \includegraphics[width=0.95\textwidth]{HornSVariation} \\
-    {\bf Horn}
-  \column{0.33\textwidth}
-    \centering    
-    \includegraphics[width=0.9\textwidth]{MC_surrogate_LargeUnc_CL} \\
-    \includegraphics[width=0.9\textwidth]{MCgpcPDFLargeUnc_CL} \\
-    {\bf Statistics}
-\end{columns}
-
-\begin{itemize}
-\item Previous study examined parameterized ridge and horn ice
-  shapes\footnote{DeGennaro A., Rowley C.W., and Martinelli,
-L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Expansions}. Journal of Aircraft, 2015.
- }
-\item Approach was heuristic, not directly based on observed shape
-  variations
-\item Parameter space was low dimensional; no low-dimensional modeling
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Previous Work: Data-Driven UQ}
-\label{sec-2-7}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.7\textwidth]{Dataset}
-\end{figure}
-
-\begin{itemize}
-\item \textbf{Select a database of ice shapes}
-\begin{itemize}
-\item 54 ice shapes, exposed to a wide range of various icing conditions
-    consistent with FAA certification guidelines\footnotemark[1]
-\end{itemize}
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Previous Work: Data-Driven UQ}
-\label{sec-2-8}
-
-\begin{columns}[c]
-  \column{0.45\textwidth}
-    \centering
-    \hspace{-2.17em}
-    \includegraphics[width=0.9\textwidth]{MEAN.png} \\
-    {\bf Mean} \\
-    \includegraphics[width=1\textwidth]{MODE2.png} \\
-    {\bf Mode 2} \\
-    \includegraphics[width=1\textwidth]{MODE4.png} \\
-    {\bf Mode 4}
-  \column{0.45\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{MODE1.png} \\
-    {\bf Mode 1} \\
-    \includegraphics[width=1\textwidth]{MODE3.png} \\
-    {\bf Mode 3} \\
-    \includegraphics[width=1\textwidth]{MODE5.png} \\
-    {\bf Mode 5}
-\end{columns}
-
-\begin{itemize}
-\item \textbf{Model using POD}
-\end{itemize}
-\begin{equation*}
-I(\bv{x}) = \overbar{I(\bv{x})} + \sum_{i=1}^M c_i \Phi_i(\bv{x})
-\end{equation*}
-\end{frame}
-\begin{frame}
-\frametitle{Previous Work: Data-Driven UQ}
-\label{sec-2-9}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.7\textwidth]{GoodBadHornExamps}
-\end{figure}
-
-\begin{itemize}
-\item \textbf{Analyze statistical trends} \footnote{DeGennaro A., Rowley C.W., and Martinelli
-L. \emph{Data-Driven Low-Dimensional Modeling and Uncertainty Quantification for Airfoil Icing}. AIAA 2015-3383.
- }
-\begin{itemize}
-\item Most/least ``harmful'' model shapes are red/green above
-\item Quantify aerodynamic performance metric PDFs given input PDF on
-    POD parameter space
-\item Correlate different input parameters with aerodynamic performance
-\end{itemize}
-\end{itemize}
-\end{frame}
-\section{Computational-Based UQ}
+\section{Application to Icing}
 \label{sec-3}
 \begin{frame}
-\frametitle{Motivation}
+\frametitle{Dataset}
 \label{sec-3-1}
 
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.5\textwidth]{GlobalDataSet}
+      \caption{Wind tunnel experimental ice shapes}
+\end{figure}
 \begin{itemize}
-\item \textbf{Investigate uncertainty in the physical process of icing}
-\begin{itemize}
-\item Droplet diameter distribution
-\begin{itemize}
-\item Affects collection efficiency
-\end{itemize}
-\item Droplet temperature distribution
-\begin{itemize}
-\item Affects convective heat transfer
-\item Affects surface tension --> surface roughness
-\end{itemize}
-\item Surface roughness
-\begin{itemize}
-\item Can affect local convective heat transfer
-\item Can influence local rate of ice accretion
-\end{itemize}
-\end{itemize}
+\item Dataset consists of 145 experimental ice shapes
+\item Obtained in icing wind tunnel at NASA Glenn\footnotemark[1]
+\item Representative of a wide variety of icing conditions (temperature,
+  LWC, accretion time, etc.)
 \end{itemize}
 \end{frame}
 \begin{frame}
-\frametitle{Droplet Diameter Distribution}
+\frametitle{Distance/Similarity Metric}
 \label{sec-3-2}
 
-\begin{columns}[c]
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{FAADropletDist1} \\
-    {\bf Freezing Drizzle MVD PDF}
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{FAADropletDist2} \\
-    {\bf Freezing Rain MVD PDF}
-\end{columns}
-
-\begin{itemize}
-\item Several MVD distributions exist for different flight conditions \footnote{Airplane and Engine Certification Requirements in
-Supercooled Large Drop, Mixed Phase, and Ice Crystal Icing Conditions;
-Final Rule. Federal Register, Vol. 79, No. 213.
- }
-\item Each gives a different collection efficiency
-\item How sensitive are collection efficiency and ice shape to perturbations in MVD distribution?
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Surface Tension vs. Temperature}
-\label{sec-3-3}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.33\textwidth]{SurfaceTensionVsTemp.jpeg} \\
-  {\bf Surface Tension vs. Temperature}
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[XOR Illustration]{\includegraphics[width=0.4\textwidth]{XORexample.png}}
+      \subfigure[Dataset Distances]{\includegraphics[width=0.4\textwidth]{XORdistances}}
 \end{figure}
-
 \begin{itemize}
-\item Surface tension of SLDs varies with temperature \footnote{Hruby, J. et. al. Surface Tension of Supercooled Water:
-No Inflection Point down -25 Degrees
-Celsius. J. Phys. Chem. Lett. 2014, 5, 425-28.
- }
-\item Varying surface tension can affect collection efficiency
-\item Higher surface tension may give rise to ``beading'' on surface
-  (vs. deposition into film), which could affect surface roughness
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Roughness Variations}
-\label{sec-3-4}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=1\textwidth]{IcingRoughness.png} \\
-  {\bf Roughness Growth}
-\end{figure}
-
-\begin{itemize}
-\item \textbf{Surface roughness varies with parameters} \footnote{Shin, J. Characteristics of Surface Roughness Associated
-with Leading-Edge Ice Accretion. Journal of Aircraft, Vol. 33, No.2,
-April 1996.
- }
-\begin{itemize}
-\item Roughness height increases with temperature and LWC
-\item Beginning of roughness varies with temperature, speed, LWC
-\end{itemize}
-\item \textbf{Surface roughness affects shape/aerodynamics} \footnotemark[8]
-\begin{itemize}
-\item Roughness elements probably protrude out of boundary layer and cause transition
-\item Affects convective heat transfer since greater roughness gives
-    greater turbulent eddy viscosity
-\end{itemize}
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Airfoil Icing Code Flowchart}
-\label{sec-3-5}
-
-
-\fontsize{7}\selectfont
-% Define the layers to draw the diagram
-\pgfdeclarelayer{background}
-\pgfdeclarelayer{foreground}
-\pgfsetlayers{background,main,foreground}
-
-% Define block styles used later
-
-\tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, 
-    text centered, minimum height=2.5em,drop shadow]
-\tikzstyle{ann} = [above, text width=5em, text centered]
-\tikzstyle{wa} = [sensor, text width=7.5em, fill=blue!20, 
-    minimum height=3em, rounded corners, drop shadow]
-
-% Define distances for bordering
-\def\blockdist{2.3}
-\def\edgedist{2.5}
-
-\begin{tikzpicture}
-    \node (CleanAirfoil) [wa]  {Clean Airfoil Geometry};
-    \path (CleanAirfoil)+(4,2.5) node (FlowSolver) [wa] {Mesh/Flow Solver};
-    \path (FlowSolver)+(0,-1.25) node (Droplet) [wa] {Droplet\\Advection Module};
-    \path (Droplet)+(0,-1.25) node (ThermoModule) [wa] {Thermodynamic Module};
-    \path (ThermoModule)+(0,-1.25) node (IcedAirfoil) [wa] {Iced Airfoil Geometry};
-    \path (CleanAirfoil)+(8,0) node (FinalAirfoil) [wa] {Final Iced Airfoil Geometry};
-
-    \path [draw, ->, thick] (CleanAirfoil.north) |- node [above] {} (FlowSolver.west);
-    \path [draw, ->, thick] (FlowSolver.south) -- node [below] {} (Droplet.north);
-    \path [draw, ->, thick] (Droplet.south) -- node [below] {} (ThermoModule.north);
-    \path [draw, ->, thick] (ThermoModule.south) -- node [below] {} (IcedAirfoil.north);
-    \path [draw, ->, thick] (IcedAirfoil.east) -| node [above] {} (FinalAirfoil.south);
-    \path [draw, ->, thick] (IcedAirfoil.east) -- ++(0.75,0cm) |- node [above]
-                      {} (FlowSolver.east);
-
-    \begin{pgfonlayer}{background}
-        \path (FlowSolver.west)+(-1,1) node (a) {};
-        \path (IcedAirfoil.east)+(1,-1) node (b) {};
-        \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
-            
-    \end{pgfonlayer}
-
-\end{tikzpicture}
-\end{frame}
-\begin{frame}
-\frametitle{Airfoil Icing Code Details}
-\label{sec-3-6}
-
-\begin{itemize}
-\item \textbf{Droplet advection}
-\begin{itemize}
-\item Lagrangian formulation of equations of motion
-\item Impingement details depend on ratio of inertial to viscous forces
-\begin{itemize}
-\item Impacting droplets can bounce, deposit into surface film, or splash
-\end{itemize}
-\item Ratio of local to free-stream flux of droplets is calculated over airfoil
-\end{itemize}
-\item \textbf{Thermodynamics}
-\begin{itemize}
-\item Mass and energy balances of the liquid film on the airfoil surface
-    used to determine ice accretion on airfoil
-\item Mass enters film through impinging droplets, exits by freezing
-\item Energy enters/exits through internal/kinetic energy of impinging
-    droplets, energy transfer by ice accretion, convective
-    heat transfer between ice/film/wall and the flow
-\item Coupled mass/energy PDEs can be solved in one of two ways: (1)
-    ``elephant gun'': Jacobian-free Newton-Krylov (JFNK) iteration, or
-    (2) guess solution, drive to steady-state
-\end{itemize}
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{State of Code: Advection Module}
-\label{sec-3-7}
-
-\begin{columns}[c]
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{ExampleR10em6} \\
-    {\bf R = 10$\mu$m}
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{ExampleR100em6} \\
-    {\bf R = 100$\mu$m}
-\end{columns}
-\end{frame}
-\begin{frame}
-\frametitle{State of Code: Advection Module}
-\label{sec-3-8}
-
-
-\begin{columns}[c]
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.65\textwidth]{MVD52} \\
-    {\bf MVD 52} \\
-    \includegraphics[width=0.65\textwidth]{MVD154} \\
-    {\bf MVD 154}
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.65\textwidth]{MVD111} \\
-    {\bf MVD 111} \\
-    \includegraphics[width=0.65\textwidth]{MVD236} \\
-    {\bf MVD 236}
-\end{columns}
-
-\begin{itemize}
-\item Advection module appears to be giving reasonable results for
-  benchmark tests using different droplet distributions on a clean
-  airfoil
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{State of Code: Thermodynamic Module}
-\label{sec-3-9}
-
-\begin{itemize}
-\item \textbf{Completed work}
-\begin{itemize}
-\item Finite volume discretization of the mass/energy equations with
-    appropriate upwinding (Roe scheme)
-\item Modifications to Gigi's flow solver to compute/output convective
-    heat transfer coefficient, skin friction
-\item Basic MatLab prototyping for solving equations with (1) JFNK and (2)
-    explicitly driving initial guess to steady-state
-\end{itemize}
-\item \textbf{Remaining work}
-\begin{itemize}
-\item Modify Spalart-Almaras turbulence model in flow solver for rough
-    wall/icing application (will affect convective heat transfer)
-\item Integrate MatLab prototype solver into main C++ icing code
-\item Test, verify calculations!
-\item Once working, do UQ studies on physical parameters (eg.,
-    convective heat transfer distribution, droplet size and
-    temperature distribution) affect aerodynamics
-\end{itemize}
-\end{itemize}
-\end{frame}
-\section{UQ for DMD}
-\label{sec-4}
-\begin{frame}
-\frametitle{Motivation}
-\label{sec-4-1}
-
-\begin{itemize}
-\item DMD models can change with (1) uncertain physical parameters, or (2) sensor noise
-\item Viewing this as a UQ problem has some potential advantages:
-\begin{itemize}
-\item Some UQ tools can be computationally efficient relative to Monte Carlo sampling
-\item Can investigate sensitivity of DMD models to different parameters
-\item Can investigate sensitivity of DMD models to noise bias/scaling
-\item Can assemble a surrogate model for how DMD models change over a parameter range
-\end{itemize}
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Basic Demonstration: Parametric Uncertainty}
-\label{sec-4-2}
-
-\begin{itemize}
-\item Stuart-Landau equation, $\mu = \mathcal{U}(1,1.2)$, $\beta = \mathcal{U}(0,0.2)$
+\item Overlay dataset with a 2D Cartesian grid
+\item Assign value of 1 to gridpoint if it is on the ice, 0 otherwise
+\item Pick $\sigma$ based on observed peaks in data distances
+\item Truncate $w_{ij}$ after $d_{ij} > 3\sigma$
 \end{itemize}
 \begin{equation*}
 \begin{aligned}
-\dot{r} &= \mu r - r^3 \\
-\dot{\theta} &= \gamma - \beta r^2
+d_{ij} &= \text{exp} \left(-\frac{1}{2} \frac{d_{ij}^2}{\sigma^2} \right) \\
+w_{ij} &= \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
 \end{aligned}
-\end{equation*}
-\begin{itemize}
-\item Observations are $\lbrace r^{-j} e^{i(k\theta)} \rbrace$, $j = -2,0$ and $k = -3...3$
-\end{itemize}
-
-\begin{columns}[c]
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.99\textwidth]{SLeigs_PCE} \\
-    {\bf PCE Evals (129 Samples)}
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.99\textwidth]{SLeigs_MC} \\
-    {\bf Monte Carlo Evals (1000 Samples)}
-\end{columns}
+\end{equation}
+ 
 \end{frame}
 \begin{frame}
-\frametitle{Basic Demonstration: Noise-Corrupted Data}
+\frametitle{Graph Laplacian}
+\label{sec-3-3}
+
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Graph Laplacian]{\includegraphics[width=0.4\textwidth]{DistanceMatrixUnordered.png}}
+      \subfigure[Eigenvalue Magnitudes]{\includegraphics[width=0.4\textwidth]{LaplacianEvals}}
+\end{figure}
+\begin{itemize}
+\item Many zero eigenvalues because many of the dataset elements are
+  completely unconnected from each other
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Clusters}
+\label{sec-3-4}
+
+\vspace{-1.0cm}
+\begin{columns}[c]
+  \column{0.3\textwidth}
+    \centering
+    \vspace*{-0.0cm}\begin{figure}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{LaplacianUnconnectedCluster}}
+      \caption{$\lambda = 0$}
+    \end{figure}    
+  \column{0.3\textwidth}
+    \centering
+    \vspace*{-0.0cm}\begin{figure}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{FiedlerVectorGrouping}}
+      \caption{Fiedler Vector}
+    \end{figure}
+  \column{0.3\textwidth}
+    \centering
+    \vspace*{-0.0cm}\begin{figure}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered2.png}}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorGrouping}}
+      \caption{Next eigenvector}
+    \end{figure}
+\end{columns}
+\begin{itemize}
+\item Unconnected cluster represents smaller and less ``extreme'' shapes
+\item Fiedler vector partitions off single most dissimilar member
+\item Next smallest eigenvector separates horn and rime accretion
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Cluster Partitions}
+\label{sec-3-5}
+\end{frame}
+\begin{frame}
+\frametitle{POD Coordinates}
+\label{sec-3-6}
+\end{frame}
+\section{Uncertainty Quantification}
+\label{sec-4}
+\begin{frame}
+\frametitle{POD Model}
+\label{sec-4-1}
+\end{frame}
+\begin{frame}
+\frametitle{POD Model}
+\label{sec-4-2}
+\end{frame}
+\begin{frame}
+\frametitle{Parameter Space}
 \label{sec-4-3}
-
-\newcommand*{\horzbar}{\rule[.5ex]{2.5ex}{0.5pt}}
-\begin{equation*}
-\dot{\bv{x}} =  \begin{bmatrix} 1 & -2 \\ 1 & -1 \end{bmatrix} \bv{x}
-\end{equation*}
-
-\begin{itemize}
-\item Take data $X \in \mathbb{R}^{2\times100}$ as 100 discrete-time samples of system ($dt = 0.1$)
-\item Data is corrupted by noise matrix $N \in \mathbb{R}^{2\times100}$
-\end{itemize}
-
-\begin{equation*}
-N = \begin{bmatrix} \horzbar & N_1(\mu_1,\sigma_1) & \horzbar \\ \horzbar & N_2(\mu_2,\sigma_2) & \horzbar \end{bmatrix}
-\end{equation*}
-
-\begin{columns}[c]
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.75\textwidth]{NoisyEigsPCE} \\
-    {\bf PCE Evals (337 Samples)}
-  \column{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.75\textwidth]{NoisyEigsMC} \\
-    {\bf Monte Carlo Evals (1000 Samples)}
-\end{columns}
 \end{frame}
 \begin{frame}
-\frametitle{Future Work}
+\frametitle{Output Statistics}
 \label{sec-4-4}
-
-\begin{itemize}
-\item Extending work to ``realistic'' cases where the state dimension is large
-\item If we have a forward model from noise --> eigenvalues, can we
-  invert it and use eigenvalue observations to estimate and correct
-  sensor noise?
-\item Investigate if we can quantify uncertainty in eigenmodes/values to
-  get a parameter-varying model
-\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Global Extrema}
+\label{sec-4-5}
+\end{frame}
+\begin{frame}
+\frametitle{Local Sensitivity}
+\label{sec-4-6}
 \end{frame}
 
 \end{document}

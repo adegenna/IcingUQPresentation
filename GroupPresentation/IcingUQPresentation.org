@@ -147,7 +147,6 @@ $W(i,j) = w(v_i,v_j)$
 
 
 
-
 ** Spectral Graph Partitioning
 \begin{figure}
     \includegraphics[width=0.5\textwidth]{ExampleGraph.png}
@@ -166,6 +165,21 @@ L = \begin{bmatrix}
 \end{bmatrix}
 \end{equation}
 #+end_latex
+** Spectral Graph Partitioning
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$\lambda_1 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec1.png}}
+      \subfigure[$\lambda_2 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec2.png}}
+\end{figure}
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$\lambda_3$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec3.png}}
+      \subfigure[$\lambda_4$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec4.png}}
+      \subfigure[$\lambda_5$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec5.png}}
+\end{figure}
+- Two zero eigenvalues, corresponding to two clusters
+- Eigenvalues close to zero give good partitions within clusters 
+
+
+
 
 ** Previous Work: Heuristic UQ
 

@@ -1,4 +1,4 @@
-% Created 2016-03-25 Fri 16:42
+% Created 2016-03-26 Sat 10:53
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -230,8 +230,26 @@ L = \begin{bmatrix}
 \end{equation}
 \end{frame}
 \begin{frame}
-\frametitle{Previous Work: Heuristic UQ}
+\frametitle{Spectral Graph Partitioning}
 \label{sec-2-5}
+
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$\lambda_1 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec1.png}}
+      \subfigure[$\lambda_2 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec2.png}}
+\end{figure}
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$\lambda_3$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec3.png}}
+      \subfigure[$\lambda_4$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec4.png}}
+      \subfigure[$\lambda_5$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec5.png}}
+\end{figure}
+\begin{itemize}
+\item Two zero eigenvalues, corresponding to two clusters
+\item Eigenvalues close to zero give good partitions within clusters
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Previous Work: Heuristic UQ}
+\label{sec-2-6}
 
 
 \begin{columns}[c]
@@ -264,7 +282,7 @@ L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Exp
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Data-Driven UQ}
-\label{sec-2-6}
+\label{sec-2-7}
 
 \begin{figure}
   \centering
@@ -281,7 +299,7 @@ L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Exp
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Data-Driven UQ}
-\label{sec-2-7}
+\label{sec-2-8}
 
 \begin{columns}[c]
   \column{0.45\textwidth}
@@ -312,7 +330,7 @@ I(\bv{x}) = \overbar{I(\bv{x})} + \sum_{i=1}^M c_i \Phi_i(\bv{x})
 \end{frame}
 \begin{frame}
 \frametitle{Previous Work: Data-Driven UQ}
-\label{sec-2-8}
+\label{sec-2-9}
 
 \begin{figure}
   \centering

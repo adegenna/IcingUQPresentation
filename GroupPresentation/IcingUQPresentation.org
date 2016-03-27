@@ -143,8 +143,6 @@ $W(i,j) = w(v_i,v_j)$
 - It can be shown that the solution to the /average cut/ problem is
   approximated using that eigenvector corresponding to the smallest
   nonzero eigenvalue (/Fiedler vector/)
-
-
 ** Spectral Graph Partitioning
 \begin{figure}
     \includegraphics[width=0.5\textwidth]{ExampleGraph.png}
@@ -246,15 +244,70 @@ w_{ij} &= \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
 - Fiedler vector partitions off single most dissimilar member
 - Next smallest eigenvector separates horn and rime accretion
 ** POD Coordinates
-\vspace*{-0.0cm}\begin{figure}
-    \includegraphics[width=0.4\textwidth]{ClusterPODcoords.png}
-    \caption{POD coordinates of shapes ({\it red}) and cluster ({\it blue})}
-\end{figure}
+#+begin_latex
+\vspace{-1.0cm}
+\begin{columns}[c]
+  \column{0.3\textwidth}
+    \centering
+    \vspace*{-0.0cm}\begin{figure}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{ClusterPODcoords}}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{LaplacianUnconnectedCluster}}
+      \caption{$\lambda = 0$}
+    \end{figure}    
+  \column{0.3\textwidth}
+    \centering
+    \vspace*{-0.0cm}\begin{figure}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{FiedlerVectorPODcoords}}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{FiedlerVectorGrouping}}
+      \caption{Fiedler Vector}
+    \end{figure}
+  \column{0.3\textwidth}
+    \centering
+    \vspace*{-0.0cm}\begin{figure}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorPODcoords}}
+      \subfigure[]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorGrouping}}
+      \caption{Next eigenvector}
+    \end{figure}
+\end{columns}
+#+end_latex
+
 
 * Uncertainty Quantification
 ** POD Model
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$S$-Coordinates]{\includegraphics[width=0.35\textwidth]{ScoordsCluster1}}
+      \subfigure[POD Eigenvalues]{\includegraphics[width=0.35\textwidth]{PODevalsCluster1}}
+      \subfigure[Mean]{\includegraphics[width=0.35\textwidth]{MeanCluster1}}
+      \subfigure[POD Modes]{\includegraphics[width=0.35\textwidth]{PODmodes1to5Cluster1}}
+\end{figure}
+- First 5 modes capture $\approx 80\%$ of the energy
 ** POD Model
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Mode 1]{\includegraphics[width=0.3\textwidth]{POD1Shapes3Sig}}
+      \subfigure[Mode 2]{\includegraphics[width=0.3\textwidth]{POD2Shapes3Sig}}
+      \subfigure[Mode 3]{\includegraphics[width=0.3\textwidth]{POD3Shapes3Sig}}
+      \subfigure[Mode 4]{\includegraphics[width=0.3\textwidth]{POD4Shapes3Sig}}
+      \subfigure[Mode 5]{\includegraphics[width=0.3\textwidth]{POD5Shapes3Sig}}
+\end{figure}
+- Variations shown about dataset mean ($\pm 3 \sigma$)
 ** Parameter Space
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Mode 1]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff1PDF}}
+      \subfigure[Mode 2]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff2PDF}}
+      \subfigure[Mode 3]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff3PDF}}
+      \subfigure[Mode 4]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff4PDF}}
+      \subfigure[Mode 5]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff5PDF}}
+\end{figure}
+- Fit a normal distribution to dataset statistics
+- 5-dimensional UQ study with all Gaussian variables
 ** Output Statistics
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[PDF($C_L$)]{\includegraphics[width=0.4\textwidth]{PDFCLTOL1em4}}
+      \subfigure[PDF($C_D$)]{\includegraphics[width=0.4\textwidth]{PDFCDTOL1em4}}
+\end{figure}
+- Compute PC surrogate model using anisotropic sparse grid (487 solver
+  evaluations)
+- Approximate PDFs for output metrics $C_L$ and $C_D$
+
 ** Global Extrema
 ** Local Sensitivity

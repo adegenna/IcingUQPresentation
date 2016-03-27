@@ -145,7 +145,6 @@ $W(i,j) = w(v_i,v_j)$
   nonzero eigenvalue (/Fiedler vector/)
 
 
-
 ** Spectral Graph Partitioning
 \begin{figure}
     \includegraphics[width=0.5\textwidth]{ExampleGraph.png}
@@ -247,6 +246,10 @@ w_{ij} &= \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
 - Fiedler vector partitions off single most dissimilar member
 - Next smallest eigenvector separates horn and rime accretion
 ** POD Coordinates
+\vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=0.4\textwidth]{ClusterPODcoords.png}
+    \caption{POD coordinates of shapes ({\it red}) and cluster ({\it blue})}
+\end{figure}
 
 * Uncertainty Quantification
 ** POD Model

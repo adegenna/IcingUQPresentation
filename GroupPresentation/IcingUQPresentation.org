@@ -101,14 +101,13 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 
 * Clustering Techniques
 ** Spectral Graph Partitioning
-*Goal:* given an undirected graph $\mathcal{G}$, consisting of a
-  collection of vertices $\mathcal{V}$ and corresponding edges
-  $\mathcal{E}$, find (or approximate) the ``best" partition of that
-  graph into two connected subgraphs
-\vspace*{-0.5cm}\begin{figure}
-    \includegraphics[width=0.5\textwidth]{GraphPartition.png}
-    \caption{Graph partition illustration}
-\end{figure}
+*Goal:* given an undirected graph
+  $\mathcal{G(\mathcal{V},\mathcal{E})}$, consisting of a collection
+  of vertices $\mathcal{V}$ and corresponding edges $\mathcal{E}$,
+  find the ``best" partition of that graph into two disjoint subgraphs
+  \vspace*{-0.5cm}\begin{figure}
+  \includegraphics[width=0.5\textwidth]{GraphPartition.png}
+  \caption{Graph partition illustration} \end{figure}
 ** Spectral Graph Partitioning
 Different formulations possible[fn:ShiMalik]
   + /Average cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$
@@ -120,7 +119,7 @@ Different formulations possible[fn:ShiMalik]
     $w(u,v) = \text{Similarity(u,v)}$ \\
     $|A| = \text{Number of vertices in }A$ \\
     $\text{cut}(A,B) = \sum_{u \in A,v \in B} w(u,v)$ \\ 
-    $\text{assoc}(A,B) = \sum_{u \in A, v \in V} w(u,v)$
+    $\text{assoc}(A,V) = \sum_{u \in A, v \in V} w(u,v)$
   \column{0.45\textwidth}
     \centering
     \includegraphics[width=0.95\textwidth]{GraphPartition.png}
@@ -220,22 +219,22 @@ w_{ij} &= \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
   \column{0.3\textwidth}
     \centering
     \vspace*{-0.0cm}\begin{figure}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered.png}}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{LaplacianUnconnectedCluster}}
+      \subfigure[Laplacian]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{LaplacianUnconnectedCluster}}
       \caption{$\lambda = 0$}
     \end{figure}    
   \column{0.3\textwidth}
     \centering
     \vspace*{-0.0cm}\begin{figure}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered.png}}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{FiedlerVectorGrouping}}
+      \subfigure[Laplacian]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{FiedlerVectorGrouping}}
       \caption{Fiedler Vector}
     \end{figure}
   \column{0.3\textwidth}
     \centering
     \vspace*{-0.0cm}\begin{figure}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered2.png}}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorGrouping}}
+      \subfigure[Laplacian]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered2.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorGrouping}}
       \caption{Next eigenvector}
     \end{figure}
 \end{columns}
@@ -250,22 +249,22 @@ w_{ij} &= \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
   \column{0.3\textwidth}
     \centering
     \vspace*{-0.0cm}\begin{figure}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{ClusterPODcoords}}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{LaplacianUnconnectedCluster}}
+      \subfigure[POD coordinates]{\includegraphics[width=0.95\textwidth]{ClusterPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{LaplacianUnconnectedCluster}}
       \caption{$\lambda = 0$}
     \end{figure}    
   \column{0.3\textwidth}
     \centering
     \vspace*{-0.0cm}\begin{figure}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{FiedlerVectorPODcoords}}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{FiedlerVectorGrouping}}
+      \subfigure[POD coordinates]{\includegraphics[width=0.95\textwidth]{FiedlerVectorPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{FiedlerVectorGrouping}}
       \caption{Fiedler Vector}
     \end{figure}
   \column{0.3\textwidth}
     \centering
     \vspace*{-0.0cm}\begin{figure}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorPODcoords}}
-      \subfigure[]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorGrouping}}
+      \subfigure[POD coordinates]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorGrouping}}
       \caption{Next eigenvector}
     \end{figure}
 \end{columns}

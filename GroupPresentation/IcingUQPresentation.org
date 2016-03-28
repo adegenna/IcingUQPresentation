@@ -110,8 +110,10 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
   \caption{Graph partition illustration} \end{figure}
 ** Spectral Graph Partitioning
 Different formulations possible[fn:ShiMalik]
-  + /Average cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$
-  + /Normalized cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{\text{assoc}(A,V)} + \frac{\text{cut}(A,B)}{\text{assoc}(B,V)} \right \rbrace$
+  - /Min cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \text{cut}(A,B) \right \rbrace$
+  - /Average association:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{assoc}(A,B)}{| A |} + \frac{\text{assoc}(A,B)}{| B |} \right \rbrace$
+  - /Average cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$
+  - /Normalized cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{\text{assoc}(A,V)} + \frac{\text{cut}(A,B)}{\text{assoc}(B,V)} \right \rbrace$
 #+begin_latex
 \vspace{-1.0cm}
 \begin{columns}[c]
@@ -124,17 +126,35 @@ Different formulations possible[fn:ShiMalik]
     \centering
     \includegraphics[width=0.95\textwidth]{GraphPartition.png}
 \end{columns}
-\vspace{-1.0cm}
+\vspace{-1.5cm}
 #+end_latex
 [fn:ShiMalik] Shi & Malik. /Normalized Cuts and Image
 Segmentation/, 2000.
 
-** Spectral Graph Partitioning
-- The graph /Laplacian/ provides a tool for computing these graph partitions
-$L = D - W$ \\
-$D = \text{diag}(d_k) \;\;\; , \;\;\; d_k = \sum_{j=1}^N w(v_k,v_j) \;\;\; , \;\;\; k=1 \cdots N$ \\
-$W(i,j) = w(v_i,v_j)$
+** Spectral Graph Paritioning
+- /Min cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \text{cut}(A,B) \right \rbrace$
+  - \color{green}{Simple to understand}
+  - \color{red}{No consideration for size of groups or within-group similarity}
+  - \color{red}{Tends to partition off a single element}
+- /Average association:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{assoc}(A,B)}{| A |} + \frac{\text{assoc}(A,B)}{| B |} \right \rbrace$
+  - \color{green}{Emphasizes within-group similarity}
+  - \color{red}{No consideration for between-group connections --> small, tight ``clumps"}
+- /Average cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$
+  - \color{green}{Emphasizes between-group disconnection}
+  - \color{red}{No consideration for within-group similarity --> large, dissimilar groups}
+- /Normalized cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{\text{assoc}(A,V)} + \frac{\text{cut}(A,B)}{\text{assoc}(B,V)} \right \rbrace$
+  - \color{green}{Nice ``middle ground" between avg. assoc. and avg. cut}
 
+** Spectral Graph Partitioning
+\vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=0.7\textwidth]{GraphPartitionMethods.png}
+    \caption{Comparison of graph partitioning methods (Shi and Malik)}
+\end{figure}
+- Similarity matrix: $W = w(i,j)$
+- Degree matrix: $D = \text{diag}(d_k) \;\;\; , \;\;\; d_k = \sum_{j=1}^N w(v_k,v_j) \;\;\; , \;\;\; k=1 \cdots N$
+- Laplacian matrix: $L = D - W$
+** Spectral Graph Partitioning
+- ``Classical" approach uses graph /Laplacian/ (average cut problem)
 - Eigenvectors with zero eigenvalue correspond to unconnected subsets,
   eigenvectors with small eigenvalue magnitudes correspond to almost
   unconnected subsets
@@ -142,6 +162,8 @@ $W(i,j) = w(v_i,v_j)$
 - It can be shown that the solution to the /average cut/ problem is
   approximated using that eigenvector corresponding to the smallest
   nonzero eigenvalue (/Fiedler vector/)
+  - $\text{min AvgCut}$ = $\text{min}_y \frac{y^T L y}{\| y \|}$
+- Change in sign of Fiedler vector gives group partitioning
 ** Spectral Graph Partitioning
 \begin{figure}
     \includegraphics[width=0.5\textwidth]{ExampleGraph.png}
@@ -191,6 +213,7 @@ L = \begin{bmatrix}
 \vspace*{-0.0cm}\begin{figure}
       \subfigure[XOR Illustration]{\includegraphics[width=0.4\textwidth]{XORexample.png}}
       \subfigure[Dataset Distances]{\includegraphics[width=0.4\textwidth]{XORdistances}}
+      \caption{XOR distance metric}
 \end{figure}
 - Overlay dataset with a 2D Cartesian grid
 - Assign value of 1 to gridpoint if it is on the ice, 0 otherwise
@@ -198,77 +221,57 @@ L = \begin{bmatrix}
 - Truncate $w_{ij}$ after $d_{ij} > 3\sigma$
 #+begin_latex
 \begin{equation*}
-\begin{aligned}
-d_{ij} &= \text{exp} \left(-\frac{1}{2} \frac{d_{ij}^2}{\sigma^2} \right) \\
-w_{ij} &= \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
-\end{aligned}
+d_{ij} = \text{exp} \left(-\frac{1}{2} \frac{d_{ij}^2}{\sigma^2} \right) \;\;\;\;\;\; w_{ij} = \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
 \end{equation}
 #+end_latex
  
 ** Graph Laplacian
 \vspace*{-0.0cm}\begin{figure}
-      \subfigure[Graph Laplacian]{\includegraphics[width=0.4\textwidth]{DistanceMatrixUnordered.png}}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.4\textwidth]{DistanceMatrixUnordered.png}}
       \subfigure[Eigenvalue Magnitudes]{\includegraphics[width=0.4\textwidth]{LaplacianEvals}}
+      \caption{Laplacian visualization and eigenvalues}
 \end{figure}
 - Many zero eigenvalues because many of the dataset elements are
   completely unconnected from each other
 ** Clusters
-#+begin_latex
-\vspace{-1.0cm}
-\begin{columns}[c]
-  \column{0.3\textwidth}
-    \centering
-    \vspace*{-0.0cm}\begin{figure}
-      \subfigure[Laplacian]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered.png}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{LaplacianUnconnectedCluster}}
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{LaplacianUnconnectedCluster}}
       \caption{$\lambda = 0$}
-    \end{figure}    
-  \column{0.3\textwidth}
-    \centering
-    \vspace*{-0.0cm}\begin{figure}
-      \subfigure[Laplacian]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered.png}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{FiedlerVectorGrouping}}
-      \caption{Fiedler Vector}
-    \end{figure}
-  \column{0.3\textwidth}
-    \centering
-    \vspace*{-0.0cm}\begin{figure}
-      \subfigure[Laplacian]{\includegraphics[width=0.95\textwidth]{DistanceMatrixOrdered2.png}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorGrouping}}
-      \caption{Next eigenvector}
-    \end{figure}
-\end{columns}
-#+end_latex
+\end{figure}
 - Unconnected cluster represents smaller and less ``extreme" shapes
+** Clusters
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{FiedlerVectorGrouping}}
+      \caption{Fiedler vector}
+\end{figure}
 - Fiedler vector partitions off single most dissimilar member
+** Clusters
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered2.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{Fiedler2VectorGrouping}}
+      \caption{Next smallest eigenvector}
+\end{figure}
 - Next smallest eigenvector separates horn and rime accretion
 ** POD Coordinates
-#+begin_latex
-\vspace{-1.0cm}
-\begin{columns}[c]
-  \column{0.3\textwidth}
-    \centering
-    \vspace*{-0.0cm}\begin{figure}
-      \subfigure[POD coordinates]{\includegraphics[width=0.95\textwidth]{ClusterPODcoords}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{LaplacianUnconnectedCluster}}
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{ClusterPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{LaplacianUnconnectedCluster}}
       \caption{$\lambda = 0$}
-    \end{figure}    
-  \column{0.3\textwidth}
-    \centering
-    \vspace*{-0.0cm}\begin{figure}
-      \subfigure[POD coordinates]{\includegraphics[width=0.95\textwidth]{FiedlerVectorPODcoords}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{FiedlerVectorGrouping}}
-      \caption{Fiedler Vector}
-    \end{figure}
-  \column{0.3\textwidth}
-    \centering
-    \vspace*{-0.0cm}\begin{figure}
-      \subfigure[POD coordinates]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorPODcoords}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.95\textwidth]{Fiedler2VectorGrouping}}
-      \caption{Next eigenvector}
-    \end{figure}
-\end{columns}
-#+end_latex
+\end{figure}
+** POD Coordinates
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{FiedlerVectorPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{FiedlerVectorGrouping}}
+      \caption{Fiedler vector}
+\end{figure}
+** POD Coordinates
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{Fiedler2VectorPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{Fiedler2VectorGrouping}}
+      \caption{Next smallest eigenvector}
+\end{figure}
 
 
 * Uncertainty Quantification

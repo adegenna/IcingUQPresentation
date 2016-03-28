@@ -310,4 +310,15 @@ w_{ij} &= \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
 - Approximate PDFs for output metrics $C_L$ and $C_D$
 
 ** Global Extrema
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Highest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotHighCL}}
+      \subfigure[Lowest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotLowCL}}
+      \subfigure[Means of top and bottom deciles]{\includegraphics[width=0.3\textwidth]{GoodBadAirfoils}}
+\end{figure}
+- *Good:* low accretion, smooth, conforms to airfoil surface
+- *Bad:* high accretion, horns, protrude out as flow obstacles
 ** Local Sensitivity
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.4\textwidth]{LocalSensitivityCL}
+\end{figure}
+- Local sensitivity tells same story

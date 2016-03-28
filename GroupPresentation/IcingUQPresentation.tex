@@ -1,4 +1,4 @@
-% Created 2016-03-27 Sun 15:53
+% Created 2016-03-27 Sun 20:16
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -426,10 +426,27 @@ w_{ij} &= \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
 \begin{frame}
 \frametitle{Global Extrema}
 \label{sec-4-5}
+
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Highest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotHighCL}}
+      \subfigure[Lowest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotLowCL}}
+      \subfigure[Means of top and bottom deciles]{\includegraphics[width=0.3\textwidth]{GoodBadAirfoils}}
+\end{figure}
+\begin{itemize}
+\item \textbf{Good:} low accretion, smooth, conforms to airfoil surface
+\item \textbf{Bad:} high accretion, horns, protrude out as flow obstacles
+\end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Local Sensitivity}
 \label{sec-4-6}
+
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.4\textwidth]{LocalSensitivityCL}
+\end{figure}
+\begin{itemize}
+\item Local sensitivity tells same story
+\end{itemize}
 \end{frame}
 
 \end{document}

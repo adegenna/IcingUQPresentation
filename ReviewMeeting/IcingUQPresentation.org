@@ -1,0 +1,627 @@
+#+STARTUP: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [9pt]
+
+#+latex_header: \mode<beamer>{\usetheme{Warsaw}}
+#+latex_header: \mode<beamer>{\setbeamertemplate{blocks}[rounded][shadow=false]}
+#+latex_header: \mode<beamer>{\addtobeamertemplate{block begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}}
+#+latex_header: \mode<beamer>{\setbeamercolor{structure}{fg=orange}}
+#+latex_header: \mode<beamer>{\setbeamercovered{transparent}}
+#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+
+#+latex_header: \usepackage{subcaption}
+#+latex_header: \usepackage{multimedia}
+#+latex_header: \usepackage{tikz}
+#+latex_header: \usepackage{subfigure,subfigmat}
+#+latex_header: \usepackage{threeparttable}
+#+latex_header: \usetikzlibrary{shapes,arrows,shadows}
+#+latex_header: \usepackage{bm, amssymb, amsmath, array, pdfpages}
+
+#+begin_latex
+% Define my settings
+
+\graphicspath{{Figures/}}
+% Add Princeton shield logo
+\addtobeamertemplate{frametitle}{}{%
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,yshift=2pt] at (current page.north east) {\includegraphics[height=0.7cm]{Shield}};
+\end{tikzpicture}}
+%
+#+end_latex
+
+#+latex_header: \newcommand{\bv}[1]{\mathbf{#1}}
+#+latex_header: \newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
+#+latex_header: \newcommand{\beq}[0]{\begin{equation}}
+#+latex_header: \newcommand{\eeq}[0]{\end{equation}}
+#+latex_header: \newcommand{\beqa}[0]{\begin{eqnarray}}
+#+latex_header: \newcommand{\eeqa}[0]{\end{eqnarray}}
+#+latex_header: \newcommand{\beqq}[0]{\begin{equation*}}
+#+latex_header: \newcommand{\eeqq}[0]{\end{equation*}}
+#+latex_header: \newcommand{\bs}[1]{\boldsymbol{#1}}
+#+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
+#+BEAMER_FRAME_LEVEL: 2
+
+#+DATE: Group Presentation \\ Princeton, NJ \\ March 2016
+#+TITLE: Modeling and Uncertainty Quantification for Airfoil Icing
+#+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
+\institute{Princeton University}
+
+* Motivation/Background
+** Introduction
+*Wing icing deteriorates airfoil aerodynamics*
+  - Leading edge flow separation bubble
+  - Lower lift, higher drag
+  - Unpredictable stall
+
+\vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=0.4\textwidth]{BadHorn.png}
+    \caption{Leading edge horn separation}
+\end{figure}
+
+** Introduction
+*Significant ice shape variation, sensitivity to physical parameters*[fn:Addy]
+  - Complex physics (aero-thermodynamics, macro/micro scale physics)
+  - Uncertainty in physical parameters
+
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.75\textwidth]{GlobalDataSet}
+      \caption{Wind tunnel experimental ice shapes}
+\end{figure}
+
+[fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
+Airfoils/. NASA TR 2000-210031.
+
+** Introduction
+*Different types of ice accretion*[fn:Habashi]
+  - ``Horns", ``ridges", ``lobster tails" refer to shape
+  - ``Glaze", ``rime" refer to icing thermodynamics
+
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Rime Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Rime.png}}
+      \subfigure[Horn Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Horn.png}}
+ 
+\end{figure}
+
+[fn:Habashi] Beaugendre et. al. /Development of a Second Generation
+In-Flight Simulation Code/. J. Fluids Engineering, 2006.
+
+** Introduction
+*Research Goals*
+- Apply uncertainty quantification techniques to explore statistical
+  efffects of uncertain icing parameters on ice shape and aerodynamics
+  - Polynomial chaos expansions (PCE)
+  - Tensor/sparse grid collocation sampling
+  - 2D steady-state RANS solver for aerodynamic assessment
+- Build ice shape model from data
+  - Aggregate ice shape database
+  - Cluster shapes using spectral graph partitioning
+  - Model shape variation using Proper Orthogonal Decomposition (POD) 
+- Quantify effects of physical uncertainties in aero-thermodynamics
+  - Build a computational ice-accretion code
+  - UQ on governing parameters (LWC, temperature, accretion time, etc.)
+
+** Introduction
+*Thesis Structure*
+- Heuristic UQ
+  - Ice shape scaling parameters
+  - Verify PCE techniques against Monte Carlo simulations
+- Data-based UQ
+  - Build ice shape model from data
+  - Clustering + POD
+- Computational UQ
+  - Build computational ice accretion code
+  - Droplet impingement + thermodynamic PDE solvers
+
+
+
+
+* Heuristic UQ
+** Canonical Ice Shapes
+- *Basic ice shapes*[fn:Papadakis]
+#+begin_latex
+\centering
+\vspace{-0.5cm}
+\begin{minipage}[t]{0.4\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{RidgeParameters}
+\caption{Ridge Ice}
+\end{figure}
+\vspace{-0.5cm}
+\begin{itemize}
+\item Forms aft of deicing mechanism
+\item Runback water refreezes to form step
+\end{itemize}
+\end{minipage}
+\begin{minipage}[t]{0.4\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{NominalHorn}
+\caption{Horn Ice}
+\end{figure}
+\vspace{-0.5cm}
+\begin{itemize}
+\item Forms in relatively warm conditions
+\item Differential heat transfer rate
+\end{itemize}
+\end{minipage}
+#+end_latex
+[fn:Papadakis] Papadakis et. al. /Aerodynamic Scaling Experiments with
+Simulated Ice Accretions/. AIAA 2001-0833.
+
+** Canonical Ice Shapes
+- *Basic scalings/translations*[fn:DeGennaro]
+#+begin_latex
+\centering
+\vspace{-0.5cm}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{RidgeParameters}
+\caption{Ridge Parameterization}
+\end{figure}
+\vspace{-0.5cm}
+\begin{itemize}
+\item Ridge radius
+\item Ridge position
+\end{itemize}
+\end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{NominalHorn}
+\caption{Horn Parameterization}
+\end{figure}
+\vspace{-0.5cm}
+\begin{itemize}
+\item Horn height
+\item Horn separation
+\end{itemize}
+\end{minipage}
+#+end_latex
+[fn:DeGennaro] DeGennaro A., Rowley C.W., and Martinelli,
+L. /Uncertainty Quantification for Airfoil Icing using Polynomial
+Chaos Expansions/. Journal of Aircraft, 2015.
+** Application to Icing UQ
+- We wish to apply a fast and accurate method for quantifying
+  uncertainty in the aerodynamics of these ice shapes
+- Choose to use polynomial chaos expansions (PCE)
+  - Fast compared to Monte Carlo
+  - Explicit surrogate
+  - Easy statistical sampling
+  - Can compute sensitivities, analysis of variance
+- We will compute UQ results for horn and ridge problems using PCE,
+  and verify them against high-resolution Monte Carlo simulations
+** Polynomial Chaos Expansions (PCE)
+
+- *Polynomial Chaos Framework* [fn:XiuBook]
+  - Let $\bv{Z} = (Z_1 \ldots Z_d)$ be $d$ random variables with PDF
+    $\rho(\bv{Z})$ that parameterize ice
+  - Let $\lbrace \Phi_k \rbrace$ denote the set of polynomials
+    which are orthogonal w.r.t. $\rho(\bv{Z})$
+  - Let $y(\bv{Z})$ denote the mapping from $\bv{Z}$ to an aerodynamic
+    performance metric
+- *Probabilistic Collocation Method:*
+  - /Representation/ 
+    \begin{equation*}
+      y(\bv{Z}) \approx \sum_{|i|=0}^N y_i \Phi_i(\bv{Z})
+    \end{equation*}
+  - /Orthonormality/ 
+    \begin{equation*}
+    \begin{aligned}
+      \ip{f}{g} &= \int_{\Gamma} f(\bv{z})g(\bv{z}) \rho(\bv{z}) d\bv{z} \\
+      \ip{\Phi_i}{\Phi_j} &= \delta_{ij}
+    \end{aligned}
+    \end{equation*}
+  - /Quadrature/ 
+    \begin{equation*}
+      y_k = \ip{y}{\Phi_k} \approx \sum_{i=0}^{Q}
+    y(\bv{Z}^{(k)}) \Phi_k(\bv{Z}^{(k)}) w_k
+    \end{equation*}
+[fn:XiuBook] Xiu D. /Numerical Methods for Stochastic Computations: A
+Spectral Method Approach/. Princeton University Press, 2010.
+** PCE Collocation
+#+begin_latex
+\begin{columns}[c]
+  \column{0.7\textwidth}
+    \centering
+    \begin{figure}
+    \includegraphics[width=0.95\textwidth]{SparseGrid1}
+    \caption{Full Tensor Product vs. Sparse Grid}
+    \end{figure}
+  \column{0.3\textwidth}
+    \centering
+    \begin{figure}
+    \includegraphics[width=0.95\textwidth]{SparseGrid2} \\
+    \caption{Anisotropic Grid}
+    \end{figure}
+\end{columns}
+#+end_latex
+
+- Full tensor grids can be used when probability space is low-dimensional
+- Sparse grids can be used otherwise[fn:LeMaitre]
+
+[fn:LeMaitre] LeMaitre O. /Spectral Methods for Uncertainty
+Quantification/. Springer, 2010.
+** Application to Icing UQ
+- Parameterize shape variation for ridge/horn
+  - 2 parameters, equip with a distribution
+- Apply polynomial chaos methodology
+  - Full tensor grid sampling
+  - 4$^{th}$-order polynomials --> $5\times5$ collocation mesh
+- Compute aerodynamics of resulting shapes
+  - In-house 2D steady-state RANS solver + hyperbolic mesh generator
+- Compare results against 500 Quasi-Monte Carlo samples
+** Ridge Study
+#+begin_latex
+\centering
+\vspace{-0.5cm}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.75\textwidth]{RidgeRVariation}
+\end{figure}
+\vspace{-0.5cm}
+\begin{figure}[t]
+\includegraphics[width=0.75\textwidth]{RidgeSVariation}
+\caption{Ridge Variations}
+\end{figure}
+\vspace{-0.5cm}
+\end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.65\textwidth]{MC_surrogate_LargeUnc_CL}
+\end{figure}
+\vspace{-0.6cm}
+\begin{figure}[t]
+\includegraphics[width=0.65\textwidth]{MCgpcPDFLargeUnc_CL}
+\caption{Lift Statistics}
+\end{figure}
+\end{minipage}
+#+end_latex
+- Ridge parameters normally distributed about mean
+- Performance degrades with larger size, closer to L.E.
+** Horn Study
+#+begin_latex
+\centering
+\vspace{-0.5cm}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.75\textwidth]{HornHVariation}
+\end{figure}
+\vspace{-0.5cm}
+\begin{figure}[t]
+\includegraphics[width=0.75\textwidth]{HornSVariation}
+\caption{Ridge Variations}
+\end{figure}
+\vspace{-0.5cm}
+\end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.65\textwidth]{CLMAX_MEGPCHORN}
+\end{figure}
+\vspace{-0.6cm}
+\begin{figure}[t]
+\includegraphics[width=0.65\textwidth]{MCgpcPDFMEGPCHorn_CL}
+\caption{Lift Statistics}
+\end{figure}
+\end{minipage}
+#+end_latex
+- Horn separation normally distributed
+- Horn height distributed as a half-Gaussian (mean = clean airfoil)
+- Performance degrades with larger horn size and separation
+
+
+* Data-Based UQ
+** Dataset
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.5\textwidth]{GlobalDataSet}
+      \caption{Wind tunnel experimental ice shapes}
+\end{figure}
+- Dataset consists of 145 experimental ice shapes
+- Obtained in icing wind tunnel at NASA Glenn[fn:Addy]
+- Representative of a wide variety of icing conditions (temperature,
+  LWC, accretion time, etc.)
+
+** Dataset
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.5\textwidth]{GlobalDataSet}
+      \caption{Wind tunnel experimental ice shapes}
+\end{figure}
+*Goals:*
+  - Separate shapes into self-similar groups
+  - Develop low-dimensional set of shape parameters for a group
+  - Perform parametric UQ on resulting parameter space
+
+
+** Distance/Similarity Metric
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[XOR Illustration]{\includegraphics[width=0.4\textwidth]{XORexample.png}}
+      \subfigure[Dataset Distances]{\includegraphics[width=0.4\textwidth]{XORdistances}}
+      \caption{XOR distance metric}
+\end{figure}
+- Overlay dataset with a 2D Cartesian grid
+- Assign value of 1 to gridpoint if it is on the ice, 0 otherwise
+- Pick $\sigma$ based on observed peaks in data distances
+- Truncate $w_{ij}$ after $d_{ij} > 3\sigma$
+#+begin_latex
+\begin{equation*}
+w_{ij} = \text{exp} \left(-\frac{1}{2} \frac{d_{ij}^2}{\sigma^2} \right) \;\;\;\;\;\; w_{ij} = \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
+\end{equation}
+#+end_latex
+ 
+** Spectral Graph Partitioning
+*Goal:* cluster shapes based upon similarity metric \\
+*Methodology:* view database as an undirected graph
+$\mathcal{G}(\mathcal{V},\mathcal{E})$
+  - Vertices $\mathcal{V}$ are ice shapes
+  - Edges $\mathcal{E}$ are similarities between ice shapes
+  - Find ``best" partition of $\mathcal{G}(\mathcal{V},\mathcal{E})$ into subsets A and B
+\vspace*{-1.25cm}
+\begin{figure}
+   \includegraphics[width=0.5\textwidth]{GraphPartition.png}
+   \vspace{-2.25cm}
+   \caption{Graph partition illustration} 
+\end{figure}
+
+** Spectral Graph Partitioning
+*Approach:*[fn:ShiMalik]
+  - Calculate graph Laplacian using similarity metric
+    - Similarity matrix: $W = w(i,j)$
+    - Degree matrix: $D = \text{diag}(d_k) \;\;\; , \;\;\; d_k = \sum_{j=1}^N w(v_k,v_j) \;\;\; , \;\;\; k=1 \cdots N$
+    - Laplacian matrix: $L = D - W$
+  - Eigenvectors with zero eigenvalue identify disconnected subsets
+    - E.g., $L \bv{1} = \bv{0}$ <---> entire graph is disconnected
+  - First nonzero eigenvector (Fiedler vector) identifies optimal
+    partition of connected vertices within subsets
+    - Approximates solution of /average cut/ formulation: \\ 
+      $P(A,B) = \text{min}_{A \in \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$ \\
+      $|A| = \text{Number of vertices in }A$ \\
+      $\text{cut}(A,B) = \sum_{u \in A,v \in B} w(u,v)$
+    - Eigenvectors close to zero similarly identify good partitions
+[fn:ShiMalik] Shi & Malik. /Normalized Cuts and Image
+Segmentation/, 2000.
+** Spectral Graph Partitioning
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{ExampleGraph.png}
+    \caption{Toy example}
+\end{figure}
+#+begin_latex
+\begin{equation*}
+L = \begin{bmatrix}
+1  & -0.9 & -0.1 & 0 & 0 & 0 & 0 \\
+-0.9 & 1  & -0.1 & 0 & 0 & 0 & 0 \\
+-0.1 & -0.1 & 0.2  & 0 & 0 & 0 & 0 \\
+0    & 0    & 0    & 1 & -0.5 & -0.5 & 0 \\
+0    & 0    & 0    & -0.5 & 1 & 0 & -0.5 \\
+0    & 0    & 0    & -0.5 & 0 & 1 & -0.5 \\
+0    & 0    & 0    & 0 & -0.5 & -0.5 & 1 \\ 
+\end{bmatrix}
+\end{equation}
+#+end_latex
+** Spectral Graph Partitioning
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$\lambda_1 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec1.png}}
+      \subfigure[$\lambda_2 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec2.png}}
+      \caption{Disconnected subsets}
+\end{figure}
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$\lambda_3$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec3.png}}
+      \subfigure[$\lambda_4$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec4.png}}
+      \subfigure[$\lambda_5$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec5.png}}
+      \caption{Clustering within subsets}
+\end{figure}
+- Two zero eigenvalues, corresponding to two clusters
+- Eigenvalues close to zero give good partitions within clusters 
+
+
+** Graph Laplacian
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.4\textwidth]{DistanceMatrixUnordered.png}}
+      \subfigure[Eigenvalue Magnitudes]{\includegraphics[width=0.4\textwidth]{LaplacianEvals}}
+      \caption{Laplacian visualization and eigenvalues}
+\end{figure}
+- Many zero eigenvalues because many of the dataset elements are
+  completely unconnected from each other
+** Clusters
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{LaplacianUnconnectedCluster}}
+      \caption{$\lambda = 0$}
+\end{figure}
+- Unconnected cluster represents smaller and less ``extreme" shapes
+** Clusters
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{FiedlerVectorGrouping}}
+      \caption{Fiedler vector}
+\end{figure}
+- Fiedler vector partitions off single most dissimilar member
+** Clusters
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered2.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{Fiedler2VectorGrouping}}
+      \caption{Next smallest eigenvector}
+\end{figure}
+- Next smallest eigenvector separates horn and rime accretion
+** POD Coordinates
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{ClusterPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{LaplacianUnconnectedCluster}}
+      \caption{$\lambda = 0$}
+\end{figure}
+** POD Coordinates
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{FiedlerVectorPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{FiedlerVectorGrouping}}
+      \caption{Fiedler vector}
+\end{figure}
+** POD Coordinates
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{Fiedler2VectorPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{Fiedler2VectorGrouping}}
+      \caption{Next smallest eigenvector}
+\end{figure}
+
+** Cluster Modeling
+\vspace*{-0.75cm}\begin{figure}
+      \subfigure[$S$-Coordinates]{\includegraphics[width=0.35\textwidth]{ScoordsCluster1}}
+      \subfigure[POD Eigenvalues]{\includegraphics[width=0.35\textwidth]{PODevalsCluster1}}
+      \subfigure[Mean]{\includegraphics[width=0.35\textwidth]{MeanCluster1}}
+      \subfigure[POD Modes]{\includegraphics[width=0.35\textwidth]{PODmodes1to5Cluster1}}
+      \caption{POD of ice shape cluster}
+\end{figure}
+*Goal:* build a low-dimensional model of ice shape cluster for UQ
+** Cluster Modeling
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Mode 1]{\includegraphics[width=0.3\textwidth]{POD1Shapes3Sig}}
+      \subfigure[Mode 2]{\includegraphics[width=0.3\textwidth]{POD2Shapes3Sig}}
+      \subfigure[Mode 3]{\includegraphics[width=0.3\textwidth]{POD3Shapes3Sig}}
+      \subfigure[Mode 4]{\includegraphics[width=0.3\textwidth]{POD4Shapes3Sig}}
+      \subfigure[Mode 5]{\includegraphics[width=0.3\textwidth]{POD5Shapes3Sig}}
+      \caption{Ice model modes}
+\end{figure}
+Variations shown about dataset mean ($\pm 3 \sigma$)
+** Parameter Space
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Mode 1]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff1PDF}}
+      \subfigure[Mode 2]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff2PDF}}
+      \subfigure[Mode 3]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff3PDF}}
+      \subfigure[Mode 4]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff4PDF}}
+      \subfigure[Mode 5]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff5PDF}}
+      \caption{Mode statistics ({\color{blue} data} and {\color{red} fit})}
+\end{figure}
+- Fit a normal distribution to dataset statistics
+- 5-dimensional UQ study with all Gaussian variables
+** Output Statistics
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[PDF($C_L$)]{\includegraphics[width=0.4\textwidth]{PDFCLTOL1em4}}
+      \subfigure[PDF($C_D$)]{\includegraphics[width=0.4\textwidth]{PDFCDTOL1em4}}
+      \caption{Output PDFs for lift and drag}
+\end{figure}
+- Compute PC surrogate model using anisotropic sparse grid (487 solver
+  evaluations)
+- Approximate PDFs for output metrics $C_L$ and $C_D$
+
+** Global Extrema
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Highest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotHighCL}}
+      \subfigure[Lowest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotLowCL}}
+      \subfigure[Means of top and bottom deciles]{\includegraphics[width=0.3\textwidth]{GoodBadAirfoils}}
+      \caption{Global extrema visualized}
+\end{figure}
+- *Good:* low accretion, smooth, conforms to airfoil surface
+- *Bad:* high accretion, horns, protrude out as flow obstacles
+
+* Computational UQ
+** Motivation
+- *Investigate uncertainty in the physical process of icing*
+  - What is the statistical effect of uncertainty in physical parameters?
+    - Free-stream temperature
+    - Angle of attack
+    - Convective heat transfer
+    - Droplet diameter distribution
+    - Accretion time
+
+** Airfoil Icing Code Flowchart 
+#+begin_latex
+\fontsize{7}\selectfont
+% Define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% Define block styles used later
+
+\tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, 
+    text centered, minimum height=2.5em,drop shadow]
+\tikzstyle{ann} = [above, text width=5em, text centered]
+\tikzstyle{wa} = [sensor, text width=7.5em, fill=blue!20, 
+    minimum height=3em, rounded corners, drop shadow]
+
+% Define distances for bordering
+\def\blockdist{2.3}
+\def\edgedist{2.5}
+
+\begin{tikzpicture}
+    \node (CleanAirfoil) [wa]  {Clean Airfoil Geometry};
+    \path (CleanAirfoil)+(4,2.5) node (FlowSolver) [wa] {Mesh/Flow Solver};
+    \path (FlowSolver)+(0,-1.25) node (Droplet) [wa] {Droplet\\Advection Module};
+    \path (Droplet)+(0,-1.25) node (ThermoModule) [wa] {Thermodynamic Module};
+    \path (ThermoModule)+(0,-1.25) node (IcedAirfoil) [wa] {Iced Airfoil Geometry};
+    \path (CleanAirfoil)+(8,0) node (FinalAirfoil) [wa] {Final Iced Airfoil Geometry};
+
+    \path [draw, ->, thick] (CleanAirfoil.north) |- node [above] {} (FlowSolver.west);
+    \path [draw, ->, thick] (FlowSolver.south) -- node [below] {} (Droplet.north);
+    \path [draw, ->, thick] (Droplet.south) -- node [below] {} (ThermoModule.north);
+    \path [draw, ->, thick] (ThermoModule.south) -- node [below] {} (IcedAirfoil.north);
+    \path [draw, ->, thick] (IcedAirfoil.east) -| node [above] {} (FinalAirfoil.south);
+    \path [draw, ->, thick] (IcedAirfoil.east) -- ++(0.75,0cm) |- node [above]
+                      {} (FlowSolver.east);
+
+    \begin{pgfonlayer}{background}
+        \path (FlowSolver.west)+(-1,1) node (a) {};
+        \path (IcedAirfoil.east)+(1,-1) node (b) {};
+        \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
+            
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+
+#+end_latex
+
+** Droplet Advection
+#+begin_latex
+\begin{equation*}
+  \begin{align}
+    \frac{d \bv{x}}{d t} &= \bv{v} \\
+    m \frac{d \bv{v}}{d t} &= \frac{1}{2} \rho_g C_D \pi r^2 ||\bv{v_g} - \bv{v}|| (\bv{v_g} - \bv{v}) + m \bv{g}
+  \end{align}
+\end{equation}
+
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR10em6} \\
+    {\bf R = 10$\mu$m}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{ExampleR100em6} \\
+    {\bf R = 100$\mu$m}
+\end{columns}
+#+end_latex
+
+** Thermodynamics
+#+begin_latex
+\begin{equation*}
+  \begin{align}
+    \rho_w \left \lbrace \frac{\partial h_f}{\partial t} + \nabla \cdot (\bv{u_f} h_f) \right \rbrace &= \dot{m}_{imp} - \dot{m}_{ice} \\
+    \rho_w \left \lbrace \frac{\partial (h_f c_W T)}{\partial t} + \nabla \cdot (\bv{u_f} h_f c_W T) \right \rbrace &= \left [ c_W T_d + \frac{u_d^2}{2} \right ] \dot{m}_{imp} \\
+    & +(L_{fus} - c_{ice}T)\dot{m}_{ice} \\
+    & + c_H (T_{\infty} - T)
+  \end{align}
+\end{equation}
+
+#+end_latex
+- \textbf{Mass} 
+  - Enters through impinging droplets
+  - Exits via evaporation/sublimation and freezing
+- \textbf{Energy} 
+  - Enters through impinging droplets, freezing of ice 
+  - Exits via evaporation/sublimation, radiation, convection
+- Solved explicitly using finite volume discretization with Roe scheme upwinding
+
+** Preliminary Intermediate Results: Ice Shapes
+#+begin_latex
+    \centering
+    \includegraphics[width=0.65\textwidth]{Rime405Example.png}
+#+end_latex
+
+- NACA0012, $\alpha = 4^o$, $T_{\infty} = 256 K$, $U_{\infty}$ = 103 m/s, MVD = 20 $\mu m$, LWC = 0.55 g/m$^3$, Re = 4.14 million, $\Delta T$ = 7 min
+- Low temperatures: convective heat transfer high enough to freeze all incoming droplets instantly (rime)
+
+** Work In-Progress
+- Implement rough-wall extension in Spalart-Almaras turbulence model
+- Implement neglected mass/energy transfer mechanisms
+- Verify icing calculations against published results
+- Perform UQ studies, investigate sensitivity to physical parameters
+  - Temperature, convective heat transfer coefficient, Reynolds number, MVD, LWC, angle of attack, etc.
+
+
+
+

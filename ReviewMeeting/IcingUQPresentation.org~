@@ -1,0 +1,464 @@
+#+STARTUP: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [9pt]
+
+#+latex_header: \mode<beamer>{\usetheme{Warsaw}}
+#+latex_header: \mode<beamer>{\setbeamertemplate{blocks}[rounded][shadow=false]}
+#+latex_header: \mode<beamer>{\addtobeamertemplate{block begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}}
+#+latex_header: \mode<beamer>{\setbeamercolor{structure}{fg=orange}}
+#+latex_header: \mode<beamer>{\setbeamercovered{transparent}}
+#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+
+#+latex_header: \usepackage{subcaption}
+#+latex_header: \usepackage{multimedia}
+#+latex_header: \usepackage{tikz}
+#+latex_header: \usepackage{subfigure,subfigmat}
+#+latex_header: \usepackage{threeparttable}
+#+latex_header: \usetikzlibrary{shapes,arrows,shadows}
+#+latex_header: \usepackage{bm, amssymb, amsmath, array, pdfpages}
+
+#+begin_latex
+% Define my settings
+
+\graphicspath{{Figures/}}
+% Add Princeton shield logo
+\addtobeamertemplate{frametitle}{}{%
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,yshift=2pt] at (current page.north east) {\includegraphics[height=0.7cm]{Shield}};
+\end{tikzpicture}}
+%
+#+end_latex
+
+#+latex_header: \newcommand{\bv}[1]{\mathbf{#1}}
+#+latex_header: \newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
+#+latex_header: \newcommand{\beq}[0]{\begin{equation}}
+#+latex_header: \newcommand{\eeq}[0]{\end{equation}}
+#+latex_header: \newcommand{\beqa}[0]{\begin{eqnarray}}
+#+latex_header: \newcommand{\eeqa}[0]{\end{eqnarray}}
+#+latex_header: \newcommand{\beqq}[0]{\begin{equation*}}
+#+latex_header: \newcommand{\eeqq}[0]{\end{equation*}}
+#+latex_header: \newcommand{\bs}[1]{\boldsymbol{#1}}
+#+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
+#+BEAMER_FRAME_LEVEL: 2
+
+#+DATE: Group Presentation \\ Princeton, NJ \\ March 2016
+#+TITLE: Modeling and Uncertainty Quantification for Airfoil Icing
+#+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
+\institute{Princeton University}
+
+* Motivation/Background
+** Introduction
+*Wing icing deteriorates airfoil aerodynamics*
+  - Leading edge flow separation bubble
+  - Lower lift, higher drag
+  - Unpredictable stall
+
+\vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=0.4\textwidth]{BadHorn.png}
+    \caption{Leading edge horn separation}
+\end{figure}
+
+** Introduction
+*Significant ice shape variation, sensitivity to physical parameters*[fn:Addy]
+  - Complex physics (aero-thermodynamics, macro/micro scale physics)
+  - Uncertainty in physical parameters
+
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.75\textwidth]{GlobalDataSet}
+      \caption{Wind tunnel experimental ice shapes}
+\end{figure}
+
+[fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
+Airfoils/. NASA TR 2000-210031.
+
+** Introduction
+*Different types of ice accretion*[fn:Habashi]
+  - ``Horns", ``ridges", ``lobster tails" refer to shape
+  - ``Glaze", ``rime" refer to icing thermodynamics
+
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Rime Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Rime.png}}
+      \subfigure[Horn Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Horn.png}}
+ 
+\end{figure}
+
+[fn:Habashi] Beaugendre et. al. /Development of a Second Generation
+In-Flight Simulation Code/. J. Fluids Engineering, 2006.
+
+** Introduction
+*Research Goals*
+- Apply uncertainty quantification techniques to explore statistical
+  efffects of uncertain icing parameters on ice shape and aerodynamics
+  - Polynomial chaos expansions (PCE)
+  - Tensor/sparse grid collocation sampling
+  - 2D steady-state RANS solver for aerodynamic assessment
+- Build ice shape model from data
+  - Aggregate ice shape database
+  - Cluster shapes using spectral graph partitioning
+  - Model shape variation using Proper Orthogonal Decomposition (POD) 
+- Quantify effects of physical uncertainties in aero-thermodynamics
+  - Build a computational ice-accretion code
+  - UQ on governing parameters (LWC, temperature, accretion time, etc.)
+
+** Introduction
+*Thesis Structure*
+- Heuristic UQ
+  - Ice shape scaling parameters
+  - Verify PCE techniques against Monte Carlo simulations
+- Data-based UQ
+  - Build ice shape model from data
+  - Clustering + POD
+- Computational UQ
+  - Build computational ice accretion code
+  - Droplet impingement + thermodynamic PDE solvers
+
+
+
+
+* Heuristic UQ
+** Canonical Ice Shapes
+- Basic ice shapes identified[fn:Papadakis]
+#+begin_latex
+\centering
+\vspace{-0.5cm}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{RidgeParameters}
+\caption{Ridge Ice}
+\end{figure}
+\vspace{-0.5cm}
+\begin{itemize}
+\item Forms aft of deicing mechanism
+\item Runback water refreezes to form step
+\end{itemize}
+\end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{NominalHorn}
+\caption{Horn Ice}
+\end{figure}
+\vspace{-0.5cm}
+\begin{itemize}
+\item Forms in relatively warm conditions
+\item Differential heat transfer rate
+\end{itemize}
+\end{minipage}
+#+end_latex
+[fn:Papadakis] Papadakis et. al. /Aerodynamic Scaling Experiments with
+Simulated Ice Accretions/. AIAA 2001-0833.
+
+** Canonical Ice Shapes
+- Basic scalings/translations identified[fn:DeGennaro]
+#+begin_latex
+\centering
+\vspace{-0.5cm}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{RidgeParameters}
+\caption{Ridge Parameterization}
+\end{figure}
+\vspace{-0.5cm}
+\begin{itemize}
+\item Ridge radius
+\item Ridge position
+\end{itemize}
+\end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{NominalHorn}
+\caption{Horn Parameterization}
+\end{figure}
+\vspace{-0.5cm}
+\begin{itemize}
+\item Horn height
+\item Horn separation
+\end{itemize}
+\end{minipage}
+#+end_latex
+[fn:DeGennaro] DeGennaro A., Rowley C.W., and Martinelli,
+L. /Uncertainty Quantification for Airfoil Icing using Polynomial
+Chaos Expansions/. Journal of Aircraft, 2015.
+** Ice Shape Variation
+#+begin_latex
+\centering
+\vspace{-0.5cm}
+\begin{minipage}[t]{0.3\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{RidgeRVariation}
+\end{figure}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{RidgeSVariation}
+\caption{Ridge}
+\end{figure}
+\vspace{-0.5cm}
+\end{minipage}
+\begin{minipage}[t]{0.3\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{HornHVariation}
+\end{figure}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{HornSVariation}
+\caption{Ridge}
+\end{figure}
+\vspace{-0.75cm}
+\end{minipage}
+\begin{minipage}[t]{0.3\linewidth}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{MC_surrogate_LargeUnc_CL}
+\end{figure}
+\begin{figure}[t]
+\includegraphics[width=0.95\textwidth]{MCgpcPDFLargeUnc_CL}
+\caption{Ridge}
+\end{figure}
+\vspace{-0.5cm}
+\end{minipage}
+#+end_latex
+
+
+
+# #+begin_latex
+# \begin{columns}[c]
+#   \column{0.33\textwidth}
+#     \centering
+#     \includegraphics[width=0.95\textwidth]{RidgeRVariation} \\
+#     \includegraphics[width=0.95\textwidth]{RidgeSVariation} \\
+#     {\bf Ridge}
+#   \column{0.33\textwidth}
+#     \centering
+#     \includegraphics[width=0.95\textwidth]{HornHVariation} \\
+#     \includegraphics[width=0.95\textwidth]{HornSVariation} \\
+#     {\bf Horn}
+#   \column{0.33\textwidth}
+#     \centering    
+#     \includegraphics[width=0.9\textwidth]{MC_surrogate_LargeUnc_CL} \\
+#     \includegraphics[width=0.9\textwidth]{MCgpcPDFLargeUnc_CL} \\
+#     {\bf Statistics}
+# \end{columns}
+# #+end_latex
+
+
+* Clustering Techniques
+** Spectral Graph Partitioning
+*Goal:* given an undirected graph
+  $\mathcal{G(\mathcal{V},\mathcal{E})}$, consisting of a collection
+  of vertices $\mathcal{V}$ and corresponding edges $\mathcal{E}$,
+  find the ``best" partition of that graph into two disjoint subgraphs
+  \vspace*{-0.5cm}\begin{figure}
+  \includegraphics[width=0.5\textwidth]{GraphPartition.png}
+  \caption{Graph partition illustration} \end{figure}
+** Spectral Graph Partitioning
+Different formulations possible[fn:ShiMalik]
+  - /Min cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \text{cut}(A,B) \right \rbrace$
+  - /Average association:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{assoc}(A,B)}{| A |} + \frac{\text{assoc}(A,B)}{| B |} \right \rbrace$
+  - /Average cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$
+  - /Normalized cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{\text{assoc}(A,V)} + \frac{\text{cut}(A,B)}{\text{assoc}(B,V)} \right \rbrace$
+#+begin_latex
+\vspace{-1.0cm}
+\begin{columns}[c]
+  \column{0.45\textwidth}
+    $w(u,v) = \text{Similarity(u,v)}$ \\
+    $|A| = \text{Number of vertices in }A$ \\
+    $\text{cut}(A,B) = \sum_{u \in A,v \in B} w(u,v)$ \\ 
+    $\text{assoc}(A,V) = \sum_{u \in A, v \in V} w(u,v)$
+  \column{0.45\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{GraphPartition.png}
+\end{columns}
+\vspace{-1.5cm}
+#+end_latex
+[fn:ShiMalik] Shi & Malik. /Normalized Cuts and Image
+Segmentation/, 2000.
+
+** Spectral Graph Paritioning
+- /Min cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \text{cut}(A,B) \right \rbrace$
+  - \color{green}{Simple to understand}
+  - \color{red}{No consideration for size of groups or within-group similarity}
+  - \color{red}{Tends to partition off a single element}
+- /Average association:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{assoc}(A,B)}{| A |} + \frac{\text{assoc}(A,B)}{| B |} \right \rbrace$
+  - \color{green}{Emphasizes within-group similarity}
+  - \color{red}{No consideration for between-group connections --> small, tight ``clumps"}
+- /Average cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$
+  - \color{green}{Emphasizes between-group disconnection}
+  - \color{red}{No consideration for within-group similarity --> large, dissimilar groups}
+- /Normalized cut:/ $P(A,B) = \text{min}_{A \subset \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{\text{assoc}(A,V)} + \frac{\text{cut}(A,B)}{\text{assoc}(B,V)} \right \rbrace$
+  - \color{green}{Nice ``middle ground" between avg. assoc. and avg. cut}
+
+** Spectral Graph Partitioning
+\vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=0.7\textwidth]{GraphPartitionMethods.png}
+    \caption{Comparison of graph partitioning methods (Shi and Malik)}
+\end{figure}
+- Similarity matrix: $W = w(i,j)$
+- Degree matrix: $D = \text{diag}(d_k) \;\;\; , \;\;\; d_k = \sum_{j=1}^N w(v_k,v_j) \;\;\; , \;\;\; k=1 \cdots N$
+- Laplacian matrix: $L = D - W$
+** Spectral Graph Partitioning
+- ``Classical" approach uses graph /Laplacian/ (average cut problem)
+- Eigenvectors with zero eigenvalue correspond to unconnected subsets,
+  eigenvectors with small eigenvalue magnitudes correspond to almost
+  unconnected subsets
+  - Example: $L \bv{1} = \bv{0}$ (by definition) --> entire graph is an unconnected subset
+- It can be shown that the solution to the /average cut/ problem is
+  approximated using that eigenvector corresponding to the smallest
+  nonzero eigenvalue (/Fiedler vector/)
+  - $\text{min AvgCut}$ = $\text{min}_y \frac{y^T L y}{\| y \|}$
+- Change in sign of Fiedler vector gives group partitioning
+** Spectral Graph Partitioning
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{ExampleGraph.png}
+    \caption{Toy example}
+\end{figure}
+#+begin_latex
+\begin{equation*}
+L = \begin{bmatrix}
+1  & -0.9 & -0.1 & 0 & 0 & 0 & 0 \\
+-0.9 & 1  & -0.1 & 0 & 0 & 0 & 0 \\
+-0.1 & -0.1 & 0.2  & 0 & 0 & 0 & 0 \\
+0    & 0    & 0    & 1 & -0.5 & -0.5 & 0 \\
+0    & 0    & 0    & -0.5 & 1 & 0 & -0.5 \\
+0    & 0    & 0    & -0.5 & 0 & 1 & -0.5 \\
+0    & 0    & 0    & 0 & -0.5 & -0.5 & 1 \\ 
+\end{bmatrix}
+\end{equation}
+#+end_latex
+** Spectral Graph Partitioning
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$\lambda_1 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec1.png}}
+      \subfigure[$\lambda_2 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec2.png}}
+\end{figure}
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$\lambda_3$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec3.png}}
+      \subfigure[$\lambda_4$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec4.png}}
+      \subfigure[$\lambda_5$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec5.png}}
+\end{figure}
+- Two zero eigenvalues, corresponding to two clusters
+- Eigenvalues close to zero give good partitions within clusters 
+
+
+
+
+* Application to Icing
+** Dataset
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.5\textwidth]{GlobalDataSet}
+      \caption{Wind tunnel experimental ice shapes}
+\end{figure}
+- Dataset consists of 145 experimental ice shapes
+- Obtained in icing wind tunnel at NASA Glenn[fn:Addy]
+- Representative of a wide variety of icing conditions (temperature,
+  LWC, accretion time, etc.)
+
+** Distance/Similarity Metric
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[XOR Illustration]{\includegraphics[width=0.4\textwidth]{XORexample.png}}
+      \subfigure[Dataset Distances]{\includegraphics[width=0.4\textwidth]{XORdistances}}
+      \caption{XOR distance metric}
+\end{figure}
+- Overlay dataset with a 2D Cartesian grid
+- Assign value of 1 to gridpoint if it is on the ice, 0 otherwise
+- Pick $\sigma$ based on observed peaks in data distances
+- Truncate $w_{ij}$ after $d_{ij} > 3\sigma$
+#+begin_latex
+\begin{equation*}
+d_{ij} = \text{exp} \left(-\frac{1}{2} \frac{d_{ij}^2}{\sigma^2} \right) \;\;\;\;\;\; w_{ij} = \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
+\end{equation}
+#+end_latex
+ 
+** Graph Laplacian
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.4\textwidth]{DistanceMatrixUnordered.png}}
+      \subfigure[Eigenvalue Magnitudes]{\includegraphics[width=0.4\textwidth]{LaplacianEvals}}
+      \caption{Laplacian visualization and eigenvalues}
+\end{figure}
+- Many zero eigenvalues because many of the dataset elements are
+  completely unconnected from each other
+** Clusters
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{LaplacianUnconnectedCluster}}
+      \caption{$\lambda = 0$}
+\end{figure}
+- Unconnected cluster represents smaller and less ``extreme" shapes
+** Clusters
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{FiedlerVectorGrouping}}
+      \caption{Fiedler vector}
+\end{figure}
+- Fiedler vector partitions off single most dissimilar member
+** Clusters
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered2.png}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{Fiedler2VectorGrouping}}
+      \caption{Next smallest eigenvector}
+\end{figure}
+- Next smallest eigenvector separates horn and rime accretion
+** POD Coordinates
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{ClusterPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{LaplacianUnconnectedCluster}}
+      \caption{$\lambda = 0$}
+\end{figure}
+** POD Coordinates
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{FiedlerVectorPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{FiedlerVectorGrouping}}
+      \caption{Fiedler vector}
+\end{figure}
+** POD Coordinates
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{Fiedler2VectorPODcoords}}
+      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{Fiedler2VectorGrouping}}
+      \caption{Next smallest eigenvector}
+\end{figure}
+
+
+* Uncertainty Quantification
+** POD Model
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[$S$-Coordinates]{\includegraphics[width=0.35\textwidth]{ScoordsCluster1}}
+      \subfigure[POD Eigenvalues]{\includegraphics[width=0.35\textwidth]{PODevalsCluster1}}
+      \subfigure[Mean]{\includegraphics[width=0.35\textwidth]{MeanCluster1}}
+      \subfigure[POD Modes]{\includegraphics[width=0.35\textwidth]{PODmodes1to5Cluster1}}
+\end{figure}
+- First 5 modes capture $\approx 80\%$ of the energy
+** POD Model
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Mode 1]{\includegraphics[width=0.3\textwidth]{POD1Shapes3Sig}}
+      \subfigure[Mode 2]{\includegraphics[width=0.3\textwidth]{POD2Shapes3Sig}}
+      \subfigure[Mode 3]{\includegraphics[width=0.3\textwidth]{POD3Shapes3Sig}}
+      \subfigure[Mode 4]{\includegraphics[width=0.3\textwidth]{POD4Shapes3Sig}}
+      \subfigure[Mode 5]{\includegraphics[width=0.3\textwidth]{POD5Shapes3Sig}}
+\end{figure}
+- Variations shown about dataset mean ($\pm 3 \sigma$)
+** Parameter Space
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Mode 1]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff1PDF}}
+      \subfigure[Mode 2]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff2PDF}}
+      \subfigure[Mode 3]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff3PDF}}
+      \subfigure[Mode 4]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff4PDF}}
+      \subfigure[Mode 5]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff5PDF}}
+\end{figure}
+- Fit a normal distribution to dataset statistics
+- 5-dimensional UQ study with all Gaussian variables
+** Output Statistics
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[PDF($C_L$)]{\includegraphics[width=0.4\textwidth]{PDFCLTOL1em4}}
+      \subfigure[PDF($C_D$)]{\includegraphics[width=0.4\textwidth]{PDFCDTOL1em4}}
+\end{figure}
+- Compute PC surrogate model using anisotropic sparse grid (487 solver
+  evaluations)
+- Approximate PDFs for output metrics $C_L$ and $C_D$
+
+** Global Extrema
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Highest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotHighCL}}
+      \subfigure[Lowest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotLowCL}}
+      \subfigure[Means of top and bottom deciles]{\includegraphics[width=0.3\textwidth]{GoodBadAirfoils}}
+\end{figure}
+- *Good:* low accretion, smooth, conforms to airfoil surface
+- *Bad:* high accretion, horns, protrude out as flow obstacles
+** Local Sensitivity
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.4\textwidth]{LocalSensitivityCL}
+\end{figure}
+- Local sensitivity tells same story

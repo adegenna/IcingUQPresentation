@@ -1,4 +1,4 @@
-% Created 2016-04-06 Wed 15:41
+% Created 2016-04-06 Wed 18:42
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -435,8 +435,14 @@ L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Exp
 \end{figure}
 \textbf{Goals:}
 \begin{itemize}
-\item Separate shapes into self-similar groups
-\item Develop low-dimensional set of shape parameters for a group
+\item Make the ice shapes studied in UQ better reflect observed data
+\item Build low-dimensional models to describe complex data
+\item Develop empirical ice classification scheme
+\end{itemize}
+\textbf{Approach:}
+\begin{itemize}
+\item Cluster ice shapes using spectral graph partitioning
+\item Build low-dimensional model using POD
 \item Perform parametric UQ on resulting parameter space
 \end{itemize}
 \end{frame}
@@ -683,10 +689,15 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
       \subfigure[PDF($C_D$)]{\includegraphics[width=0.4\textwidth]{PDFCDTOL1em4}}
       \caption{Output PDFs for lift and drag}
 \end{figure}
+\textbf{Setup}
 \begin{itemize}
-\item Compute PC surrogate model using anisotropic sparse grid (487 solver
-  evaluations)
-\item Approximate PDFs for output metrics $C_L$ and $C_D$
+\item Business jet clean airfoil\footnotemark[1], $\alpha = 3^{\circ}$, $Re = 7.5\times10^6$
+\item FLO103 code (2D steady-state RANS solver)
+\item Adaptive sparse grid collocation for PCE, implemented with DAKOTA
+\end{itemize}
+\textbf{Results}
+\begin{itemize}
+\item PC surrogate converged using 487 solver evaluations
 \end{itemize}
 \end{frame}
 \begin{frame}
@@ -710,8 +721,7 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \frametitle{Motivation}
 \label{sec-4-1}
 
-\begin{itemize}
-\item \textbf{Investigate uncertainty in the physical process of icing}
+\textbf{Investigate uncertainty in the physical process of icing}
 \begin{itemize}
 \item What is the statistical effect of uncertainty in physical parameters?
 \begin{itemize}
@@ -721,7 +731,10 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \item Droplet diameter distribution
 \item Accretion time
 \end{itemize}
-\end{itemize}
+\item Previous two approaches show how direct perturbations of the shape
+    affect the aerodynamics
+\item This approach shows how perturbations of the physics affect shape
+    (and aerodynamics)
 \end{itemize}
 \end{frame}
 \begin{frame}
@@ -797,12 +810,14 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \frametitle{Thermodynamics}
 \label{sec-4-4}
 
+\textbf{Conservation Equations:} \\
 \begin{equation*}
   \begin{align}
-    \rho_w \left \lbrace \frac{\partial h_f}{\partial t} + \nabla \cdot (\bv{u_f} h_f) \right \rbrace &= \dot{m}_{imp} - \dot{m}_{ice} \\
+    \rho_w \left \lbrace \frac{\partial h_f}{\partial t} + \nabla \cdot (\bv{u_f} h_f) \right \rbrace &= \dot{m}_{imp} - \dot{m}_{evap} - \dot{m}_{ice} \\
     \rho_w \left \lbrace \frac{\partial (h_f c_W T)}{\partial t} + \nabla \cdot (\bv{u_f} h_f c_W T) \right \rbrace &= \left [ c_W T_d + \frac{u_d^2}{2} \right ] \dot{m}_{imp} \\
-    & +(L_{fus} - c_{ice}T)\dot{m}_{ice} \\
-    & + c_H (T_{\infty} - T)
+    & - L_{evap} \dot{m}_{evap} \\
+    & +(L_{fus} + c_{ice}T)\dot{m}_{ice} \\
+    & + c_H (T_{Rec} - T)
   \end{align}
 \end{equation}
 
@@ -817,7 +832,8 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \item Enters through impinging droplets, freezing of ice
 \item Exits via evaporation/sublimation, radiation, convection
 \end{itemize}
-\item Solved explicitly using finite volume discretization with Roe scheme upwinding
+\item Solution procedure: explicit marching, finite volume discretization
+  with upwinded derivatives
 \end{itemize}
 \end{frame}
 \begin{frame}
@@ -837,12 +853,40 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \label{sec-4-6}
 
 \begin{itemize}
-\item Implement rough-wall extension in Spalart-Almaras turbulence model
-\item Implement neglected mass/energy transfer mechanisms
 \item Verify icing calculations against published results
 \item Perform UQ studies, investigate sensitivity to physical parameters
 \begin{itemize}
 \item Temperature, convective heat transfer coefficient, Reynolds number, MVD, LWC, angle of attack, etc.
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Conclusions}
+\label{sec-4-7}
+
+\textbf{Problems:}
+\begin{itemize}
+\item Wing icing deteriorates icing aerodynamics, danger to safe flight
+\item Ice shapes are diverse and complex
+\item Not clear what the exact aerodynamic effects of different shapes are
+\end{itemize}
+\textbf{Solutions:}
+\begin{itemize}
+\item Demonstrated three separate approaches to quantifying the effects of
+  icing uncertainty on airfoil aerodynamics
+\begin{itemize}
+\item Heuristic approach
+\begin{itemize}
+\item Perturb template shape with a few scaling parameters
+\end{itemize}
+\item Data-driven approach
+\begin{itemize}
+\item Build model of ice shape variation from database, study the model
+\end{itemize}
+\item Computational approach
+\begin{itemize}
+\item Build computational ice accretion code, perturb physical parameters
+\end{itemize}
 \end{itemize}
 \end{itemize}
 \end{frame}

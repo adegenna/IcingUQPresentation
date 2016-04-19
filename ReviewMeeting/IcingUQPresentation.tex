@@ -1,4 +1,4 @@
-% Created 2016-04-06 Wed 18:42
+% Created 2016-04-07 Thu 13:06
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -41,8 +41,8 @@
 \providecommand{\alert}[1]{\textbf{#1}}
 
 \title{Modeling and Uncertainty Quantification for Airfoil Icing}
-\author{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
-\date{Group Presentation \\ Princeton, NJ \\ March 2016}
+\author[DeGennaro, Rowley and Martinelli]{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
+\date{Ph.D. Committee Meeting \\ Princeton, NJ \\ April 2016}
 \hypersetup{
   pdfkeywords={},
   pdfsubject={},
@@ -462,7 +462,7 @@ L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Exp
 \item Truncate $w_{ij}$ after $d_{ij} > 3\sigma$
 \end{itemize}
 \begin{equation*}
-w_{ij} = \text{exp} \left(-\frac{1}{2} \frac{d_{ij}^2}{\sigma^2} \right) \;\;\;\;\;\; w_{ij} = \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
+w_{ij} = \text{exp} \left(-\frac{1}{2} \frac{d_{ij}^2}{\sigma^2} \right) \;\;\;\;\;\; d_{ij} = \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
 \end{equation}
  
 \end{frame}
@@ -788,6 +788,7 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \frametitle{Droplet Advection}
 \label{sec-4-3}
 
+\textbf{Advection Equations:} \\
 \begin{equation*}
   \begin{align}
     \frac{d \bv{x}}{d t} &= \bv{v} \\
@@ -798,12 +799,16 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \begin{columns}[c]
   \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{ExampleR10em6} \\
-    {\bf R = 10$\mu$m}
+    \begin{figure}
+    \includegraphics[width=0.9\textwidth]{ExampleR10em6}
+    \caption{R = 10$\mu$m}
+    \end{figure}
   \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{ExampleR100em6} \\
-    {\bf R = 100$\mu$m}
+    \begin{figure}
+    \includegraphics[width=0.9\textwidth]{ExampleR100em6} \\
+    \caption{R = 100$\mu$m}
+    \end{figure}
 \end{columns}
 \end{frame}
 \begin{frame}

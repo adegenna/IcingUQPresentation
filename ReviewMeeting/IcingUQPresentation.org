@@ -41,7 +41,7 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-#+DATE: Group Presentation \\ Princeton, NJ \\ March 2016
+#+DATE: Ph.D. Committee Meeting \\ Princeton, NJ \\ April 2016
 #+TITLE: Modeling and Uncertainty Quantification for Airfoil Icing
 #+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}
@@ -576,6 +576,7 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 #+end_latex
 
 ** Droplet Advection
+*Advection Equations:* \\
 #+begin_latex
 \begin{equation*}
   \begin{align}
@@ -587,12 +588,16 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \begin{columns}[c]
   \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{ExampleR10em6} \\
-    {\bf R = 10$\mu$m}
+    \begin{figure}
+    \includegraphics[width=0.9\textwidth]{ExampleR10em6}
+    \caption{R = 10$\mu$m}
+    \end{figure}
   \column{0.5\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{ExampleR100em6} \\
-    {\bf R = 100$\mu$m}
+    \begin{figure}
+    \includegraphics[width=0.9\textwidth]{ExampleR100em6} \\
+    \caption{R = 100$\mu$m}
+    \end{figure}
 \end{columns}
 #+end_latex
 

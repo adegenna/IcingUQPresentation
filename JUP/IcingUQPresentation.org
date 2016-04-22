@@ -41,7 +41,7 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-#+DATE: Ph.D. Committee Meeting \\ Princeton, NJ \\ April 2016
+#+DATE: JUP Quarterly Meeting \\ Princeton, NJ \\ April 2016
 #+TITLE: Modeling and Uncertainty Quantification for Airfoil Icing
 #+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}
@@ -101,7 +101,7 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
   - UQ on governing parameters (LWC, temperature, accretion time, etc.)
 
 ** Introduction
-*Thesis Structure*
+*Outline of Research*
 - Heuristic UQ
   - Ice shape scaling parameters
   - Verify PCE techniques against Monte Carlo simulations
@@ -111,8 +111,6 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 - Computational UQ
   - Build computational ice accretion code
   - Droplet impingement + thermodynamic PDE solvers
-
-
 
 
 * Heuristic UQ

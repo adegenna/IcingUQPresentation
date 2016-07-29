@@ -1,4 +1,4 @@
-% Created 2016-07-29 Fri 13:33
+% Created 2016-07-29 Fri 15:11
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -485,8 +485,36 @@
 \end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Conclusions}
+\frametitle{UQ Study: Temp + LWC + Time}
 \label{sec-3-8}
+
+\begin{figure}[ht]
+\centering
+\subfigure[Quadrature points (colorscale identical to (b)).]{\includegraphics[trim=20mm 0mm 35mm 0mm,clip,width=0.3\textwidth]{3Param_TinfLWCDT_QuadPts}}
+\subfigure[PCE surrogate (parameter units identical to (a)).]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCDT_Map.png}}
+\subfigure[Ice shapes at quadrature points (colorscale identical to (c)).]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCDT_Shapes}}
+\subfigure[PCE surrogate statistics.]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCDT_Statistics}}
+\subfigure[Statistics of $C_{L_{\alpha}}$ as a function of $\Delta$T.]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCDT_CondExp}}
+\caption{Quadrature points, PCE surrogate, and statistics.}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{UQ Study: Temp + LWC + Roughness}
+\label{sec-3-9}
+
+\begin{figure}[ht]
+\centering
+\subfigure[Quadrature points (colorscale identical to (b)).]{\includegraphics[trim=20mm 0mm 35mm 0mm,clip,width=0.3\textwidth]{3Param_TinfLWCRough_QuadPts}}
+\subfigure[PCE surrogate (parameter units identical to (a)).]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCRough_Map.png}}
+\subfigure[Ice shapes at quadrature points (colorscale identical to (c)).]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCRough_Shapes}}
+\subfigure[PCE surrogate statistics.]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCRough_Statistics}}
+\subfigure[Statistics of $C_{L_{\alpha}}$ as a function of $\Delta$T.]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCRough_CondExp}}
+\caption{Quadrature points, PCE surrogate, and statistics.}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Conclusions}
+\label{sec-3-10}
 
 \textbf{Problems:}
 \begin{itemize}

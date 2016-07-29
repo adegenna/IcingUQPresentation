@@ -360,6 +360,27 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 \subfigure[PCE surrogate statistics.]{\includegraphics[width=0.3\textwidth]{Statistics_2ParamCLalpha}}
 \caption{Quadrature points, PCE surrogate, and statistics for the 2 parameter ($T_{\infty}$ and LWC) study on lift slope.}
 \end{figure}
+** UQ Study: Temp + LWC + Time
+\begin{figure}[ht]
+\centering
+\subfigure[Quadrature points (colorscale identical to (b)).]{\includegraphics[trim=20mm 0mm 35mm 0mm,clip,width=0.3\textwidth]{3Param_TinfLWCDT_QuadPts}}
+\subfigure[PCE surrogate (parameter units identical to (a)).]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCDT_Map.png}}
+\subfigure[Ice shapes at quadrature points (colorscale identical to (c)).]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCDT_Shapes}}
+\subfigure[PCE surrogate statistics.]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCDT_Statistics}}
+\subfigure[Statistics of $C_{L_{\alpha}}$ as a function of $\Delta$T.]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCDT_CondExp}}
+\caption{Quadrature points, PCE surrogate, and statistics.}
+\end{figure}
+** UQ Study: Temp + LWC + Roughness
+\begin{figure}[ht]
+\centering
+\subfigure[Quadrature points (colorscale identical to (b)).]{\includegraphics[trim=20mm 0mm 35mm 0mm,clip,width=0.3\textwidth]{3Param_TinfLWCRough_QuadPts}}
+\subfigure[PCE surrogate (parameter units identical to (a)).]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCRough_Map.png}}
+\subfigure[Ice shapes at quadrature points (colorscale identical to (c)).]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCRough_Shapes}}
+\subfigure[PCE surrogate statistics.]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCRough_Statistics}}
+\subfigure[Statistics of $C_{L_{\alpha}}$ as a function of $\Delta$T.]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCRough_CondExp}}
+\caption{Quadrature points, PCE surrogate, and statistics.}
+\end{figure}
+
 
 
 

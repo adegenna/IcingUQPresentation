@@ -1,4 +1,4 @@
-% Created 2016-04-21 Thu 21:22
+% Created 2016-07-28 Thu 20:46
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -24,7 +24,7 @@
 \usepackage{subcaption}
 \usepackage{multimedia}
 \usepackage{tikz}
-\usepackage{subfigure,subfigmat}
+\usepackage{subfigure}
 \usepackage{threeparttable}
 \usetikzlibrary{shapes,arrows,shadows}
 \usepackage{bm, amssymb, amsmath, array, pdfpages}
@@ -129,24 +129,20 @@
 \label{sec-1-4}
 
 \textbf{Research Goals}
+
 \begin{itemize}
-\item Apply uncertainty quantification techniques to explore statistical
-  efffects of uncertain icing parameters on ice shape and aerodynamics
+\item Data-driven, equation-free model of ice accretion
 \begin{itemize}
-\item Polynomial chaos expansions (PCE)
-\item Tensor/sparse grid collocation sampling
-\item 2D steady-state RANS solver for aerodynamic assessment
+\item Model ice accretion using \emph{only} data, no physics
+\item Study random ice shapes corresponding to a range of icing conditions
+\item Could be used to benchmark/correct numerical calculations
+\item Could be used to explore \emph{non-deterministic} ice shape variations
 \end{itemize}
-\item Build ice shape model from data
+\item Computational model of ice accretion
 \begin{itemize}
-\item Aggregate ice shape database
-\item Cluster shapes using spectral graph partitioning
-\item Model shape variation using Proper Orthogonal Decomposition (POD)
-\end{itemize}
-\item Quantify effects of physical uncertainties in aero-thermodynamics
-\begin{itemize}
-\item Build a computational ice-accretion code
-\item UQ on governing parameters (LWC, temperature, accretion time, etc.)
+\item Build numerical code to calculate ice accretion given physical inputs
+\item Compute ice shape for a range of physical conditions
+\item Perform parametric UQ and study effects on aerodynamic performance
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -154,149 +150,31 @@
 \frametitle{Introduction}
 \label{sec-1-5}
 
-\textbf{Outline of Research}
-\begin{itemize}
-\item Heuristic UQ
-\begin{itemize}
-\item Ice shape scaling parameters
-\item Verify PCE techniques against Monte Carlo simulations
-\end{itemize}
-\item Data-based UQ
-\begin{itemize}
-\item Build ice shape model from data
-\item Clustering + POD
-\end{itemize}
-\item Computational UQ
-\begin{itemize}
-\item Build computational ice accretion code
-\item Droplet impingement + thermodynamic PDE solvers
-\end{itemize}
-\end{itemize}
-\end{frame}
-\section{Heuristic UQ}
-\label{sec-2}
-\begin{frame}
-\frametitle{Canonical Ice Shapes}
-\label{sec-2-1}
+\textbf{Research Objectives}
 
 \begin{itemize}
-\item \textbf{Basic scalings/translations}\footnote{DeGennaro A., Rowley C.W., and Martinelli,
-L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Expansions}. Journal of Aircraft, 2015.
- }
-\end{itemize}
-\centering
-\vspace{-0.5cm}
-\begin{minipage}[t]{0.45\linewidth}
-\begin{figure}[t]
-\includegraphics[width=0.95\textwidth]{RidgeParameters}
-\caption{Ridge Parameterization}
-\end{figure}
-\vspace{-0.5cm}
+\item Data-driven, equation-free modeling of ice accretion
 \begin{itemize}
-\item Ridge radius
-\item Ridge position
+\item Collect large number of ice shapes into a database
+\item Model database shape features using Proper Orthogonal Decomposition (POD)
+\item Link physical information to shape features
+\item Build a purely data-driven, statistical ice accretion model (\emph{no equations})
+\item Perform parametric UQ, study performance variations, etc.
 \end{itemize}
-\end{minipage}
-\begin{minipage}[t]{0.45\linewidth}
-\begin{figure}[t]
-\includegraphics[width=0.95\textwidth]{NominalHorn}
-\caption{Horn Parameterization}
-\end{figure}
-\vspace{-0.5cm}
+\item Computational model of ice accretion
 \begin{itemize}
-\item Horn height
-\item Horn separation
+\item Build droplet advection/impact simulator (C++)
+\item Build icing thermodynamics simulator (C++)
+\item Interface code with aerodynamic solver (FLO103)
+\item Perform parametric UQ, study performance variations, etc.
 \end{itemize}
-\end{minipage}
-\end{frame}
-\begin{frame}
-\frametitle{Application to Icing UQ}
-\label{sec-2-2}
-
-\begin{itemize}
-\item We wish to apply a fast and accurate method for quantifying
-  uncertainty in the aerodynamics of these ice shapes
-\item Choose to use polynomial chaos expansions (PCE)
-\begin{itemize}
-\item Fast compared to Monte Carlo
-\item Explicit surrogate
-\item Easy statistical sampling
-\item Can compute sensitivities, analysis of variance
-\end{itemize}
-\item We will compute UQ results for horn and ridge problems using PCE,
-  and verify them against high-resolution Monte Carlo simulations
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Ridge Study}
-\label{sec-2-3}
-
-\centering
-\vspace{-0.5cm}
-\begin{minipage}[t]{0.45\linewidth}
-\begin{figure}[t]
-\includegraphics[width=0.75\textwidth]{RidgeRVariation}
-\end{figure}
-\vspace{-0.5cm}
-\begin{figure}[t]
-\includegraphics[width=0.75\textwidth]{RidgeSVariation}
-\caption{Ridge Variations}
-\end{figure}
-\vspace{-0.5cm}
-\end{minipage}
-\begin{minipage}[t]{0.45\linewidth}
-\begin{figure}[t]
-\includegraphics[width=0.65\textwidth]{MC_surrogate_LargeUnc_CL}
-\end{figure}
-\vspace{-0.6cm}
-\begin{figure}[t]
-\includegraphics[width=0.65\textwidth]{MCgpcPDFLargeUnc_CL}
-\caption{Lift Statistics}
-\end{figure}
-\end{minipage}
-\begin{itemize}
-\item Ridge parameters normally distributed about mean
-\item Performance degrades with larger size, closer to L.E.
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Horn Study}
-\label{sec-2-4}
-
-\centering
-\vspace{-0.5cm}
-\begin{minipage}[t]{0.45\linewidth}
-\begin{figure}[t]
-\includegraphics[width=0.75\textwidth]{HornHVariation}
-\end{figure}
-\vspace{-0.5cm}
-\begin{figure}[t]
-\includegraphics[width=0.75\textwidth]{HornSVariation}
-\caption{Ridge Variations}
-\end{figure}
-\vspace{-0.5cm}
-\end{minipage}
-\begin{minipage}[t]{0.45\linewidth}
-\begin{figure}[t]
-\includegraphics[width=0.65\textwidth]{CLMAX_MEGPCHORN}
-\end{figure}
-\vspace{-0.6cm}
-\begin{figure}[t]
-\includegraphics[width=0.65\textwidth]{MCgpcPDFMEGPCHorn_CL}
-\caption{Lift Statistics}
-\end{figure}
-\end{minipage}
-\begin{itemize}
-\item Horn separation normally distributed
-\item Horn height distributed as a half-Gaussian (mean = clean airfoil)
-\item Performance degrades with larger horn size and separation
 \end{itemize}
 \end{frame}
 \section{Data-Based UQ}
-\label{sec-3}
+\label{sec-2}
 \begin{frame}
 \frametitle{Dataset}
-\label{sec-3-1}
+\label{sec-2-1}
 
 \vspace*{-0.0cm}\begin{figure}
       \includegraphics[width=0.5\textwidth]{GlobalDataSet}
@@ -310,300 +188,128 @@ L. \emph{Uncertainty Quantification for Airfoil Icing using Polynomial Chaos Exp
 \end{itemize}
 \end{frame}
 \begin{frame}
-\frametitle{Dataset}
-\label{sec-3-2}
+\frametitle{Data-Driven Model}
+\label{sec-2-2}
 
 \vspace*{-0.0cm}\begin{figure}
       \includegraphics[width=0.5\textwidth]{GlobalDataSet}
       \caption{Wind tunnel experimental ice shapes}
 \end{figure}
-\textbf{Goals:}
-\begin{itemize}
-\item Make the ice shapes studied in UQ better reflect observed data
-\item Build low-dimensional models to describe complex data
-\item Develop empirical ice classification scheme
-\end{itemize}
+\textbf{Goal:} Make a purely data-driven model of icing (no equations)
+
 \textbf{Approach:}
 \begin{itemize}
-\item Cluster ice shapes using spectral graph partitioning
-\item Build low-dimensional model using POD
-\item Perform parametric UQ on resulting parameter space
+\item Build low-dimensional model of shape using POD
+\item Correlate POD coefficients to temperature, accretion time, LWC
+\item Generate random ice shapes corresponding to given conditions
+\begin{itemize}
+\item Filter database based on temperature, LWC, time
+\item Generate random samples that match POD coefficient statistics
+\item Construct corresponding ice shapes
+\end{itemize}
 \end{itemize}
 \end{frame}
 \begin{frame}
-\frametitle{Distance/Similarity Metric}
-\label{sec-3-3}
+\frametitle{POD Eigenvalues}
+\label{sec-2-3}
 
 \vspace*{-0.0cm}\begin{figure}
-      \subfigure[XOR Illustration]{\includegraphics[width=0.4\textwidth]{XORexample.png}}
-      \subfigure[Dataset Distances]{\includegraphics[width=0.4\textwidth]{XORdistances}}
-      \caption{XOR distance metric}
-\end{figure}
-\begin{itemize}
-\item Overlay dataset with a 2D Cartesian grid
-\item Assign value of 1 to gridpoint if it is on the ice, 0 otherwise
-\item Pick $\sigma$ based on observed peaks in data distances
-\item Truncate $w_{ij}$ after $d_{ij} > 3\sigma$
-\end{itemize}
-\begin{equation*}
-w_{ij} = \text{exp} \left(-\frac{1}{2} \frac{d_{ij}^2}{\sigma^2} \right) \;\;\;\;\;\; w_{ij} = \sum_k^{N_G} \left [ \text{XOR}(x_i,x_j) \right ]_k
-\end{equation}
- 
-\end{frame}
-\begin{frame}
-\frametitle{Spectral Graph Partitioning}
-\label{sec-3-4}
-
-\textbf{Goal:} cluster shapes based upon similarity metric \\
-\textbf{Methodology:} view database as an undirected graph
-$\mathcal{G}(\mathcal{V},\mathcal{E})$
-\begin{itemize}
-\item Vertices $\mathcal{V}$ are ice shapes
-\item Edges $\mathcal{E}$ are similarities between ice shapes
-\item Find ``best'' partition of $\mathcal{G}(\mathcal{V},\mathcal{E})$ into subsets A and B
-\end{itemize}
-\vspace*{-1.25cm}
-\begin{figure}
-   \includegraphics[width=0.5\textwidth]{GraphPartition.png}
-   \vspace{-2.25cm}
-   \caption{Graph partition illustration} 
+      \subfigure[Magnitude.]{\includegraphics[width=0.4\textwidth]{PODevals.eps}}
+      \subfigure[Cumulative sum.]{\includegraphics[width=0.4\textwidth]{CumsumPODevals.eps}}
+      \caption{POD eigenvalues.}
 \end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Spectral Graph Partitioning}
-\label{sec-3-5}
+\frametitle{POD Modes}
+\label{sec-2-4}
 
-\textbf{Approach:}\footnote{Shi \& Malik. \emph{Normalized Cuts and Image Segmentation}, 2000.
- }
-\begin{itemize}
-\item Calculate graph Laplacian using similarity metric
-\begin{itemize}
-\item Similarity matrix: $W = w(i,j)$
-\item Degree matrix: $D = \text{diag}(d_k) \;\;\; , \;\;\; d_k = \sum_{j=1}^N w(v_k,v_j) \;\;\; , \;\;\; k=1 \cdots N$
-\item Laplacian matrix: $L = D - W$
-\end{itemize}
-\item Eigenvectors with zero eigenvalue identify disconnected subsets
-\begin{itemize}
-\item E.g., $L \bv{1} = \bv{0}$ <---> entire graph is disconnected
-\end{itemize}
-\item First nonzero eigenvector (Fiedler vector) identifies optimal
-    partition of connected vertices within subsets
-\begin{itemize}
-\item Approximates solution of \emph{average cut} formulation: \\ 
-$P(A,B) = \text{min}_{A \in \mathcal{V}} \left \lbrace \frac{\text{cut}(A,B)}{| A |} + \frac{\text{cut}(A,B)}{| B |} \right \rbrace$ \\
-      $|A| = \text{Number of vertices in }A$ \\
-      $\text{cut}(A,B) = \sum_{u \in A,v \in B} w(u,v)$
-\item Eigenvectors close to zero similarly identify good partitions
-\end{itemize}
-\end{itemize}
+\vspace*{-0.0cm}\begin{figure}
+      \vspace*{-1.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MEAN}} \\
+      \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE1}}
+      \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE2}}
+      \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE3}}
+      \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE4}}
+      \vspace*{1cm}\caption{Mean and POD modes.}
+\end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Spectral Graph Partitioning}
-\label{sec-3-6}
+\frametitle{POD Reconstructions}
+\label{sec-2-5}
 
 \begin{figure}
-    \includegraphics[width=0.5\textwidth]{ExampleGraph.png}
-    \caption{Toy example}
+      \vspace*{-0.9cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx2.png}}
+      \vspace*{-0.9cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx2.png}} \\
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx3.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx3.png}} \\
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx1.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx1.png}}
+      \vspace*{0cm}\caption{POD reconstructions.}
 \end{figure}
-\begin{equation*}
-L = \begin{bmatrix}
-1  & -0.9 & -0.1 & 0 & 0 & 0 & 0 \\
--0.9 & 1  & -0.1 & 0 & 0 & 0 & 0 \\
--0.1 & -0.1 & 0.2  & 0 & 0 & 0 & 0 \\
-0    & 0    & 0    & 1 & -0.5 & -0.5 & 0 \\
-0    & 0    & 0    & -0.5 & 1 & 0 & -0.5 \\
-0    & 0    & 0    & -0.5 & 0 & 1 & -0.5 \\
-0    & 0    & 0    & 0 & -0.5 & -0.5 & 1 \\ 
-\end{bmatrix}
-\end{equation}
 \end{frame}
 \begin{frame}
-\frametitle{Spectral Graph Partitioning}
-\label{sec-3-7}
+\frametitle{Link Physical Conditions to Modes}
+\label{sec-2-6}
+
+\begin{figure}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2Time}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4Time}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2Temp}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4Temp}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2LWC}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4LWC}}
+      \vspace*{0cm}\caption{POD coefficients, colored with parameters.}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Random Shapes}
+\label{sec-2-7}
+
+\begin{figure}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamHornFromPhysics}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRimeFromPhysics}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRandomHorns}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRandomRime}}
+      \vspace*{0cm}\caption{Random data-driven ice shapes.}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Uncertainty Quantification}
+\label{sec-2-8}
 
 \vspace*{-0.0cm}\begin{figure}
-      \subfigure[$\lambda_1 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec1.png}}
-      \subfigure[$\lambda_2 = 0$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec2.png}}
-      \caption{Disconnected subsets}
+      \includegraphics[width=0.5\textwidth]{GlobalDataSet}
+      \caption{Wind tunnel experimental ice shapes}
 \end{figure}
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[$\lambda_3$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec3.png}}
-      \subfigure[$\lambda_4$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec4.png}}
-      \subfigure[$\lambda_5$]{\includegraphics[width=0.15\textwidth]{ExampleGraphEvec5.png}}
-      \caption{Clustering within subsets}
-\end{figure}
+\textbf{Goal:} Quantify performance variation with POD modes
+
+\textbf{Approach:}
 \begin{itemize}
-\item Two zero eigenvalues, corresponding to two clusters
-\item Eigenvalues close to zero give good partitions within clusters
+\item Generate random samples in POD space with Latin Hypercube Sampling (LHS)
+\item Test corresponding shapes with flow solver
+\item Quantify lift/drag statistics
 \end{itemize}
 \end{frame}
 \begin{frame}
-\frametitle{Graph Laplacian}
-\label{sec-3-8}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[Similarity Matrix]{\includegraphics[width=0.4\textwidth]{DistanceMatrixUnordered.png}}
-      \subfigure[Eigenvalue Magnitudes]{\includegraphics[width=0.4\textwidth]{LaplacianEvals}}
-      \caption{Laplacian visualization and eigenvalues}
-\end{figure}
-\begin{itemize}
-\item Many zero eigenvalues because many of the dataset elements are
-  completely unconnected from each other
-\end{itemize}
+\frametitle{Latin Hypercube Samples}
+\label{sec-2-9}
 \end{frame}
 \begin{frame}
-\frametitle{Clusters}
-\label{sec-3-9}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered.png}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{LaplacianUnconnectedCluster}}
-      \caption{$\lambda = 0$}
-\end{figure}
-\begin{itemize}
-\item Unconnected cluster represents smaller and less ``extreme'' shapes
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Clusters}
-\label{sec-3-10}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered.png}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{FiedlerVectorGrouping}}
-      \caption{Fiedler vector}
-\end{figure}
-\begin{itemize}
-\item Fiedler vector partitions off single most dissimilar member
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Clusters}
-\label{sec-3-11}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[Similarity Matrix]{\includegraphics[width=0.45\textwidth]{DistanceMatrixOrdered2.png}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.45\textwidth]{Fiedler2VectorGrouping}}
-      \caption{Next smallest eigenvector}
-\end{figure}
-\begin{itemize}
-\item Next smallest eigenvector separates horn and rime accretion
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{POD Coordinates}
-\label{sec-3-12}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{ClusterPODcoords}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{LaplacianUnconnectedCluster}}
-      \caption{$\lambda = 0$}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{POD Coordinates}
-\label{sec-3-13}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{FiedlerVectorPODcoords}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{FiedlerVectorGrouping}}
-      \caption{Fiedler vector}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{POD Coordinates}
-\label{sec-3-14}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[POD coordinates]{\includegraphics[width=0.5\textwidth]{Fiedler2VectorPODcoords}}
-      \subfigure[Ice shapes]{\includegraphics[width=0.5\textwidth]{Fiedler2VectorGrouping}}
-      \caption{Next smallest eigenvector}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Cluster Modeling}
-\label{sec-3-15}
-
-\vspace*{-0.75cm}\begin{figure}
-      \subfigure[$S$-Coordinates]{\includegraphics[width=0.35\textwidth]{ScoordsCluster1}}
-      \subfigure[POD Eigenvalues]{\includegraphics[width=0.35\textwidth]{PODevalsCluster1}}
-      \subfigure[Mean]{\includegraphics[width=0.35\textwidth]{MeanCluster1}}
-      \subfigure[POD Modes]{\includegraphics[width=0.35\textwidth]{PODmodes1to5Cluster1}}
-      \caption{POD of ice shape cluster}
-\end{figure}
-\textbf{Goal:} build a low-dimensional model of ice shape cluster for UQ
-\end{frame}
-\begin{frame}
-\frametitle{Cluster Modeling}
-\label{sec-3-16}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[Mode 1]{\includegraphics[width=0.3\textwidth]{POD1Shapes3Sig}}
-      \subfigure[Mode 2]{\includegraphics[width=0.3\textwidth]{POD2Shapes3Sig}}
-      \subfigure[Mode 3]{\includegraphics[width=0.3\textwidth]{POD3Shapes3Sig}}
-      \subfigure[Mode 4]{\includegraphics[width=0.3\textwidth]{POD4Shapes3Sig}}
-      \subfigure[Mode 5]{\includegraphics[width=0.3\textwidth]{POD5Shapes3Sig}}
-      \caption{Ice model modes}
-\end{figure}
-Variations shown about dataset mean ($\pm 3 \sigma$)
-\end{frame}
-\begin{frame}
-\frametitle{Parameter Space}
-\label{sec-3-17}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[Mode 1]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff1PDF}}
-      \subfigure[Mode 2]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff2PDF}}
-      \subfigure[Mode 3]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff3PDF}}
-      \subfigure[Mode 4]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff4PDF}}
-      \subfigure[Mode 5]{\includegraphics[width=0.3\textwidth]{Cluster1Coeff5PDF}}
-      \caption{Mode statistics ({\color{blue} data} and {\color{red} fit})}
-\end{figure}
-\begin{itemize}
-\item Fit a normal distribution to dataset statistics
-\item 5-dimensional UQ study with all Gaussian variables
-\end{itemize}
+\frametitle{Ice Shapes}
+\label{sec-2-10}
 \end{frame}
 \begin{frame}
 \frametitle{Output Statistics}
-\label{sec-3-18}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[PDF($C_L$)]{\includegraphics[width=0.4\textwidth]{PDFCLTOL1em4}}
-      \subfigure[PDF($C_D$)]{\includegraphics[width=0.4\textwidth]{PDFCDTOL1em4}}
-      \caption{Output PDFs for lift and drag}
-\end{figure}
-\textbf{Setup}
-\begin{itemize}
-\item Business jet clean airfoil\footnotemark[1], $\alpha = 3^{\circ}$, $Re = 7.5\times10^6$
-\item FLO103 code (2D steady-state RANS solver)
-\item Adaptive sparse grid collocation for PCE, implemented with DAKOTA
-\end{itemize}
-\textbf{Results}
-\begin{itemize}
-\item PC surrogate converged using 487 solver evaluations
-\end{itemize}
+\label{sec-2-11}
 \end{frame}
 \begin{frame}
-\frametitle{Global Extrema}
-\label{sec-3-19}
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[Highest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotHighCL}}
-      \subfigure[Lowest decile of $C_L$]{\includegraphics[width=0.3\textwidth]{BoxplotLowCL}}
-      \subfigure[Means of top and bottom deciles]{\includegraphics[width=0.3\textwidth]{GoodBadAirfoils}}
-      \caption{Global extrema visualized}
-\end{figure}
-\begin{itemize}
-\item \textbf{Good:} low accretion, smooth, conforms to airfoil surface
-\item \textbf{Bad:} high accretion, horns, protrude out as flow obstacles
-\end{itemize}
+\frametitle{Output Statistics}
+\label{sec-2-12}
 \end{frame}
 \section{Computational UQ}
-\label{sec-4}
+\label{sec-3}
 \begin{frame}
 \frametitle{Motivation}
-\label{sec-4-1}
+\label{sec-3-1}
 
 \textbf{Investigate uncertainty in the physical process of icing}
 \begin{itemize}
@@ -623,7 +329,7 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \end{frame}
 \begin{frame}
 \frametitle{Airfoil Icing Code Flowchart}
-\label{sec-4-2}
+\label{sec-3-2}
 
 \fontsize{7}\selectfont
 % Define the layers to draw the diagram
@@ -670,7 +376,7 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \end{frame}
 \begin{frame}
 \frametitle{Droplet Advection}
-\label{sec-4-3}
+\label{sec-3-3}
 
 \textbf{Advection Equations:} \\
 \begin{equation*}
@@ -697,7 +403,7 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \end{frame}
 \begin{frame}
 \frametitle{Thermodynamics}
-\label{sec-4-4}
+\label{sec-3-4}
 
 \textbf{Conservation Equations:} \\
 \begin{equation*}
@@ -727,7 +433,7 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \end{frame}
 \begin{frame}
 \frametitle{Preliminary Intermediate Results: Ice Shapes}
-\label{sec-4-5}
+\label{sec-3-5}
 
     \centering
     \includegraphics[width=0.65\textwidth]{Rime405Example.png}
@@ -739,7 +445,7 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \end{frame}
 \begin{frame}
 \frametitle{Work In-Progress}
-\label{sec-4-6}
+\label{sec-3-6}
 
 \begin{itemize}
 \item Verify icing calculations against published results
@@ -751,7 +457,7 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \end{frame}
 \begin{frame}
 \frametitle{Conclusions}
-\label{sec-4-7}
+\label{sec-3-7}
 
 \textbf{Problems:}
 \begin{itemize}
@@ -778,6 +484,14 @@ Variations shown about dataset mean ($\pm 3 \sigma$)
 \end{itemize}
 \end{itemize}
 \end{itemize}
+
+
+
+
+
+
+
+ 
 \end{frame}
 
 \end{document}

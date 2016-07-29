@@ -12,7 +12,7 @@
 #+latex_header: \usepackage{subcaption}
 #+latex_header: \usepackage{multimedia}
 #+latex_header: \usepackage{tikz}
-#+latex_header: \usepackage{subfigure,subfigmat}
+#+latex_header: \usepackage{subfigure}
 #+latex_header: \usepackage{threeparttable}
 #+latex_header: \usetikzlibrary{shapes,arrows,shadows}
 #+latex_header: \usepackage{bm, amssymb, amsmath, array, pdfpages}
@@ -141,11 +141,52 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
     - Construct corresponding ice shapes
 
 ** POD Eigenvalues
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Magnitude.]{\includegraphics[width=0.4\textwidth]{PODevals.eps}}
+      \subfigure[Cumulative sum.]{\includegraphics[width=0.4\textwidth]{CumsumPODevals.eps}}
+      \caption{POD eigenvalues.}
+\end{figure}
 ** POD Modes
+\vspace*{-0.0cm}\begin{figure}
+      \vspace*{-1.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MEAN}} \\
+      \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE1}}
+      \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE2}}
+      \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE3}}
+      \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE4}}
+      \vspace*{1cm}\caption{Mean and POD modes.}
+\end{figure}
+
 ** POD Reconstructions
+\begin{figure}
+      \vspace*{-0.9cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx2.png}}
+      \vspace*{-0.9cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx2.png}} \\
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx3.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx3.png}} \\
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx1.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx1.png}}
+      \vspace*{0cm}\caption{POD reconstructions.}
+\end{figure}
+
 ** Link Physical Conditions to Modes
-** Average Shapes
+\begin{figure}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2Time}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4Time}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2Temp}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4Temp}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2LWC}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4LWC}}
+      \vspace*{0cm}\caption{POD coefficients, colored with parameters.}
+\end{figure}
+
 ** Random Shapes
+\begin{figure}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamHornFromPhysics}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRimeFromPhysics}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRandomHorns}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRandomRime}}
+      \vspace*{0cm}\caption{Random data-driven ice shapes.}
+\end{figure}
+
 ** Uncertainty Quantification
 \vspace*{-0.0cm}\begin{figure}
       \includegraphics[width=0.5\textwidth]{GlobalDataSet}
@@ -157,7 +198,6 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
   - Generate random samples in POD space with Latin Hypercube Sampling (LHS)
   - Test corresponding shapes with flow solver
   - Quantify lift/drag statistics
-
 
 
 

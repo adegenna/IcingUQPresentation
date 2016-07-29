@@ -1,4 +1,4 @@
-% Created 2016-07-28 Thu 20:46
+% Created 2016-07-29 Fri 13:33
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -27,7 +27,7 @@
 \usepackage{subfigure}
 \usepackage{threeparttable}
 \usetikzlibrary{shapes,arrows,shadows}
-\usepackage{bm, amssymb, amsmath, array, pdfpages}
+\usepackage{bm, amssymb, amsmath, array, pdfpages,graphicx}
 \newcommand{\bv}[1]{\mathbf{#1}}
 \newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\beq}[0]{\begin{equation}}
@@ -292,18 +292,23 @@
 \begin{frame}
 \frametitle{Latin Hypercube Samples}
 \label{sec-2-9}
+
+\vspace*{-0.0cm}\begin{figure}
+      \vspace*{-1.5cm}\subfigure{\includegraphics[width=0.6\textwidth]{LHS_Shapes}} \\
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{LHS_Statistics}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{LHS_StatisticsCD}}
+      \caption{Latin Hypercube samples.}
+\end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Ice Shapes}
+\frametitle{Latin Hypercube Samples}
 \label{sec-2-10}
-\end{frame}
-\begin{frame}
-\frametitle{Output Statistics}
-\label{sec-2-11}
-\end{frame}
-\begin{frame}
-\frametitle{Output Statistics}
-\label{sec-2-12}
+
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure{\includegraphics[width=0.45\textwidth]{LHS_SpatialAvg}}
+      \subfigure{\includegraphics[width=0.45\textwidth]{LHS_SpatialVar}}
+      \caption{Spatial average and variance.}
+\end{figure}
 \end{frame}
 \section{Computational UQ}
 \label{sec-3}
@@ -316,15 +321,12 @@
 \item What is the statistical effect of uncertainty in physical parameters?
 \begin{itemize}
 \item Free-stream temperature
-\item Angle of attack
-\item Convective heat transfer
-\item Droplet diameter distribution
+\item Liquid water content (LWC)
 \item Accretion time
+\item Droplet diameter distribution (MVD)
+\item Surface roughness
 \end{itemize}
-\item Previous two approaches show how direct perturbations of the shape
-    affect the aerodynamics
-\item This approach shows how perturbations of the physics affect shape
-    (and aerodynamics)
+\item Want to quantify how perturbations of the physics affects aerodynamics
 \end{itemize}
 \end{frame}
 \begin{frame}
@@ -337,42 +339,43 @@
 \pgfdeclarelayer{foreground}
 \pgfsetlayers{background,main,foreground}
 
-% Define block styles used later
+\begin{figure}[!ht]
+  % Define block styles used later
+  \tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, 
+    text centered, minimum height=2.5em]
+  \tikzstyle{ann} = [above, text width=10em, text centered]
+  \tikzstyle{wa} = [sensor, text width=10em, fill=blue!20, 
+    minimum height=3em, rounded corners]
+  % Define distances for bordering
+  %\def\blockdist{2.3}
+  %\def\edgedist{2.5}
+  \vspace*{-1cm}
+  \begin{tikzpicture}
 
-\tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, 
-    text centered, minimum height=2.5em,drop shadow]
-\tikzstyle{ann} = [above, text width=5em, text centered]
-\tikzstyle{wa} = [sensor, text width=7.5em, fill=blue!20, 
-    minimum height=3em, rounded corners, drop shadow]
+    \begin{pgfonlayer}{background}
+      \path (2,4) node (a) {};
+      \path (6,-3.5) node (b) {};
+      \path[fill=orange!40,rounded corners, draw=black!50, dashed] (a) rectangle (b);
+    \end{pgfonlayer}
 
-% Define distances for bordering
-\def\blockdist{2.3}
-\def\edgedist{2.5}
-
-\begin{tikzpicture}
-    \node (CleanAirfoil) [wa]  {Clean Airfoil Geometry};
-    \path (CleanAirfoil)+(4,2.5) node (FlowSolver) [wa] {Mesh/Flow Solver};
-    \path (FlowSolver)+(0,-1.25) node (Droplet) [wa] {Droplet\\Advection Module};
-    \path (Droplet)+(0,-1.25) node (ThermoModule) [wa] {Thermodynamic Module};
-    \path (ThermoModule)+(0,-1.25) node (IcedAirfoil) [wa] {Iced Airfoil Geometry};
-    \path (CleanAirfoil)+(8,0) node (FinalAirfoil) [wa] {Final Iced Airfoil Geometry};
+    \node (CleanAirfoil) [wa] {\includegraphics[width=0.6\textwidth]{ExampleCleanAirfoil}\\\bf{Clean Airfoil}};
+    \path (CleanAirfoil)+(4,2.5) node (FlowSolver) [wa] {\includegraphics[width=0.6\textwidth]{ExampleSoln}\\\bf{Mesh/Flow Solver}};
+    \path (FlowSolver)+(0,-2) node (Droplet) [wa] {\includegraphics[width=0.6\textwidth]{DropletAdvectionR10}\\\bf{Droplet Simulation}};
+    \path (Droplet)+(0,-1.5) node (ThermoModule) [wa] {$\frac{\partial \bm{F}}{\partial t} + \nabla \cdot \bm{F} = \dot{\bm{S}}$ \\\bf{Thermodynamics}};
+    \path (ThermoModule)+(0,-1.5) node (IcedAirfoil) [wa] {\includegraphics[width=0.6\textwidth]{ExampleIceGrowth}\\\bf{Iced Geometry}};
+    \path (CleanAirfoil)+(8,0) node (FinalAirfoil) [wa] {\includegraphics[width=0.6\textwidth]{ExampleIceGrowthFinal}\\\bf{Final Geometry}};
 
     \path [draw, ->, thick] (CleanAirfoil.north) |- node [above] {} (FlowSolver.west);
     \path [draw, ->, thick] (FlowSolver.south) -- node [below] {} (Droplet.north);
     \path [draw, ->, thick] (Droplet.south) -- node [below] {} (ThermoModule.north);
     \path [draw, ->, thick] (ThermoModule.south) -- node [below] {} (IcedAirfoil.north);
     \path [draw, ->, thick] (IcedAirfoil.east) -| node [above] {} (FinalAirfoil.south);
-    \path [draw, ->, thick] (IcedAirfoil.east) -- ++(0.75,0cm) |- node [above]
-                      {} (FlowSolver.east);
+    \path [draw, ->, thick] (IcedAirfoil.east) -- ++(0.25,0cm) |- node [above]
+          {} (FlowSolver.east);
 
-    \begin{pgfonlayer}{background}
-        \path (FlowSolver.west)+(-1,1) node (a) {};
-        \path (IcedAirfoil.east)+(1,-1) node (b) {};
-        \path[fill=orange!20,rounded corners, draw=black!50, dashed] (a) rectangle (b);
-            
-    \end{pgfonlayer}
+  \end{tikzpicture}
 
-\end{tikzpicture}
+\end{figure}
 \end{frame}
 \begin{frame}
 \frametitle{Droplet Advection}
@@ -390,14 +393,14 @@
   \column{0.5\textwidth}
     \centering
     \begin{figure}
-    \includegraphics[width=0.9\textwidth]{ExampleR10em6}
+    \includegraphics[width=0.9\textwidth]{DropletAdvection_NACA0012_R10}
     \caption{R = 10$\mu$m}
     \end{figure}
   \column{0.5\textwidth}
     \centering
     \begin{figure}
-    \includegraphics[width=0.9\textwidth]{ExampleR100em6} \\
-    \caption{R = 100$\mu$m}
+    \includegraphics[width=0.9\textwidth]{DropletAdvection_NACA23012_R118} \\
+    \caption{R = 118$\mu$m}
     \end{figure}
 \end{columns}
 \end{frame}
@@ -432,32 +435,58 @@
 \end{itemize}
 \end{frame}
 \begin{frame}
-\frametitle{Preliminary Intermediate Results: Ice Shapes}
+\frametitle{Thermodynamics Solution Procedure}
 \label{sec-3-5}
 
-    \centering
-    \includegraphics[width=0.65\textwidth]{Rime405Example.png}
-
-\begin{itemize}
-\item NACA0012, $\alpha = 4^o$, $T_{\infty} = 256 K$, $U_{\infty}$ = 103 m/s, MVD = 20 $\mu m$, LWC = 0.55 g/m$^3$, Re = 4.14 million, $\Delta T$ = 7 min
-\item Low temperatures: convective heat transfer high enough to freeze all incoming droplets instantly (rime)
-\end{itemize}
+\begin{columns}[c]
+\column{0.4\textwidth}
+\hspace*{-0.5cm}
+\scalebox{0.8}{
+\begin{equation*}
+\begin{aligned}
+\frac{\partial U}{\partial t} + \frac{\partial F}{\partial s} &= \dot{S} \\
+\int_{\mathcal{B}_k} \left( \frac{\partial U}{\partial t} + \frac{\partial F}{\partial s} \right) \;ds &= \int_{\mathcal{B}_k} \dot{S}\; ds \\
+\int_{\mathcal{B}_k} \frac{\partial U}{\partial t}\;ds + \left( F_{k+1/2} - F_{k-1/2} \right) &= \int_{\mathcal{B}_k} \dot{S}\; ds \\
+\frac{\partial \bar{U}_k}{\partial t} = \mathrlap{\underbrace{ \frac{1}{\Delta s_k} \int_{\mathcal{B}_k} \dot{S}\; ds - \Delta F_k }_{ \delta_u }} \\
+\bar{U}_k^{t+\Delta t} &= \bar{U}_k^{t} - \Delta t \delta_u
+\end{aligned}
+\end{equation}
+}
+\column{0.6\textwidth}
+\centering
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=70mm 20mm 270mm 20mm,clip,width=1\textwidth]{FiniteVolume}
+  \caption{Finite volume method.}
+\end{figure}
+\end{columns}
 \end{frame}
 \begin{frame}
-\frametitle{Work In-Progress}
+\frametitle{Validations}
 \label{sec-3-6}
 
-\begin{itemize}
-\item Verify icing calculations against published results
-\item Perform UQ studies, investigate sensitivity to physical parameters
-\begin{itemize}
-\item Temperature, convective heat transfer coefficient, Reynolds number, MVD, LWC, angle of attack, etc.
-\end{itemize}
-\end{itemize}
+\vspace*{-0.5cm}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0.625in 0.75in 0.83in 0.8in,clip,width=0.6\textwidth]{IceShapeValidations.png}
+  \caption{Experiment ({\color{red} red}), LEWICE ({\color{green} green}), and CATFISh ({\color{blue} blue}).}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{UQ Study: Temp + LWC}
+\label{sec-3-7}
+
+\begin{figure}[ht]
+\centering
+\subfigure[Quadrature points (colorscale identical to (b)).]{\includegraphics[width=0.3\textwidth]{QuadPts_2ParamCLalpha}}
+\subfigure[PCE surrogate.]{\includegraphics[width=0.3\textwidth]{Map_2ParamCLalpha.png}}
+\subfigure[PCE surrogate statistics.]{\includegraphics[width=0.3\textwidth]{Statistics_2ParamCLalpha}}
+\caption{Quadrature points, PCE surrogate, and statistics for the 2 parameter ($T_{\infty}$ and LWC) study on lift slope.}
+\end{figure}
 \end{frame}
 \begin{frame}
 \frametitle{Conclusions}
-\label{sec-3-7}
+\label{sec-3-8}
 
 \textbf{Problems:}
 \begin{itemize}

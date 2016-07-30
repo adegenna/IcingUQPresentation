@@ -1,4 +1,4 @@
-% Created 2016-07-29 Fri 15:11
+% Created 2016-07-30 Sat 14:31
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -218,12 +218,18 @@
       \subfigure[Cumulative sum.]{\includegraphics[width=0.4\textwidth]{CumsumPODevals.eps}}
       \caption{POD eigenvalues.}
 \end{figure}
+
+\begin{itemize}
+\item 2/3 of cumulative sum contained in first 10 modes
+\item 2/3 of statistical variation contained in first 10 modes
+\item Truncate model at 10 modes
+\end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{POD Modes}
 \label{sec-2-4}
 
-\vspace*{-0.0cm}\begin{figure}
+\vspace*{0.75cm}\begin{figure}
       \vspace*{-1.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MEAN}} \\
       \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE1}}
       \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE2}}
@@ -231,34 +237,50 @@
       \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE4}}
       \vspace*{1cm}\caption{Mean and POD modes.}
 \end{figure}
+
+\begin{itemize}
+\item Represent ice shapes as composite sum of these pictures
+\item Modes 1 and 2 simply add ice mass
+\item Modes 3 and 4 switch between upper/lower surface horns and rime
+\item Higher order modes contain more extreme shape perturbations
+\end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{POD Reconstructions}
 \label{sec-2-5}
 
 \begin{figure}
-      \vspace*{-0.9cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx2.png}}
-      \vspace*{-0.9cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx2.png}} \\
-      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx3.png}}
-      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx3.png}} \\
-      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx1.png}}
-      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx1.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{UnfilteredReconstructionEx2.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{FilteredReconstructionEx2.png}} \\
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{UnfilteredReconstructionEx3.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{FilteredReconstructionEx3.png}} \\
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{UnfilteredReconstructionEx1.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{FilteredReconstructionEx1.png}}
       \vspace*{0cm}\caption{POD reconstructions.}
 \end{figure}
+
+\begin{itemize}
+\item Agreement is great for shapes close to mean, less good for extreme shapes
+\end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Link Physical Conditions to Modes}
 \label{sec-2-6}
 
-\begin{figure}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2Time}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4Time}} \\
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2Temp}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4Temp}} \\
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2LWC}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4LWC}}
+\vspace*{-0.5cm}\begin{figure}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2Time}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4Time}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2Temp}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4Temp}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2LWC}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4LWC}}
       \vspace*{0cm}\caption{POD coefficients, colored with parameters.}
 \end{figure}
+
+\begin{itemize}
+\item Statistically relate time, temperature and LWC to POD modes
+\item Input conditions, output POD coefficients that respect the data
+\end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Random Shapes}
@@ -267,10 +289,14 @@
 \begin{figure}
       \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamHornFromPhysics}}
       \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRimeFromPhysics}} \\
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRandomHorns}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRandomRime}}
+      \vspace*{-0.4cm}\subfigure[Time > 10 min; temperature > -10 C; LWC > 0.45 $g/m^3$]{\includegraphics[width=0.4\textwidth]{10ParamRandomHorns}}
+      \vspace*{-0.4cm}\subfigure[Time > 10 min; temperature < -10 C; LWC < 0.45 $g/m^3$]{\includegraphics[width=0.4\textwidth]{10ParamRandomRime}}
       \vspace*{0cm}\caption{Random data-driven ice shapes.}
 \end{figure}
+
+\begin{itemize}
+\item These shapes were generated at random, no physics
+\end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Uncertainty Quantification}

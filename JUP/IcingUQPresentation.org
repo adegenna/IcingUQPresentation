@@ -123,7 +123,7 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 - Obtained in icing wind tunnel at NASA Glenn[fn:Addy]
 - Representative of a wide variety of icing conditions (temperature,
   LWC, accretion time, etc.)
-
+  
 ** Data-Driven Model
 \vspace*{-0.0cm}\begin{figure}
       \includegraphics[width=0.5\textwidth]{GlobalDataSet}
@@ -145,8 +145,12 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
       \subfigure[Cumulative sum.]{\includegraphics[width=0.4\textwidth]{CumsumPODevals.eps}}
       \caption{POD eigenvalues.}
 \end{figure}
+
+- 2/3 of cumulative sum contained in first 10 modes
+- 2/3 of statistical variation contained in first 10 modes
+- Truncate model at 10 modes
 ** POD Modes
-\vspace*{-0.0cm}\begin{figure}
+\vspace*{0.75cm}\begin{figure}
       \vspace*{-1.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MEAN}} \\
       \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE1}}
       \vspace*{-0.75cm}\subfigure{\includegraphics[width=0.4\textwidth]{MODE2}}
@@ -155,36 +159,48 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
       \vspace*{1cm}\caption{Mean and POD modes.}
 \end{figure}
 
+- Represent ice shapes as composite sum of these pictures
+- Modes 1 and 2 simply add ice mass
+- Modes 3 and 4 switch between upper/lower surface horns and rime
+- Higher order modes contain more extreme shape perturbations
+
 ** POD Reconstructions
 \begin{figure}
-      \vspace*{-0.9cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx2.png}}
-      \vspace*{-0.9cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx2.png}} \\
-      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx3.png}}
-      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx3.png}} \\
-      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{UnfilteredReconstructionEx1.png}}
-      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{FilteredReconstructionEx1.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{UnfilteredReconstructionEx2.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{FilteredReconstructionEx2.png}} \\
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{UnfilteredReconstructionEx3.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{FilteredReconstructionEx3.png}} \\
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{UnfilteredReconstructionEx1.png}}
+      \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.3\textwidth]{FilteredReconstructionEx1.png}}
       \vspace*{0cm}\caption{POD reconstructions.}
 \end{figure}
 
+- Agreement is great for shapes close to mean, less good for extreme shapes
+
 ** Link Physical Conditions to Modes
-\begin{figure}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2Time}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4Time}} \\
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2Temp}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4Temp}} \\
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode1Mode2LWC}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamMode3Mode4LWC}}
+\vspace*{-0.5cm}\begin{figure}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2Time}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4Time}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2Temp}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4Temp}} \\
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2LWC}}
+      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4LWC}}
       \vspace*{0cm}\caption{POD coefficients, colored with parameters.}
 \end{figure}
+
+- Statistically relate time, temperature and LWC to POD modes
+- Input conditions, output POD coefficients that respect the data
 
 ** Random Shapes
 \begin{figure}
       \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamHornFromPhysics}}
       \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRimeFromPhysics}} \\
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRandomHorns}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.4\textwidth]{10ParamRandomRime}}
+      \vspace*{-0.4cm}\subfigure[Time > 10 min; temperature > -10 C; LWC > 0.45 $g/m^3$]{\includegraphics[width=0.4\textwidth]{10ParamRandomHorns}}
+      \vspace*{-0.4cm}\subfigure[Time > 10 min; temperature < -10 C; LWC < 0.45 $g/m^3$]{\includegraphics[width=0.4\textwidth]{10ParamRandomRime}}
       \vspace*{0cm}\caption{Random data-driven ice shapes.}
 \end{figure}
+
+- These shapes were generated at random, no physics
 
 ** Uncertainty Quantification
 \vspace*{-0.0cm}\begin{figure}

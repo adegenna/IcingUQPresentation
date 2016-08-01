@@ -220,6 +220,8 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
       \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{LHS_StatisticsCD}}
       \caption{Latin Hypercube samples.}
 \end{figure}
+- 1,921 LHS samples from 10-D modal space
+- LHS statistics reflect database statistics
 
 ** Latin Hypercube Samples
 \vspace*{-0.0cm}\begin{figure}
@@ -227,6 +229,8 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
       \subfigure{\includegraphics[width=0.45\textwidth]{LHS_SpatialVar}}
       \caption{Spatial average and variance.}
 \end{figure}
+- Spatial average: lower surface rime accretions are relatively benign
+- Spatial variance: performance sensitive to upper surface horns
 
 * Computational UQ
 ** Motivation
@@ -399,21 +403,19 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 
 
 
-
 ** Conclusions
 *Problems:*
 - Wing icing deteriorates icing aerodynamics, danger to safe flight
 - Ice shapes are diverse and complex
 - Not clear what the exact aerodynamic effects of different shapes are
+- Would like systematic way of exploring airfoil icing through data
 *Solutions:*
-- Demonstrated three separate approaches to quantifying the effects of
-  icing uncertainty on airfoil aerodynamics
-  - Heuristic approach
-    - Perturb template shape with a few scaling parameters
-  - Data-driven approach
-    - Build model of ice shape variation from database, study the model
-  - Computational approach
-    - Build computational ice accretion code, perturb physical parameters
+- Data-driven approach
+  - Build empirical model of ice accretion from data
+  - Perform parametric UQ to quantify range of performance
+- Computational approach
+  - Build computational ice accretion code from scratch
+  - Perform parametric UQ to quantify effects of physics
 
 
 

@@ -1,4 +1,4 @@
-% Created 2016-07-30 Sat 14:31
+% Created 2016-07-31 Sun 22:07
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -186,6 +186,7 @@
 \item Representative of a wide variety of icing conditions (temperature,
   LWC, accretion time, etc.)
 \end{itemize}
+  
 \end{frame}
 \begin{frame}
 \frametitle{Data-Driven Model}
@@ -325,6 +326,10 @@
       \vspace*{-0.5cm}\subfigure{\includegraphics[width=0.35\textwidth]{LHS_StatisticsCD}}
       \caption{Latin Hypercube samples.}
 \end{figure}
+\begin{itemize}
+\item 1,921 LHS samples from 10-D modal space
+\item LHS statistics reflect database statistics
+\end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Latin Hypercube Samples}
@@ -335,6 +340,10 @@
       \subfigure{\includegraphics[width=0.45\textwidth]{LHS_SpatialVar}}
       \caption{Spatial average and variance.}
 \end{figure}
+\begin{itemize}
+\item Spatial average: lower surface rime accretions are relatively benign
+\item Spatial variance: performance sensitive to upper surface horns
+\end{itemize}
 \end{frame}
 \section{Computational UQ}
 \label{sec-3}
@@ -547,24 +556,19 @@
 \item Wing icing deteriorates icing aerodynamics, danger to safe flight
 \item Ice shapes are diverse and complex
 \item Not clear what the exact aerodynamic effects of different shapes are
+\item Would like systematic way of exploring airfoil icing through data
 \end{itemize}
 \textbf{Solutions:}
 \begin{itemize}
-\item Demonstrated three separate approaches to quantifying the effects of
-  icing uncertainty on airfoil aerodynamics
-\begin{itemize}
-\item Heuristic approach
-\begin{itemize}
-\item Perturb template shape with a few scaling parameters
-\end{itemize}
 \item Data-driven approach
 \begin{itemize}
-\item Build model of ice shape variation from database, study the model
+\item Build empirical model of ice accretion from data
+\item Perform parametric UQ to quantify range of performance
 \end{itemize}
 \item Computational approach
 \begin{itemize}
-\item Build computational ice accretion code, perturb physical parameters
-\end{itemize}
+\item Build computational ice accretion code from scratch
+\item Perform parametric UQ to quantify effects of physics
 \end{itemize}
 \end{itemize}
 

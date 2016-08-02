@@ -48,20 +48,30 @@
 
 * Motivation/Background
 ** Introduction
-*Wing icing deteriorates airfoil aerodynamics*
-  - Leading edge flow separation bubble
-  - Lower lift, higher drag
-  - Unpredictable stall
-
-\vspace*{-0.0cm}\begin{figure}
-    \includegraphics[width=0.4\textwidth]{BadHorn.png}
+#+begin_latex
+\begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    {\bf Wing icing deteriorates aerodynamics}
+    \begin{itemize}
+      \item{Leading edge flow separation bubble}
+      \item{Lower lift, higher drag}
+      \item{Unpredictable stall}
+    \end{itemize}
+  \column{0.5\textwidth}
+    \vspace*{-0.0cm}\begin{figure}
+    \includegraphics[width=1\textwidth]{BadHorn.png}
     \caption{Leading edge horn separation}
-\end{figure}
+    \end{figure}
+  \end{columns}
+
+#+end_latex
 
 ** Introduction
 *Significant ice shape variation, sensitivity to physical parameters*[fn:Addy]
   - Complex physics (aero-thermodynamics, macro/micro scale physics)
   - Uncertainty in physical parameters
+  - Nondeterministic variation ("same conditions, different shapes")
 
 \vspace*{-0.0cm}\begin{figure}
       \includegraphics[width=0.75\textwidth]{GlobalDataSet}
@@ -73,8 +83,9 @@ Airfoils/. NASA TR 2000-210031.
 
 ** Introduction
 *Different types of ice accretion*[fn:Habashi]
-  - ``Horns", ``ridges", ``lobster tails" refer to shape
-  - ``Glaze", ``rime" refer to icing thermodynamics
+  - ``Rime" ice: cold temperature, low liquid water content
+  - ``Horn" ice: warm temperature, high liquid water content
+  - Uncertainty in physical conditions can create uncertainty in performance
 
 \vspace*{-0.0cm}\begin{figure}
       \subfigure[Rime Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Rime.png}}
@@ -84,6 +95,18 @@ Airfoils/. NASA TR 2000-210031.
 
 [fn:Habashi] Beaugendre et. al. /Development of a Second Generation
 In-Flight Simulation Code/. J. Fluids Engineering, 2006.
+
+** Introduction
+*Observations*
+- Many experimental ice accretion results exist, but no one has
+  modeled this data or inferred anything from it
+- Numerical methods/codes exist, but no one has systematically quantified
+  statistical effects of parametric uncertainty in physics
+*Questions*
+- Can we infer/identify prominent ice shape features from database of shapes?
+- We can link physical information about data to ice shape features?
+- Can we create a statistical modeling of icing using only data?
+- Can we investigate parametric uncertainty in numerical icing codes?
 
 ** Introduction
 *Research Goals*
@@ -99,7 +122,7 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
   - Perform parametric UQ and study effects on aerodynamic performance
 
 ** Introduction
-*Research Objectives*
+*Research Approach*
 
 - Data-driven, equation-free modeling of ice accretion
   - Collect large number of ice shapes into a database
@@ -135,9 +158,25 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
   - Build low-dimensional model of shape using POD
   - Correlate POD coefficients to temperature, accretion time, LWC
   - Generate random ice shapes corresponding to given conditions
-    - Filter database based on temperature, LWC, time
-    - Generate random samples that match POD coefficient statistics
-    - Construct corresponding ice shapes
+
+** Proper Orthogonal Decomposition (POD)
+*Goal/Utility*
+- Statistical analysis tool
+- Extracts linear, orthogonal basis that optimally explains dataset
+*Method*
+- Singular value decomposition of data matrix gives POD modes and eigenvalues
+\begin{equation*}
+\begin{aligned}
+\mathbf{X} &=
+ \begin{bmatrix}
+   \vline & & \vline \\
+   x_1 & \cdots & x_S \\
+   \vline & & \vline \\
+ \end{bmatrix}\\
+ \bv{X} &= \Phi\Sigma\bv{V^*}\\
+ x &\approx \sum_i^{M} c_i \phi_i
+\end{aligned}
+\end{equation}
 
 ** POD Eigenvalues
 \vspace*{-0.0cm}\begin{figure}
@@ -181,15 +220,62 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 \vspace*{-0.5cm}\begin{figure}
       \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2Time}}
       \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4Time}} \\
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2Temp}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4Temp}} \\
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2LWC}}
-      \vspace*{-0.4cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4LWC}}
+      \vspace*{-0.35cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2Temp}}
+      \vspace*{-0.35cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4Temp}} \\
+      \vspace*{-0.35cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode1Mode2LWC}}
+      \vspace*{-0.35cm}\subfigure{\includegraphics[width=0.35\textwidth]{10ParamMode3Mode4LWC}}
       \vspace*{0cm}\caption{POD coefficients, colored with parameters.}
 \end{figure}
 
 - Statistically relate time, temperature and LWC to POD modes
 - Input conditions, output POD coefficients that respect the data
+
+** Data-Driven Icing Model
+#+begin_latex
+\fontsize{7}\selectfont
+% Define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{figure}[!ht]
+  % Define block styles used later
+  \tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, 
+    text centered, minimum height=2.5em]
+  \tikzstyle{ann} = [above, text width=10em, text centered]
+  \tikzstyle{wa} = [sensor, text width=8em, fill=blue!20, 
+    minimum height=3em, rounded corners]
+  % Define distances for bordering
+  %\def\blockdist{2.3}
+  %\def\edgedist{2.5}
+  \vspace*{-1cm}
+  \begin{tikzpicture}
+
+    \begin{pgfonlayer}{background}
+      \path (1.5,1) node (b) {};
+      \path (7.5,-1) node (c) {};
+      \path[fill=orange!40,rounded corners, draw=black!50, dashed] (b) rectangle (c);
+    \end{pgfonlayer}
+
+    \node (Input) [wa] {{\bf Input}\vspace*{4\em}\\-- Time\\-- Temperature\\-- LWC};
+    \path (Input)+(3,0) node (Database) [wa] {{\bf Database}\vspace*{4\em}\\-- Ice shapes\\-- Conditions};
+    \path (Database)+(3,0) node (Statistics) [wa] {{\bf Statistics}\vspace*{4\em}\\-- Filtered coeffs\\-- Random samples};
+    \path (Statistics)+(3,0) node (Reconstruction) [wa] {{\bf Shape}\vspace*{4\em}\\$\bv{X} = \sum_i^{M} c_i \phi_i$};
+
+    \path [draw, ->, thick] (Input.east) |- node [above] {} (Database.west);
+    \path [draw, ->, thick] (Database.east) -- node [below] {} (Statistics.west);
+    \path [draw, ->, thick] (Statistics.east) -- node [below] {} (Reconstruction.west);
+
+  \end{tikzpicture}
+  \caption{Flowchart of data-driven model.}
+\end{figure}
+\fontsize{9}\selectfont
+#+end_latex
+- Input physical condition ranges
+- Filter database for shapes that match conditions
+- Create POD coefficient distributions for downselected data
+- Generate random samples from these distributions
+- Reconstruct ice shape using data-inferred POD coefficients
 
 ** Random Shapes
 \begin{figure}
@@ -365,6 +451,8 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 \end{figure}
 \end{columns}
 #+end_latex
+- Finite volume discretization of equations
+- Roe scheme flux calculation (upwinding)
 ** Validations
 \vspace*{-0.5cm}
 \begin{figure}[ht]
@@ -400,7 +488,6 @@ In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 \subfigure[Statistics of $C_{L_{\alpha}}$ as a function of $\Delta$T.]{\includegraphics[width=0.3\textwidth]{3Param_TinfLWCRough_CondExp}}
 \caption{Quadrature points, PCE surrogate, and statistics.}
 \end{figure}
-
 
 
 ** Conclusions

@@ -41,7 +41,7 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-#+DATE: JUP Quarterly Meeting \\ Princeton, NJ \\ April 2016
+#+DATE: JUP Quarterly Meeting \\ Athens, OH \\ August 2016
 #+TITLE: Modeling and Uncertainty Quantification for Airfoil Icing
 #+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}

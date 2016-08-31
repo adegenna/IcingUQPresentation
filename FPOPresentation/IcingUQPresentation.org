@@ -48,6 +48,22 @@
 
 * Motivation/Background
 ** Introduction
+*What is aircraft icing?*
+- In-flight accumulation of ice on aircraft structure
+  - Aircraft nacelle
+  - Engine (cowling, inlet, compressor blades)
+  - Lifting surfaces (wings and stabilizers) 
+  - Flight instruments (pitot tube)
+
+\vspace*{-0.0cm}\begin{figure}
+      \subfigure[Nacelle icing]{\includegraphics[width=0.3\textwidth]{NacelleIcing.jpg}}
+      \subfigure[Wing icing]{\includegraphics[width=0.3\textwidth]{WingIcingIntro}}
+      \subfigure[Engine icing]{\includegraphics[width=0.3\textwidth]{EngineIcingIntro}}
+      \caption{Examples of structural aircraft icing.}
+\end{figure}
+
+
+** Introduction
 *Wing icing deteriorates airfoil aerodynamics*
   - Leading edge flow separation bubble
   - Lower lift, higher drag

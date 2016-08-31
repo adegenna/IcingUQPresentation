@@ -41,7 +41,7 @@
 #+latex_header: \newcommand{\ip}[2]{\langle #1, #2\rangle}
 #+BEAMER_FRAME_LEVEL: 2
 
-#+DATE: Ph.D. Committee Meeting \\ Princeton, NJ \\ April 2016
+#+DATE: Final Public Oral \\ Princeton, NJ \\ September 2016
 #+TITLE: Modeling and Uncertainty Quantification for Airfoil Icing
 #+AUTHOR: Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University
 \institute{Princeton University}
@@ -62,6 +62,52 @@
       \caption{Examples of structural aircraft icing.}
 \end{figure}
 
+** Introduction
+*Why is aircraft icing dangerous?*
+- Nacelle icing
+  - Increase profile drag
+- Engine icing 
+  - Disrupt airflow into engine 
+  - Cause compressor blade stall
+  - Damage to engine blades
+- Instrument icing
+  - Causes incorrect Pitot tube speed/pressure measurements
+- Wing/stabilizer icing
+  - Decreases lift, increases drag
+  - Causes unpredictable stall characteristics
+  - Causes loss of control surface effectiveness
+/We limit our focus to wing icing in what follows/
+** Introduction
+*How does wing ice form?*
+- Warm, humid air is convected upward to cooler, higher altitudes
+- Liquid water droplets condense out of supersaturated air
+- Atmospheric droplets can remain in /supercooled/ liquid state
+  - Sparsity of nucleation sites for heterogeneous crystallization
+  - Homogeneous crystallization does not begin until extreme cold ($\approx -48^\circ C$)
+- Airplanes provide great nucleation sites for ice crystallization
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.4\textwidth]{DropletFreezingIntro.png}
+      \caption{Freezing temperature distribution (droplet diameter =
+      35 $\mu m$)\footnote{\tiny Dorsch and
+      Hacker. \emph{Photomicrographic investigation of spontaneous
+      freezing temperatures of supercooled water droplets.} NACA-TN
+      2142, 1950.}  } \end{figure}
+
+** Introduction
+*How does wing ice form?*
+- Details of ice formation controlled by heat transfer mechanisms
+  - Aerodynamic convective cooling
+  - Evaporation/sublimation
+- /Rime ice:/ cold, dry conditions --> droplets freeze immediately upon impact
+- /Glaze ice:/ warm, wet conditions --> partial freezing plus "runback" water
+
+\vspace*{-0.5cm}\begin{figure} \subfigure[Rime
+      Ice]{\includegraphics[width=0.3\textwidth]{Habashi2006Rime.png}}
+      \subfigure[Horn
+      Ice]{\includegraphics[width=0.3\textwidth]{Habashi2006Horn.png}}
+      \caption{Canonical examples of rime/horn ice\footnote{\tiny Beaugendre
+      et. al. \emph{Development of a Second Generation In-Flight
+      Simulation Code}. J. Fluids Engineering, 2006.}}  \end{figure}
 
 ** Introduction
 *Wing icing deteriorates airfoil aerodynamics*

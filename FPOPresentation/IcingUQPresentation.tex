@@ -1,4 +1,4 @@
-% Created 2016-08-31 Wed 12:52
+% Created 2016-08-31 Wed 19:13
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -42,7 +42,7 @@
 
 \title{Modeling and Uncertainty Quantification for Airfoil Icing}
 \author{Anthony DeGennaro \newline Clarence W. Rowley III \newline Luigi Martinelli \newline Princeton University}
-\date{Ph.D. Committee Meeting \\ Princeton, NJ \\ April 2016}
+\date{Final Public Oral \\ Princeton, NJ \\ September 2016}
 \hypersetup{
   pdfkeywords={},
   pdfsubject={},
@@ -101,6 +101,81 @@
 \frametitle{Introduction}
 \label{sec-1-2}
 
+\textbf{Why is aircraft icing dangerous?}
+\begin{itemize}
+\item Nacelle icing
+\begin{itemize}
+\item Increase profile drag
+\end{itemize}
+\item Engine icing
+\begin{itemize}
+\item Disrupt airflow into engine
+\item Cause compressor blade stall
+\item Damage to engine blades
+\end{itemize}
+\item Instrument icing
+\begin{itemize}
+\item Causes incorrect Pitot tube speed/pressure measurements
+\end{itemize}
+\item Wing/stabilizer icing
+\begin{itemize}
+\item Decreases lift, increases drag
+\item Causes unpredictable stall characteristics
+\item Causes loss of control surface effectiveness
+\end{itemize}
+\end{itemize}
+\emph{We limit our focus to wing icing in what follows}
+\end{frame}
+\begin{frame}
+\frametitle{Introduction}
+\label{sec-1-3}
+
+\textbf{How does wing ice form?}
+\begin{itemize}
+\item Warm, humid air is convected upward to cooler, higher altitudes
+\item Liquid water droplets condense out of supersaturated air
+\item Atmospheric droplets can remain in \emph{supercooled} liquid state
+\begin{itemize}
+\item Sparsity of nucleation sites for heterogeneous crystallization
+\item Homogeneous crystallization does not begin until extreme cold ($\approx -48^\circ C$)
+\end{itemize}
+\item Airplanes provide great nucleation sites for ice crystallization
+\end{itemize}
+\vspace*{-0.0cm}\begin{figure}
+      \includegraphics[width=0.4\textwidth]{DropletFreezingIntro.png}
+      \caption{Freezing temperature distribution (droplet diameter =
+      35 $\mu m$)\footnote{\tiny Dorsch and
+      Hacker. \emph{Photomicrographic investigation of spontaneous
+      freezing temperatures of supercooled water droplets.} NACA-TN
+      2142, 1950.}  } \end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Introduction}
+\label{sec-1-4}
+
+\textbf{How does wing ice form?}
+\begin{itemize}
+\item Details of ice formation controlled by heat transfer mechanisms
+\begin{itemize}
+\item Aerodynamic convective cooling
+\item Evaporation/sublimation
+\end{itemize}
+\item \emph{Rime ice:} cold, dry conditions --> droplets freeze immediately upon impact
+\item \emph{Glaze ice:} warm, wet conditions --> partial freezing plus ``runback'' water
+\end{itemize}
+
+\vspace*{-0.5cm}\begin{figure} \subfigure[Rime
+      Ice]{\includegraphics[width=0.3\textwidth]{Habashi2006Rime.png}}
+      \subfigure[Horn
+      Ice]{\includegraphics[width=0.3\textwidth]{Habashi2006Horn.png}}
+      \caption{Canonical examples of rime/horn ice\footnote{\tiny Beaugendre
+      et. al. \emph{Development of a Second Generation In-Flight
+      Simulation Code}. J. Fluids Engineering, 2006.}}  \end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Introduction}
+\label{sec-1-5}
+
 \textbf{Wing icing deteriorates airfoil aerodynamics}
 \begin{itemize}
 \item Leading edge flow separation bubble
@@ -115,7 +190,7 @@
 \end{frame}
 \begin{frame}
 \frametitle{Introduction}
-\label{sec-1-3}
+\label{sec-1-6}
 
 \textbf{Significant ice shape variation, sensitivity to physical parameters}\footnote{Addy, H.E. \emph{Ice Accretions and Icing Effects for Modern Airfoils}. NASA TR 2000-210031.
  }
@@ -131,7 +206,7 @@
 \end{frame}
 \begin{frame}
 \frametitle{Introduction}
-\label{sec-1-4}
+\label{sec-1-7}
 
 \textbf{Different types of ice accretion}\footnote{Beaugendre et. al. \emph{Development of a Second Generation In-Flight Simulation Code}. J. Fluids Engineering, 2006.
  }
@@ -148,7 +223,7 @@
 \end{frame}
 \begin{frame}
 \frametitle{Introduction}
-\label{sec-1-5}
+\label{sec-1-8}
 
 \textbf{Research Goals}
 \begin{itemize}
@@ -174,7 +249,7 @@
 \end{frame}
 \begin{frame}
 \frametitle{Introduction}
-\label{sec-1-6}
+\label{sec-1-9}
 
 \textbf{Thesis Structure}
 \begin{itemize}

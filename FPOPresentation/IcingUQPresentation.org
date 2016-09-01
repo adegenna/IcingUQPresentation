@@ -49,7 +49,8 @@
 * Motivation/Background
 ** Introduction
 *What is aircraft icing?*
-- In-flight accumulation of ice on aircraft structure
+
+In-flight accumulation of ice on aircraft structure
   - Aircraft nacelle
   - Engine (cowling, inlet, compressor blades)
   - Lifting surfaces (wings and stabilizers) 
@@ -89,6 +90,13 @@
 \end{itemize}
 #+end_latex
 /We limit our focus to wing icing in what follows/
+** Introduction
+*Wing icing interferes with aerodynamics*
+\begin{figure}
+   \subfigure[Clean Airfoil]{\includegraphics[width=0.45\textwidth]{CleanAirfoilIntro}}
+   \subfigure[Iced Airfoil]{\includegraphics[width=0.45\textwidth]{IceAirfoilIntro}}
+   \caption{Example flow field calculations for clean and iced airfoils (CATFISh/FLO103).}
+\end{figure}
 
 ** Introduction
 *Wing icing can cause airplane crashes*
@@ -97,7 +105,10 @@
    \subfigure[Comair Flight 3272, MI, 1997]{\includegraphics[width=0.45\textwidth]{EmbraerCrashIntro}}
    \caption{Example crashes caused by wing icing\footnote{\tiny http: //asj.nolan-law.com/2010/02/regulation-on-flight-in-freezing-drizzle-to-be-issued-soon/}}
 \end{figure}
-
+- Leading edge ice accretion alters airflow over lifting surfaces
+- Can lead to unrecoverable loss of control
+- Affects all types of planes (small single passenger Cessnas, medium
+  sized business jets, commerical transports)
 
 ** Introduction
 *How does wing ice form?*

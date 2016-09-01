@@ -64,19 +64,41 @@
 
 ** Introduction
 *Why is aircraft icing dangerous?*
-- Nacelle icing
-  - Increase profile drag
-- Engine icing 
-  - Disrupt airflow into engine 
-  - Cause compressor blade stall
-  - Damage to engine blades
-- Instrument icing
-  - Causes incorrect Pitot tube speed/pressure measurements
-- Wing/stabilizer icing
-  - Decreases lift, increases drag
-  - Causes unpredictable stall characteristics
-  - Causes loss of control surface effectiveness
+#+begin_latex
+\begin{itemize}
+\item Nacelle icing
+\begin{itemize}
+\item Increase profile drag
+\end{itemize}
+\item Engine icing
+\begin{itemize}
+\item Disrupt airflow into engine
+\item Cause compressor blade stall
+\item Damage to engine blades
+\end{itemize}
+\item Instrument icing
+\begin{itemize}
+\item Causes incorrect Pitot tube speed/pressure measurements
+\end{itemize}
+\item Wing/stabilizer icing
+\begin{itemize}
+\item Decreases lift, increases drag
+\item Causes unpredictable stall characteristics
+\item Causes loss of control surface effectiveness
+\end{itemize}
+\end{itemize}
+#+end_latex
 /We limit our focus to wing icing in what follows/
+
+** Introduction
+*Wing icing can cause airplane crashes*
+\begin{figure}
+   \subfigure[Empire Airlines Flight 8284, TX, 2009]{\includegraphics[width=0.45\textwidth]{LubbockCrashIntro}}
+   \subfigure[Comair Flight 3272, MI, 1997]{\includegraphics[width=0.45\textwidth]{EmbraerCrashIntro}}
+   \caption{Example crashes caused by wing icing\footnote{\tiny http: //asj.nolan-law.com/2010/02/regulation-on-flight-in-freezing-drizzle-to-be-issued-soon/}}
+\end{figure}
+
+
 ** Introduction
 *How does wing ice form?*
 - Warm, humid air is convected upward to cooler, higher altitudes
@@ -91,7 +113,8 @@
       35 $\mu m$)\footnote{\tiny Dorsch and
       Hacker. \emph{Photomicrographic investigation of spontaneous
       freezing temperatures of supercooled water droplets.} NACA-TN
-      2142, 1950.}  } \end{figure}
+      2142, 1950.}} 
+\end{figure}
 
 ** Introduction
 *How does wing ice form?*
@@ -101,13 +124,13 @@
 - /Rime ice:/ cold, dry conditions --> droplets freeze immediately upon impact
 - /Glaze ice:/ warm, wet conditions --> partial freezing plus "runback" water
 
-\vspace*{-0.5cm}\begin{figure} \subfigure[Rime
-      Ice]{\includegraphics[width=0.3\textwidth]{Habashi2006Rime.png}}
-      \subfigure[Horn
-      Ice]{\includegraphics[width=0.3\textwidth]{Habashi2006Horn.png}}
-      \caption{Canonical examples of rime/horn ice\footnote{\tiny Beaugendre
-      et. al. \emph{Development of a Second Generation In-Flight
-      Simulation Code}. J. Fluids Engineering, 2006.}}  \end{figure}
+\vspace*{-0.4cm}\begin{figure} 
+    \subfigure[Rime Ice]{\includegraphics[width=0.3\textwidth]{Habashi2006Rime.png}}
+    \subfigure[Horn Ice]{\includegraphics[width=0.3\textwidth]{Habashi2006Horn.png}}
+      \caption{Canonical examples of rime/horn ice\footnote{\tiny
+      Beaugendre et. al. \emph{Development of a Second Generation
+      In-Flight Simulation Code}. J. Fluids Engineering, 2006.}}
+\end{figure}
 
 ** Introduction
 *Wing icing deteriorates airfoil aerodynamics*

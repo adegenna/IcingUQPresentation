@@ -144,17 +144,6 @@ In-flight accumulation of ice on aircraft structure
 \end{figure}
 
 ** Introduction
-*Wing icing deteriorates airfoil aerodynamics*
-  - Leading edge flow separation bubble
-  - Lower lift, higher drag
-  - Unpredictable stall
-
-\vspace*{-0.0cm}\begin{figure}
-    \includegraphics[width=0.4\textwidth]{BadHorn.png}
-    \caption{Leading edge horn separation}
-\end{figure}
-
-** Introduction
 *Significant ice shape variation, sensitivity to physical parameters*[fn:Addy]
   - Complex physics (aero-thermodynamics, macro/micro scale physics)
   - Uncertainty in physical parameters
@@ -166,20 +155,6 @@ In-flight accumulation of ice on aircraft structure
 
 [fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
 Airfoils/. NASA TR 2000-210031.
-
-** Introduction
-*Different types of ice accretion*[fn:Habashi]
-  - ``Horns", ``ridges", ``lobster tails" refer to shape
-  - ``Glaze", ``rime" refer to icing thermodynamics
-
-\vspace*{-0.0cm}\begin{figure}
-      \subfigure[Rime Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Rime.png}}
-      \subfigure[Horn Ice]{\includegraphics[width=0.4\textwidth]{Habashi2006Horn.png}}
- 
-\end{figure}
-
-[fn:Habashi] Beaugendre et. al. /Development of a Second Generation
-In-Flight Simulation Code/. J. Fluids Engineering, 2006.
 
 ** Introduction
 *Research Goals*

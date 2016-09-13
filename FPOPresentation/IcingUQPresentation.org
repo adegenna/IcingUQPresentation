@@ -144,17 +144,14 @@ In-flight accumulation of ice on aircraft structure
 \end{figure}
 
 ** Introduction
-*Significant ice shape variation, sensitivity to physical parameters*[fn:Addy]
+*Significant ice shape variation, sensitivity to physical parameters*
   - Complex physics (aero-thermodynamics, macro/micro scale physics)
   - Uncertainty in physical parameters
 
 \vspace*{-0.0cm}\begin{figure}
       \includegraphics[width=0.75\textwidth]{GlobalDataSet}
-      \caption{Wind tunnel experimental ice shapes}
+      \caption{Wind tunnel experimental ice shapes\footnote{\tiny Addy, H.E. {\it Ice Accretions and Icing Effects for Modern Airfoils}. NASA TR 2000-210031.}}
 \end{figure}
-
-[fn:Addy] Addy, H.E. /Ice Accretions and Icing Effects for Modern
-Airfoils/. NASA TR 2000-210031.
 
 ** Introduction
 *Research Goals*

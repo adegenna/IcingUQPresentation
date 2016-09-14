@@ -92,11 +92,16 @@ In-flight accumulation of ice on aircraft structure
 /We limit our focus to wing icing in what follows/
 ** Introduction
 *Wing icing interferes with aerodynamics*
+# \subfigure[Clean Airfoil]{\includegraphics[width=0.4\textwidth]{CleanAirfoilIntroMach}}
+# \subfigure[Iced Airfoil]{\includegraphics[width=0.4\textwidth]{IceAirfoilIntroMach}} \\
 \begin{figure}
-   \subfigure[Clean Airfoil]{\includegraphics[width=0.45\textwidth]{CleanAirfoilIntro}}
-   \subfigure[Iced Airfoil]{\includegraphics[width=0.45\textwidth]{IceAirfoilIntro}}
+   \subfigure[Stagnation pressure coefficient, clean]{\includegraphics[width=0.45\textwidth]{CleanAirfoilIntroCPtotal}}
+   \subfigure[Stagnation pressure coefficient, iced]{\includegraphics[width=0.45\textwidth]{IceAirfoilIntroCPtotal}}
    \caption{Example flow field calculations for clean and iced airfoils (CATFISh/FLO103).}
 \end{figure}
+
+- Ice protrusion causes leading edge separation
+- Losses in total pressure --> lower lift, higher drag
 
 ** Introduction
 *Wing icing can cause airplane crashes*
